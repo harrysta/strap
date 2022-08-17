@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.14)
+project(strap VERSION 0.1.0)
+
+file(GLOB SOURCES src/*.c)
+file(GLOB HEADERS include/strap.h)
+file(GLOB TESTS tests/*.c)
+include_directories(include)
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
+add_executable(test ${TESTS})
+set_property(TARGET test ${PROJECT_NAME} PROPERTY C_STANDARD 90)
+target_link_libraries(test PUBLIC ${PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME} DESTINATION /usr/lib)
+install(FILES ${HEADERS} DESTINATION include)

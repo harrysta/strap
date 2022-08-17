@@ -54,39 +54,35 @@ StrapArray* strap_alloc(StrapType type)
 
 void strap_free(StrapArray *arr)
 {
-	if (arr == NULL)
+	if (arr == NULL) {
 		return;
-
-	StrapArrayString *array = (StrapArrayString*) arr;
-	size_t len = arr->array[arr->array_count - 1].accumulated_length;
-	for (int i = 0; i < len; i++) {
-		if (array->char_array[i]) {
-		printf("%c", array->char_array[i]);
-		} else {
-			printf(",");
-		}
 	}
-	printf("\n");
 	free(arr->array);
 	free(arr);
 }
 
-
-StrapNode* strap_string_get(StrapArray *arr, unsigned int index)
-{
-	return NULL;
+size_t strap_count(StrapArray *arr) {
+	return arr == NULL ? 0 : arr->array_count;
 }
 
-void strap_string_append(StrapArray *arr, const char *str)
+StrapNode* strap_get(StrapArray *arr, unsigned int index)
 {
-	StrapArrayString *array;
-	StrapNode *node, *previous_node;
+	if (arr == NULL || index >= arr->array_count) {
+		return NULL;
+	}
+	return arr->array + index;
+}
+
+void strap_append_string(StrapArray *arr, const char *str)
+{
+	StrapArrayString *arrstr;
+	StrapNode *node;
 	size_t length, previous_length;
 
 	if (arr == NULL || arr->type != STRAP_STRING) {
 		return;
 	}
-	array = (StrapArrayString*) arr;
+	arrstr = (StrapArrayString*) arr;
 	length = 0;
 	while (str[length++] != '\0');
 	if (arr->array_count == 0) {
@@ -94,16 +90,15 @@ void strap_string_append(StrapArray *arr, const char *str)
 		previous_length = 0;
 	} else {
 		node = arr->array + arr->array_count;
-		previous_node = node - 1;
-		previous_length = previous_node->accumulated_length;
+		previous_length = (node - 1)->accumulated_length;
 	}
-	node->ptr = array->char_array + previous_length;
+	node->ptr = arrstr->char_array + previous_length;
 	node->accumulated_length = previous_length + length;
 	strcpy(node->ptr, str);
 	arr->array_count++;
 }
 
-void strap_string_add(StrapArray *arr, unsigned int index, const char *str)
+void strap_add_string(StrapArray *arr, unsigned int index, const char *str)
 {
 }
 
@@ -111,3 +106,11 @@ void strap_remove(StrapArray *arr, unsigned int index)
 {
 }
 
+
+void strap_node_strcpy(StrapNode *node, void *dst)
+{
+	if (node == NULL) {
+		return;
+	}
+	strcpy(dst, node->ptr);
+}
