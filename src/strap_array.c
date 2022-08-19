@@ -24,10 +24,10 @@ static StrapArray_str *_strap_strarray_resize(StrapArray_str *ptr,
 	ptr->array_size = new_arr_size;
 	ptr->string_size = new_str_size;
 
-	printf("new_arr_size: %lu\n", new_arr_size);
-	printf("new_str_size: %lu\n", new_str_size);
-	printf("new_size: %lu\n", new_size);
-	printf("string: %s\n", _strap_get_string(ptr));
+	// printf("new_arr_size: %lu\n", new_arr_size);
+	// printf("new_str_size: %lu\n", new_str_size);
+	// printf("new_size: %lu\n", new_size);
+	// printf("string: %s\n", _strap_get_string(ptr));
 	return ptr;
 }
 
@@ -66,8 +66,8 @@ StrapArray *strap_array_alloc(StrapType type)
 			arr_s = malloc(sizeof *arr_s);
 			if (!arr_s)
 				return NULL;
-			arr_s->string_size = S_INITIAL_STRING_SIZE;
-			arr_s->array_size = sizeof(size_t) * S_INITIAL_ARRAY_SIZE;
+			arr_s->string_size = S_INIT_STR_SIZE;
+			arr_s->array_size = sizeof(size_t) * S_INIT_ARR_SIZE;
 			arr_s->count = 0;
 			data = arr_s;
 			break;
@@ -99,7 +99,7 @@ size_t strap_array_count(StrapArray *arr)
 	return ((StrapArray_str*) arr->data)->count;
 }
 
-const char* strap_array_get_str(StrapArray *arr, size_t index)
+const char* strap_array_get_cstr(StrapArray *arr, size_t index)
 {
 	if (!arr || arr->type != STRAP_TYPE_STRING)
 		return NULL;
@@ -111,7 +111,7 @@ const char* strap_array_get_str(StrapArray *arr, size_t index)
 	return _strap_get_string(ptrstr);
 }
 
-int strap_array_append_str(StrapArray *arr, const char *str)
+int strap_array_append_cstr(StrapArray *arr, const char *str)
 {
 	StrapArray_str *arr_s;
 	char *string;
@@ -128,11 +128,10 @@ int strap_array_append_str(StrapArray *arr, const char *str)
 		pos = arr_s->array[arr_s->count - 1] + 1;
 	if (pos + length >= arr_s->string_size) {
 		// calculate add_string_size to be greater than the new total length
-		string_size = (length / S_INITIAL_STRING_SIZE + 1)
-			* S_INITIAL_STRING_SIZE;
+		string_size = CHUNKIFY(length, S_INIT_STR_SIZE);
 	}
 	if (arr_s->array_size == arr_s->count * sizeof(size_t)) {
-		array_size = sizeof(size_t) * S_INITIAL_ARRAY_SIZE;
+		array_size = sizeof(size_t) * S_INIT_ARR_SIZE;
 	}
 	if (string_size + array_size) {
 		arr_s = _strap_strarray_resize(arr_s, array_size, string_size);
