@@ -62,26 +62,7 @@ size_t strap_string_length(const StrapString *str)
 
 StrapString *strap_string_copy(StrapString *str1, const StrapString *str2)
 {
-	size_t len;
-
-	if (!str1)
-		return NULL;
-	if (!str2) {
-		str1->length = 0;
-		*str1->data = '\0';
-		return str1;
-	}
-	len = str2->length;
-	if (len > str1->size) {
-		StrapString *s = strap_resize(str1, strap_next_pow2(len));
-		if (!s)
-			return str1;
-		str1 = s;
-	}
-	memcpy(str1->data, str2->data, len);
-	str1->length = len;
-	str1->data[str1->length] = '\0';
-	return str1;
+	return strap_string_copy_from(str1, str2 ? str2->data : NULL);
 }
 
 StrapString *strap_string_concat(StrapString *str1, const StrapString *str2)
@@ -91,6 +72,7 @@ StrapString *strap_string_concat(StrapString *str1, const StrapString *str2)
 
 StrapString *strap_string_copy_from(StrapString *str, const char *cstr)
 {
+	return strap_string_ncopy_from(str, cstr, cstr ? strlen(cstr) : 0);
 }
 
 char *strap_string_copy_to(const StrapString *str, char *cstr)
@@ -103,6 +85,7 @@ StrapString *strap_string_strcat(StrapString *str, const char *cstr)
 
 StrapString *strap_string_ncopy(StrapString *str1, const StrapString *str2, size_t n)
 {
+	return strap_string_ncopy_from(str1, str2 ? str2->data : NULL, n);
 }
 
 StrapString *strap_string_nconcat(StrapString *str1, const StrapString *str2, size_t n)
@@ -129,6 +112,23 @@ StrapString *strap_string_nconcat(StrapString *str1, const StrapString *str2, si
 
 StrapString *strap_string_ncopy_from(StrapString *str, const char *cstr, size_t n)
 {
+	if (!str)
+		return NULL;
+	if (!cstr){
+		str->length = 0;
+		str->data[0] = '\0';
+		return str;
+	}
+	if (n > str->size) {
+		StrapString *s = strap_resize(str, strap_next_pow2(n));
+		if (!s)
+			return str;
+		str = s;
+	}
+	memcpy(str->data, cstr, n);
+	str->length = n;
+	str->data[n] = '\0';
+	return str;
 }
 
 char *strap_string_ncopy_to(const StrapString *str, char *cstr, size_t n)
