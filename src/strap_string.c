@@ -77,10 +77,12 @@ StrapString *strap_string_copy_from(StrapString *str, const char *cstr)
 
 char *strap_string_copy_to(const StrapString *str, char *cstr)
 {
+	return strap_string_ncopy_to(str, cstr, str ? str->length : 0);
 }
 
 StrapString *strap_string_strcat(StrapString *str, const char *cstr)
 {
+	return strap_string_nstrcat(str, cstr, cstr ? strlen(cstr) : 0);
 }
 
 StrapString *strap_string_ncopy(StrapString *str1, const StrapString *str2, size_t n)
@@ -133,10 +135,37 @@ StrapString *strap_string_ncopy_from(StrapString *str, const char *cstr, size_t 
 
 char *strap_string_ncopy_to(const StrapString *str, char *cstr, size_t n)
 {
+	if (!cstr)
+		return NULL;
+	if (!str) {
+		cstr[0] = '\0';
+		return cstr;
+	}
+	if (n > str->length)
+		n = str->length;
+	memcpy(cstr, str->data, n);
+	cstr[n] = '\0';
+	return cstr;
 }
 
 StrapString *strap_string_nstrcat(StrapString *str, const char *cstr, size_t n)
 {
+	size_t newlen;
+
+	if (!str)
+		return NULL;
+	if (!cstr)
+		return str;
+	newlen = str->length + n;
+	if (newlen > str->size) {
+		StrapString *s = strap_resize(str, strap_next_pow2(newlen));
+		if (!s)
+			return str;
+		str = s;
+	}
+	memcpy(str->data + str->length, cstr, n);
+	str->length = newlen;
+	return str;
 }
 
 StrapString *strap_string_substring(const StrapString *str, size_t start, size_t n)

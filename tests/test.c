@@ -258,6 +258,16 @@ int test_string_copy_large()
 	return 1;
 }
 
+int test_string_ncopy_string()
+{
+	string = strap_string_alloc("first");
+	string2 = strap_string_alloc("second");
+	TEST_ASSERT_TRUE(strap_string_ncopy(string, string2, 3));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "sec") == 0);
+	TEST_ASSERT_TRUE(strap_string_length(string) == 3);
+	return 1;
+}
+
 int test_string_concat_null()
 {
 	char str[] = "str";
@@ -310,6 +320,17 @@ int test_string_concat_large()
 	return 1;
 }
 
+int test_string_nconcat_string()
+{
+	string = strap_string_alloc("first");
+	string2 = strap_string_alloc("second");
+	char catstr[] = "firstsec";
+	TEST_ASSERT_TRUE(strap_string_nconcat(string, string2, 3));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), catstr) == 0);
+	TEST_ASSERT_TRUE(strap_string_length(string) == strlen(catstr));
+	return 1;
+}
+
 int test_string_copy_from_null()
 {
 	char str[] = "first";
@@ -358,43 +379,109 @@ int test_string_copy_from_large()
 	return 1;
 }
 
+int test_string_ncopy_from_string()
+{
+	char str[] = "first";
+	char str2[] = "second";
+	string = strap_string_alloc(str);
+	TEST_ASSERT_TRUE(strap_string_ncopy_from(string, str2, 3));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "sec") == 0);
+	TEST_ASSERT_TRUE(strap_string_length(string) == 3);
+	return 1;
+}
+
 int test_string_copy_to_null()
 {
-	return 0;
+	string = strap_string_alloc("str");
+	TEST_ASSERT_TRUE(!strap_string_copy_to(NULL, NULL));
+	TEST_ASSERT_TRUE(!strap_string_copy_to(string, NULL));
+	return 1;
 }
 
 int test_string_copy_to_empty()
 {
-	return 0;
-}
-int test_string_copy_to_string()
-{
-	return 0;
+	char str[16];
+	string = strap_string_alloc("str");
+	TEST_ASSERT_TRUE(strap_string_copy_to(string, str));
+	TEST_ASSERT_TRUE(strcmp(str, "str") == 0);
+	TEST_ASSERT_TRUE(strlen(str) == 3);
+	return 1;
 }
 
-int test_string_copy_to_large()
+int test_string_copy_to_string()
 {
-	return 0;
+	char str[16] = "first";
+	string = strap_string_alloc("str");
+	TEST_ASSERT_TRUE(strap_string_copy_to(string, str));
+	TEST_ASSERT_TRUE(strcmp(str, "str") == 0);
+	TEST_ASSERT_TRUE(strlen(str) == 3);
+	return 1;
+}
+
+int test_string_ncopy_to_string()
+{
+	char str[16] = "first";
+	string = strap_string_alloc("second");
+	TEST_ASSERT_TRUE(strap_string_ncopy_to(string, str, 3));
+	TEST_ASSERT_TRUE(strcmp(str, "sec") == 0);
+	TEST_ASSERT_TRUE(strlen(str) == 3);
+	return 1;
 }
 
 int test_string_strcat_null()
 {
-	return 0;
+	string = strap_string_alloc("str");
+	TEST_ASSERT_TRUE(!strap_string_strcat(NULL, NULL));
+	TEST_ASSERT_TRUE(strap_string_strcat(string, NULL));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "str") == 0);
+	TEST_ASSERT_TRUE(strap_string_length(string) == 3);
+	return 1;
 }
 
 int test_string_strcat_empty()
 {
-	return 0;
+	string = strap_string_alloc("str");
+	TEST_ASSERT_TRUE(strap_string_strcat(string, ""));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "str") == 0);
+	TEST_ASSERT_TRUE(strap_string_length(string) == 3);
+	return 1;
 }
 
 int test_string_strcat_string()
 {
-	return 0;
+	string = strap_string_alloc("str");
+	TEST_ASSERT_TRUE(strap_string_strcat(string, "ing"));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "string") == 0);
+	TEST_ASSERT_TRUE(strap_string_length(string) == 6);
+	return 1;
 }
 
 int test_string_strcat_large()
 {
-	return 0;
+	size_t size = 9996;
+	size_t catsize = 9999;
+	char buf[size];
+	char buf2[catsize];
+	memset(buf, 'a', size);
+	memset(buf2, 'a', catsize);
+	buf[size - 1] = 0;
+	buf2[catsize - 1] = 0;
+	memcpy(buf2, "str", 3);
+
+	string = strap_string_alloc("str");
+	TEST_ASSERT_TRUE(strap_string_strcat(string, buf));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf2) == 0);
+	TEST_ASSERT_TRUE(strap_string_length(string) == catsize - 1);
+	return 1;
+}
+
+int test_string_nstrcat_string()
+{
+	string = strap_string_alloc("first");
+	TEST_ASSERT_TRUE(strap_string_nstrcat(string, "second", 3));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "firstsec") == 0);
+	TEST_ASSERT_TRUE(strap_string_length(string) == 8);
+	return 1;
 }
 
 
@@ -438,26 +525,30 @@ int main ()
 	TEST_RUN(test_string_copy_empty);
 	TEST_RUN(test_string_copy_string);
 	TEST_RUN(test_string_copy_large);
+	TEST_RUN(test_string_ncopy_string);
 
 	TEST_RUN(test_string_concat_null);
 	TEST_RUN(test_string_concat_empty);
 	TEST_RUN(test_string_concat_string);
 	TEST_RUN(test_string_concat_large);
+	TEST_RUN(test_string_nconcat_string);
 
 	TEST_RUN(test_string_copy_from_null);
 	TEST_RUN(test_string_copy_from_empty);
 	TEST_RUN(test_string_copy_from_string);
 	TEST_RUN(test_string_copy_from_large);
+	TEST_RUN(test_string_ncopy_from_string);
 
 	TEST_RUN(test_string_copy_to_null);
 	TEST_RUN(test_string_copy_to_empty);
 	TEST_RUN(test_string_copy_to_string);
-	TEST_RUN(test_string_copy_to_large);
+	TEST_RUN(test_string_ncopy_to_string);
 
 	TEST_RUN(test_string_strcat_null);
 	TEST_RUN(test_string_strcat_empty);
 	TEST_RUN(test_string_strcat_string);
 	TEST_RUN(test_string_strcat_large);
+	TEST_RUN(test_string_nstrcat_string);
 
 	TEST_RUN(test_array_str_alloc);
 	TEST_RUN(test_array_get_str_empty);
