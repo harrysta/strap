@@ -292,18 +292,21 @@ int test_string_concat_string()
 
 int test_string_concat_large()
 {
-	size_t size = 9999;
+	size_t size = 9994;
+	size_t catsize = 9999;
 	char buf[] = "first";
 	char buf2[size];
-	char buf3[size];
+	char buf3[catsize];
 	memset(buf2, 'a', size);
-	memset(buf3, 'a', size);
+	memset(buf3, 'a', catsize);
+	buf2[size - 1] = 0;
+	buf3[catsize - 1] = 0;
 	memcpy(buf3, buf, 5);
 	string = strap_string_alloc(buf);
 	string2 = strap_string_alloc(buf2);
 	TEST_ASSERT_TRUE(strap_string_concat(string, string2));
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf3) == 0);
-	TEST_ASSERT_TRUE(strap_string_length(string) == size - 1);
+	TEST_ASSERT_TRUE(strap_string_length(string) == catsize - 1);
 	return 1;
 }
 
