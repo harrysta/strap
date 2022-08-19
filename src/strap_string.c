@@ -188,12 +188,28 @@ size_t strap_string_find(const StrapString *str1, const StrapString *str2)
 {
 }
 
-StrapArray *strap_string_split(StrapString *str, const char *sep)
+StrapString *strap_string_split(StrapString *str, const char *sep)
 {
 }
 
-StrapArray *strap_string_reverse(StrapString *str)
+StrapString *strap_string_reverse(StrapString *str)
 {
+	char tmp;
+	char *start;
+	char *end;
+
+	if (!str)
+		return NULL;
+	start = str->data;
+	end = str->data + str->length - 1;
+	while(start < end){
+		tmp = *start;
+		*start = *end;
+		*end = tmp;
+		start++;
+		end--;
+	}
+	return str;
 }
 
 void strap_string_shrink(StrapString *str)

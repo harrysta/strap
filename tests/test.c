@@ -484,6 +484,15 @@ int test_string_nstrcat_string()
 	return 1;
 }
 
+int test_string_reverse()
+{
+	string = strap_string_alloc("this is my string");
+	TEST_ASSERT_TRUE(!strap_string_reverse(NULL));
+	TEST_ASSERT_TRUE(strap_string_reverse(string));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "gnirts ym si siht") == 0);
+	return 1;
+}
+
 
 void test_prep()
 {
@@ -549,6 +558,8 @@ int main ()
 	TEST_RUN(test_string_strcat_string);
 	TEST_RUN(test_string_strcat_large);
 	TEST_RUN(test_string_nstrcat_string);
+
+	TEST_RUN(test_string_reverse);
 
 	TEST_RUN(test_array_str_alloc);
 	TEST_RUN(test_array_get_str_empty);
