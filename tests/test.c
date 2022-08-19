@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "strap.h"
 
@@ -43,19 +44,19 @@ void test_prep();
 void test_cleanup();
 
 StrapArray *arr_str;
-StrapNode *node1;
 
 int test_alloc()
 {
 	TEST_ASSERT_TRUE(arr_str != NULL);
-	TEST_ASSERT_TRUE(strap_count(arr_str) == 0);
+	TEST_ASSERT_TRUE(strap_array_count(arr_str) == 0);
 	return 1;
 }
 
 int test_get_empty()
 {
-	TEST_ASSERT_TRUE(strap_get(arr_str, 0) == NULL);
-	TEST_ASSERT_TRUE(strap_get(arr_str, 9999) == NULL);
+	TEST_ASSERT_TRUE(strap_array_get_str(arr_str, 0) == NULL);
+	TEST_ASSERT_TRUE(strap_array_get_str(arr_str, 9999) == NULL);
+	TEST_ASSERT_TRUE(strap_array_count(arr_str) == 0);
 	return 1;
 }
 
@@ -64,72 +65,62 @@ int test_append_string()
 	char buf[8];
 
 	// assert count
-	strap_append_string(arr_str, "first");
-	TEST_ASSERT_TRUE(strap_count(arr_str) == 1);
-	strap_append_string(arr_str, "second");
-	strap_append_string(arr_str, "third");
-	TEST_ASSERT_TRUE(strap_count(arr_str) == 3);
-	TEST_ASSERT_TRUE(strap_get(arr_str, 2) != NULL);
-	TEST_ASSERT_TRUE(strap_get(arr_str, 3) == NULL);
+	TEST_ASSERT_TRUE(!strap_array_append_str(arr_str, "first"));
+	TEST_ASSERT_TRUE(strap_array_count(arr_str) == 1);
+	strap_array_append_str(arr_str, "second");
+	strap_array_append_str(arr_str, "third");
+	TEST_ASSERT_TRUE(strap_array_count(arr_str) == 3);
 
 	// assert string content
-	strap_node_strcpy(strap_get(arr_str, 0), buf);
-	TEST_ASSERT_TRUE(strcmp(buf, "first") == 0);
-	strap_node_strcpy(strap_get(arr_str, 1), buf);
-	TEST_ASSERT_TRUE(strcmp(buf, "second") == 0);
-	strap_node_strcpy(strap_get(arr_str, 2), buf);
-	TEST_ASSERT_TRUE(strcmp(buf, "third") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_str(arr_str, 0), "first") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_str(arr_str, 1), "second") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_str(arr_str, 2), "third") == 0);
+	TEST_ASSERT_TRUE(strap_array_get_str(arr_str, 2) != NULL);
+	TEST_ASSERT_TRUE(strap_array_get_str(arr_str, 3) == NULL);
 	return 1;
 }
 
-int test_node_strcpy_blank()
+int test_big_array()
+{
+	size_t i;
+	size_t size = 99999;
+	char buf[6] = "atest";
+
+	for (i = 0; i < size; i++) {
+		TEST_ASSERT_TRUE(!strap_array_append_str(arr_str, buf));
+		TEST_ASSERT_TRUE(strcmp(strap_array_get_str(arr_str, i), buf) == 0);
+		buf[0] = (((buf[0] - 'a') + 1) % 26) + 'a';
+	}
+	TEST_ASSERT_TRUE(strap_array_count(arr_str) == size);
+	return 1;
+}
+
+int test_array_blank_values()
 {
 	char buf[8];
 
-	strap_append_string(arr_str, NULL);
-	strap_append_string(arr_str, "");
-	strap_append_string(arr_str, "second");
-	strap_append_string(arr_str, "");
-	strap_append_string(arr_str, "fourth");
+	strap_array_append_str(arr_str, NULL);
+	strap_array_append_str(arr_str, "");
+	strap_array_append_str(arr_str, "second");
+	strap_array_append_str(arr_str, "");
+	strap_array_append_str(arr_str, "fourth");
+	TEST_ASSERT_TRUE(strap_array_count(arr_str) == 4);
 
-	TEST_ASSERT_TRUE(strap_count(arr_str) == 4);
-	strap_node_strcpy(strap_get(arr_str, 0), buf);
-	TEST_ASSERT_TRUE(strcmp(buf, "") == 0);
-	strap_node_strcpy(strap_get(arr_str, 1), buf);
-	TEST_ASSERT_TRUE(strcmp(buf, "second") == 0);
-	strap_node_strcpy(strap_get(arr_str, 2), buf);
-	TEST_ASSERT_TRUE(strcmp(buf, "") == 0);
-	strap_node_strcpy(strap_get(arr_str, 3), buf);
-	TEST_ASSERT_TRUE(strcmp(buf, "fourth") == 0);
-	return 1;
-}
-
-int test_node_strcpy_big()
-{
-	char buf[512], buf2[512];
-
-	memset(buf, 'a', 511);
-	buf[511] = '\0';
-	strap_append_string(arr_str, buf);
-	strap_append_string(arr_str, buf);
-
-	strap_node_strcpy(strap_get(arr_str, 0), buf2);
-	TEST_ASSERT_TRUE(strcmp(buf, buf2) == 0);
-	strap_node_strcpy(strap_get(arr_str, 1), buf2);
-	TEST_ASSERT_TRUE(strcmp(buf, buf2) == 0);
-	TEST_ASSERT_TRUE(strap_count(arr_str) == 2);
-
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_str(arr_str, 0), "") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_str(arr_str, 1), "second") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_str(arr_str, 2), "") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_str(arr_str, 3), "fourth") == 0);
 	return 1;
 }
 
 void test_prep()
 {
-	arr_str = strap_alloc(STRAP_STRING);
+	arr_str = strap_array_alloc(STRAP_TYPE_STRING);
 }
 
 void test_cleanup()
 {
-	strap_free(arr_str);
+	strap_array_free(arr_str);
 }
 
 int main ()
@@ -143,8 +134,8 @@ int main ()
 	TEST_RUN(test_alloc);
 	TEST_RUN(test_get_empty);
 	TEST_RUN(test_append_string);
-	TEST_RUN(test_node_strcpy_blank);
-	TEST_RUN(test_node_strcpy_big);
+	TEST_RUN(test_array_blank_values);
+	TEST_RUN(test_big_array);
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,
 				test_count - pass_count);

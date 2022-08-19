@@ -1,116 +1,147 @@
-#include "strap.h"
+#include "strap_types.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define STRAP_STRING_ARRAY_SIZE 256
-#define STRAP_CAPACITY 16
-
-struct StrapNode {
-	size_t accumulated_length;
-	void *ptr;
-};
-
-struct StrapArray {
-	StrapType type;
-	size_t array_size;
-	unsigned int array_count;
-	struct StrapNode *array;
-};
-
-typedef struct {
-	StrapArray head;
-	size_t char_array_size;
-	char char_array[1];
-} StrapArrayString;
-
-StrapArray* strap_alloc(StrapType type)
+static char *_strap_get_string(StrapArray_str *ptr)
 {
-	void *ptr;
-	StrapArray *arr;
-	size_t size;
-
-	switch (type) {
-		case STRAP_STRING:
-			size = STRAP_STRING_ARRAY_SIZE;
-			ptr = malloc(sizeof(StrapArrayString) + size - 1);
-			break;
-		default:
-			return NULL;
-	}
-	if (ptr == NULL)
-		return NULL;
-	arr = (StrapArray*) ptr;
-	arr->type = type;
-	arr->array_count = 0;
-	arr->array_size = size;
-	arr->array = malloc(STRAP_CAPACITY*sizeof *arr->array);
-	if (arr->array == NULL) {
-		free(arr);
-		return NULL;
-	}
-	return arr;
+	return (char*) ptr->array + ptr->array_size;
 }
 
-void strap_free(StrapArray *arr)
+static StrapArray_str *_strap_strarray_resize(StrapArray_str *ptr,
+	size_t arr_size, size_t str_size)
 {
-	if (arr == NULL) {
-		return;
+	size_t new_arr_size = ptr->array_size + arr_size;
+	size_t new_str_size = ptr->string_size + str_size;
+	size_t new_size = 3 * sizeof(size_t) + new_arr_size + new_str_size;
+	ptr = realloc(ptr, new_size);
+	if (!ptr)
+		return NULL;
+	char *src = _strap_get_string(ptr);
+	char *dst = (char*) ptr->array + new_arr_size; 
+	memcpy(dst, src, ptr->string_size);
+	ptr->array_size = new_arr_size;
+	ptr->string_size = new_str_size;
+
+	printf("new_arr_size: %lu\n", new_arr_size);
+	printf("new_str_size: %lu\n", new_str_size);
+	printf("new_size: %lu\n", new_size);
+	printf("string: %s\n", _strap_get_string(ptr));
+	return ptr;
+}
+
+static void _strap_array_print(StrapArray *arr)
+{
+	switch (arr->type) {
+		StrapArray_str *arr_s;
+		char *start, *string;
+		size_t i;
+		case STRAP_TYPE_STRING:
+			arr_s = arr->data;
+			string = start = _strap_get_string(arr_s);
+			printf("[ ");
+			for (i = 0; i < arr_s->count; i++) {
+				printf("\"%s\\0\" : %lu", string, arr_s->array[i]);
+				string = start + arr_s->array[i] + 1;
+				if (i < arr_s->count - 1)
+					printf(", ");
+			}
+			printf(" ], %lu bytes, %lu bytes, %lu elements\n", arr_s->count,
+				arr_s->array_size, arr_s->string_size);
+			return;
+		default:
+			return;
 	}
-	free(arr->array);
+}
+
+StrapArray *strap_array_alloc(StrapType type)
+{
+	StrapArray *array;
+	void *data;
+
+	switch (type) {
+		StrapArray_str *arr_s;
+		case STRAP_TYPE_STRING:
+			arr_s = malloc(sizeof *arr_s);
+			if (!arr_s)
+				return NULL;
+			arr_s->string_size = S_INITIAL_STRING_SIZE;
+			arr_s->array_size = sizeof(size_t) * S_INITIAL_ARRAY_SIZE;
+			arr_s->count = 0;
+			data = arr_s;
+			break;
+		default:
+		return NULL;
+	}
+	array = malloc(sizeof *array);
+	if (!array) {
+		free(data);
+		return NULL;
+	}
+	array->type = type;
+	array->data = data;
+	return array;
+}
+
+void strap_array_free(StrapArray *arr)
+{
+	if (!arr)
+		return;
+	free(arr->data);
 	free(arr);
 }
 
-size_t strap_count(StrapArray *arr) {
-	return arr == NULL ? 0 : arr->array_count;
+size_t strap_array_count(StrapArray *arr)
+{
+	if (!arr || arr->type != STRAP_TYPE_STRING)
+		return 0;
+	return ((StrapArray_str*) arr->data)->count;
 }
 
-StrapNode* strap_get(StrapArray *arr, unsigned int index)
+const char* strap_array_get_str(StrapArray *arr, size_t index)
 {
-	if (arr == NULL || index >= arr->array_count) {
+	if (!arr || arr->type != STRAP_TYPE_STRING)
 		return NULL;
-	}
-	return arr->array + index;
+	StrapArray_str *ptrstr = (StrapArray_str*) arr->data;
+	if (index >= ptrstr->count)
+		return NULL;
+	if (index)
+		return _strap_get_string(ptrstr) + ptrstr->array[index - 1] + 1;
+	return _strap_get_string(ptrstr);
 }
 
-void strap_append_string(StrapArray *arr, const char *str)
+int strap_array_append_str(StrapArray *arr, const char *str)
 {
-	StrapArrayString *arrstr;
-	StrapNode *node;
-	size_t length, previous_length;
+	StrapArray_str *arr_s;
+	char *string;
+	size_t length;
 
-	if (arr == NULL || arr->type != STRAP_STRING) {
-		return;
+	size_t pos = 0;
+	size_t string_size = 0;
+	size_t array_size = 0;
+	if (!arr || !str || arr->type != STRAP_TYPE_STRING)
+		return 1;
+	arr_s = (StrapArray_str*) arr->data;
+	length = strlen(str);
+	if (arr_s->count)
+		pos = arr_s->array[arr_s->count - 1] + 1;
+	if (pos + length >= arr_s->string_size) {
+		// calculate add_string_size to be greater than the new total length
+		string_size = (length / S_INITIAL_STRING_SIZE + 1)
+			* S_INITIAL_STRING_SIZE;
 	}
-	arrstr = (StrapArrayString*) arr;
-	length = 0;
-	while (str[length++] != '\0');
-	if (arr->array_count == 0) {
-		node = arr->array;
-		previous_length = 0;
-	} else {
-		node = arr->array + arr->array_count;
-		previous_length = (node - 1)->accumulated_length;
+	if (arr_s->array_size == arr_s->count * sizeof(size_t)) {
+		array_size = sizeof(size_t) * S_INITIAL_ARRAY_SIZE;
 	}
-	node->ptr = arrstr->char_array + previous_length;
-	node->accumulated_length = previous_length + length;
-	strcpy(node->ptr, str);
-	arr->array_count++;
-}
-
-void strap_add_string(StrapArray *arr, unsigned int index, const char *str)
-{
-}
-
-void strap_remove(StrapArray *arr, unsigned int index)
-{
-}
-
-
-void strap_node_strcpy(StrapNode *node, void *dst)
-{
-	if (node == NULL) {
-		return;
+	if (string_size + array_size) {
+		arr_s = _strap_strarray_resize(arr_s, array_size, string_size);
+		if (!arr_s)
+			return 1;
+		arr->data = arr_s;
 	}
-	strcpy(dst, node->ptr);
+	string = _strap_get_string(arr_s);
+	strcpy(string + pos, str);
+	arr_s->array[arr_s->count++] = pos + length;
+	return 0;
 }

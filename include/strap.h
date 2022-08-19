@@ -3,26 +3,29 @@
 
 #include <stddef.h>
 
-#define strap_length(a) strap_count(a)
-
 typedef enum {
-	STRAP_INT,
-	STRAP_FLOAT,
-	STRAP_STRING,
-	STRAP_COUNT
+	STRAP_TYPE_INT,
+	STRAP_TYPE_FLOAT,
+	STRAP_TYPE_STRING,
+	STRAP_TYPE_COUNT
 } StrapType;
 
 typedef struct StrapArray StrapArray;
-typedef struct StrapNode StrapNode;
+typedef struct StrapString StrapString;
 
-extern StrapArray* strap_alloc(StrapType type);
-extern void strap_free(StrapArray *arr);
-extern size_t strap_count(StrapArray *arr);
+extern StrapString *strap_string_alloc(const char *str);
+extern StrapString *strap_string_copy(StrapString *string, const StrapString *src);
+extern StrapString *strap_string_concat(StrapString *string, const StrapString *src);
 
-extern StrapNode* strap_get(StrapArray *arr, unsigned int index);
-extern void strap_append_string(StrapArray *arr, const char *str);
-extern void strap_add_string(StrapArray *arr, unsigned int index, const char *str);
-extern void strap_remove(StrapArray *arr, unsigned int index);
-extern void strap_node_strcpy(StrapNode *node, void *dst);
+extern StrapString *strap_string_copy_from(StrapString *string, const char *src);
+extern char        *strap_string_copy_to(const StrapString *string, char* str);
+extern StrapString *strap_string_strcat(StrapString *string, const char *src);
+extern size_t       strap_string_length(const StrapString *string);
+
+extern StrapArray *strap_array_alloc(StrapType type);
+extern void        strap_array_free(StrapArray *arr);
+extern size_t      strap_array_count(StrapArray *arr);
+extern const char *strap_array_get_str(StrapArray *arr, size_t index);
+extern int         strap_array_append_str(StrapArray *arr, const char *str);
 
 #endif
