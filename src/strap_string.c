@@ -3,8 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "strap_types.h"
-#include "strap_util.h"
+#include "strap_internal.h"
 
 static StrapString *strap_resize(StrapString *str, size_t size)
 {

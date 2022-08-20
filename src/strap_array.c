@@ -1,4 +1,4 @@
-#include "strap_types.h"
+#include "strap_internal.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -143,4 +143,46 @@ StrapArray *strap_array_append_cstr(StrapArray *arr, const char *str)
 	strcpy(string + pos, str);
 	arr_s->array[arr_s->count++] = pos + length;
 	return arr;
+}
+
+
+StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t i, const char *cstr)
+{
+	return NULL;
+}
+
+StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t i, const char *cstr)
+{
+	return NULL;
+}
+
+size_t *strap_array_find_cstr(const StrapArray *arr, const char *cstr)
+{
+	return NULL;
+}
+
+int strap_array_sprintf(const StrapArray *arr, char *cstr)
+{
+	if (!arr)
+		return -1;
+	switch (arr->type) {
+		case STRAP_TYPE_STRING:
+			return strap_array_sprintf_str(arr->data, cstr);
+		default:
+			return -1;
+	}
+	return -1;
+}
+
+int strap_array_fprintf(const StrapArray *arr, FILE *stream)
+{
+	if (!arr)
+		return -1;
+	switch (arr->type) {
+		case STRAP_TYPE_STRING:
+			return strap_array_fprintf_str(arr->data, stream);
+		default:
+			return -1;
+	}
+	return -1;
 }

@@ -1,6 +1,7 @@
 #ifndef STRAP_H
 #define STRAP_H
 
+#include <bits/types/FILE.h>
 #include <stddef.h>
 
 typedef enum {
@@ -104,6 +105,7 @@ extern StrapArray *strap_array_remove(StrapArray *arr, size_t i);
 extern StrapArray *strap_array_reverse(StrapArray *arr);
 extern StrapArray *strap_array_shrink(StrapArray *arr);
 extern StrapArray *strap_array_sort(StrapArray *arr, int ascending);
-extern StrapArray *strap_array_printf(const StrapArray *arr, char *cstr);
+extern int         strap_array_sprintf(const StrapArray *arr, char *cstr);
+extern int         strap_array_fprintf(const StrapArray *arr, FILE *stream);
 
 #endif

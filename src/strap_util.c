@@ -1,4 +1,4 @@
-#include "strap.h"
+#include "strap_internal.h"
 
 size_t strap_next_pow2(size_t n)
 {
