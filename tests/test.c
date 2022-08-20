@@ -484,6 +484,97 @@ int test_string_nstrcat_string()
 	return 1;
 }
 
+int test_string_substring_invalid()
+{
+	return 1;
+}
+
+int test_string_substring_valid()
+{
+	return 1;
+}
+
+int test_string_erase_range_invalid()
+{
+	return 1;
+}
+
+int test_string_erase_range_outside()
+{
+	return 1;
+}
+
+int test_string_erase_range_valid()
+{
+	return 1;
+}
+
+int test_string_trim()
+{
+	return 1;
+}
+
+int test_string_compare_null()
+{
+	string = strap_string_alloc("str");
+	TEST_ASSERT_TRUE(strap_string_compare(NULL, NULL) == 0);
+	TEST_ASSERT_TRUE(strap_string_compare(string, NULL) == 1);
+	TEST_ASSERT_TRUE(strap_string_compare(NULL, string) == -1);
+	return 1;
+}
+
+int test_string_compare_nonequal()
+{
+	string = strap_string_alloc("strap");
+	string2 = strap_string_alloc("strip");
+	TEST_ASSERT_TRUE(strap_string_compare(string, string2) < 0);
+	TEST_ASSERT_TRUE(strap_string_compare(string2, string) > 0);
+	return 1;
+}
+
+int test_string_compare_equal()
+{
+	string = strap_string_alloc("strap");
+	string2 = strap_string_clone(string);
+	TEST_ASSERT_TRUE(strap_string_compare(string, string2) == 0);
+	return 1;
+}
+
+int test_string_find_null()
+{
+	return 1;
+}
+
+int test_string_find_no_match()
+{
+	return 1;
+}
+
+int test_string_find_match()
+{
+	return 1;
+}
+
+int test_string_split_null()
+{
+	return 1;
+}
+
+int test_string_split_empty()
+{
+	return 1;
+}
+
+int test_string_split_comma()
+{
+	return 1;
+}
+
+int test_string_split_word()
+{
+	return 1;
+}
+
 int test_string_reverse()
 {
 	string = strap_string_alloc("this is my string");
@@ -558,6 +649,28 @@ int main ()
 	TEST_RUN(test_string_strcat_string);
 	TEST_RUN(test_string_strcat_large);
 	TEST_RUN(test_string_nstrcat_string);
+
+	TEST_RUN(test_string_substring_invalid);
+	TEST_RUN(test_string_substring_valid);
+
+	TEST_RUN(test_string_erase_range_invalid);
+	TEST_RUN(test_string_erase_range_outside);
+	TEST_RUN(test_string_erase_range_valid);
+
+	TEST_RUN(test_string_trim);
+
+	TEST_RUN(test_string_compare_null);
+	TEST_RUN(test_string_compare_nonequal);
+	TEST_RUN(test_string_compare_equal);
+
+	TEST_RUN(test_string_find_null);
+	TEST_RUN(test_string_find_no_match);
+	TEST_RUN(test_string_find_match);
+
+	TEST_RUN(test_string_split_null);
+	TEST_RUN(test_string_split_empty);
+	TEST_RUN(test_string_split_comma);
+	TEST_RUN(test_string_split_word);
 
 	TEST_RUN(test_string_reverse);
 

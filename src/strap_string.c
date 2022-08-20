@@ -182,13 +182,20 @@ StrapString *strap_string_trim(StrapString *str)
 
 int strap_string_compare(const StrapString *str1, const StrapString *str2)
 {
+	if (!str1 && !str2)
+		return 0;
+	if (!str1 && str2)
+		return -1;
+	if (str1 && !str2)
+		return 1;
+	return strcmp(str1->data, str2->data);
 }
 
 size_t strap_string_find(const StrapString *str1, const StrapString *str2)
 {
 }
 
-StrapString *strap_string_split(StrapString *str, const char *sep)
+StrapArray *strap_string_split(StrapString *str, const char *sep)
 {
 }
 
