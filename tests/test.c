@@ -498,7 +498,7 @@ int test_string_substring_valid()
 {
 	string = strap_string_alloc("motherhood");
 	TEST_ASSERT_TRUE(string2 = strap_string_substring(string, 1, 5));
-	TEST_ASSERT_TRUE(string2 = strap_string_substring(string, 6, 999));
+	TEST_ASSERT_TRUE(string3 = strap_string_substring(string, 6, 999));
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "other") == 0);
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string3), "hood") == 0);
 	return 1;
@@ -511,7 +511,7 @@ int test_string_erase_invalid()
 	TEST_ASSERT_TRUE(!strap_string_erase(NULL, 5, 10));
 	TEST_ASSERT_TRUE(strap_string_erase(string, 10, 10));
 	TEST_ASSERT_TRUE(strap_string_erase(string, 0, 0));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), buf) == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf) == 0);
 	return 1;
 }
 
@@ -519,9 +519,9 @@ int test_string_erase_valid()
 {
 	string = strap_string_alloc("string motherhood");
 	TEST_ASSERT_TRUE(strap_string_erase(string, 0, 7));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "motherhood") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "motherhood") == 0);
 	TEST_ASSERT_TRUE(strap_string_erase(string, 6, 10));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "mother") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "mother") == 0);
 	return 1;
 }
 

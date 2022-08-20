@@ -6,11 +6,6 @@
 #include "strap_types.h"
 #include "strap_util.h"
 
-#define logs(a) printf("%s: %s\n", #a, a)
-#define logd(a) printf("%s: %lu\n", #a, a)
-#define logf(a) printf("%s: %f\n", #a, a)
-
-// increase str by size in bytes
 static StrapString *strap_resize(StrapString *str, size_t size)
 {
 	char *data = realloc(str->data, size);
@@ -154,14 +149,30 @@ StrapString *strap_string_nstrcat(StrapString *str, const char *cstr, size_t n)
 
 StrapString *strap_string_substring(const StrapString *str, size_t start, size_t n)
 {
-	return NULL;
+	StrapString *nstr;
 
+	if (!str)
+		return NULL;
+	nstr = strap_string_alloc("");
+	if (start >= str->length)
+		return nstr;
+	return strap_string_ncopy_from(nstr, str->data + start, n);
 }
 
-StrapString *strap_string_erase(StrapString *str, size_t start, size_t end)
+StrapString *strap_string_erase(StrapString *str, size_t start, size_t n)
 {
-	return NULL;
-
+	if (!str)
+		return NULL;
+	if (start >= str->length)
+		return str;
+	if (!n)
+		return str;
+	if (start + n > str->length)
+		n = str->length - start;
+	memcpy(str->data + start, str->data + start + n, str->length - n);
+	str->length -= n;
+	str->data[str->length] = '\0';
+	return str;
 }
 
 StrapString *strap_string_trim(StrapString *str)
@@ -217,7 +228,7 @@ size_t strap_string_find(const StrapString *str1, const StrapString *str2)
 
 StrapArray *strap_string_split(StrapString *str, const char *sep)
 {
-
+	return NULL;
 }
 
 StrapString *strap_string_reverse(StrapString *str)
