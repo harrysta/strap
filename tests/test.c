@@ -44,7 +44,7 @@ void test_prep();
 void test_cleanup();
 
 StrapArray *arr_str;
-StrapString *string, *string2, *string3;
+StrapString *string, *string2, *string3, *string4;
 
 int test_array_str_alloc()
 {
@@ -486,31 +486,59 @@ int test_string_nstrcat_string()
 
 int test_string_substring_invalid()
 {
+	string = strap_string_alloc("first");
+	TEST_ASSERT_TRUE(string2 = strap_string_substring(string, 10, 10));
+	TEST_ASSERT_TRUE(string3 = strap_string_substring(string, 0, 0));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string3), "") == 0);
 	return 1;
 }
 
 int test_string_substring_valid()
 {
+	string = strap_string_alloc("motherhood");
+	TEST_ASSERT_TRUE(string2 = strap_string_substring(string, 1, 5));
+	TEST_ASSERT_TRUE(string2 = strap_string_substring(string, 6, 999));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "other") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string3), "hood") == 0);
 	return 1;
 }
 
-int test_string_erase_range_invalid()
+int test_string_erase_invalid()
 {
+	char buf[] = "first";
+	string = strap_string_alloc(buf);
+	TEST_ASSERT_TRUE(!strap_string_erase(NULL, 5, 10));
+	TEST_ASSERT_TRUE(strap_string_erase(string, 10, 10));
+	TEST_ASSERT_TRUE(strap_string_erase(string, 0, 0));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), buf) == 0);
 	return 1;
 }
 
-int test_string_erase_range_outside()
+int test_string_erase_valid()
 {
-	return 1;
-}
-
-int test_string_erase_range_valid()
-{
+	string = strap_string_alloc("string motherhood");
+	TEST_ASSERT_TRUE(strap_string_erase(string, 0, 7));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "motherhood") == 0);
+	TEST_ASSERT_TRUE(strap_string_erase(string, 6, 10));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "mother") == 0);
 	return 1;
 }
 
 int test_string_trim()
 {
+	string = strap_string_alloc("    this string           ");
+	string2 = strap_string_alloc("nospace");
+	string3 = strap_string_alloc(" ");
+	string4 = strap_string_alloc("");
+	TEST_ASSERT_TRUE(strap_string_trim(string));
+	TEST_ASSERT_TRUE(strap_string_trim(string2));
+	TEST_ASSERT_TRUE(strap_string_trim(string3));
+	TEST_ASSERT_TRUE(strap_string_trim(string4));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "this string") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "nospace") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string4), "") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string3), "") == 0);
 	return 1;
 }
 
@@ -605,10 +633,12 @@ void test_cleanup()
 	free(string);
 	free(string2);
 	free(string3);
+	free(string4);
 	arr_str = NULL;
-	string = NULL;
+	string  = NULL;
 	string2 = NULL;
 	string3 = NULL;
+	string4 = NULL;
 }
 
 int main ()
@@ -662,9 +692,8 @@ int main ()
 	TEST_RUN(test_string_substring_invalid);
 	TEST_RUN(test_string_substring_valid);
 
-	TEST_RUN(test_string_erase_range_invalid);
-	TEST_RUN(test_string_erase_range_outside);
-	TEST_RUN(test_string_erase_range_valid);
+	TEST_RUN(test_string_erase_invalid);
+	TEST_RUN(test_string_erase_valid);
 
 	TEST_RUN(test_string_trim);
 

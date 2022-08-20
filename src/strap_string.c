@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -77,7 +78,7 @@ StrapString *strap_string_copy_from(StrapString *str, const char *cstr)
 
 char *strap_string_copy_to(const StrapString *str, char *cstr)
 {
-	return strap_string_ncopy_to(str, cstr, strap_string_length(str));
+	return strap_string_ncopy_to(str, cstr, strap_string_length(str)				);
 }
 
 StrapString *strap_string_strcat(StrapString *str, const char *cstr)
@@ -153,14 +154,35 @@ StrapString *strap_string_nstrcat(StrapString *str, const char *cstr, size_t n)
 
 StrapString *strap_string_substring(const StrapString *str, size_t start, size_t n)
 {
+	return NULL;
+
 }
 
 StrapString *strap_string_erase(StrapString *str, size_t start, size_t end)
 {
+	return NULL;
+
 }
 
 StrapString *strap_string_trim(StrapString *str)
 {
+	char *start;
+	char *end;
+	size_t len;
+
+	if (!str)
+		return NULL;
+	if (!str->length)
+		return str;
+	start = str->data;
+	end = str->data + str->length - 1;
+	while (isspace(*start) && start != end) start++;
+	while (isspace(*end) && end >= start) end--;
+	len = end - start + 1;
+	memcpy(str->data, start, len);
+	str->data[len] = '\0';
+	str->length = len;
+	return str;
 }
 
 int strap_string_compare(const StrapString *str1, const StrapString *str2)
@@ -195,6 +217,7 @@ size_t strap_string_find(const StrapString *str1, const StrapString *str2)
 
 StrapArray *strap_string_split(StrapString *str, const char *sep)
 {
+
 }
 
 StrapString *strap_string_reverse(StrapString *str)
