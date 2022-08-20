@@ -62,7 +62,7 @@ size_t strap_string_length(const StrapString *str)
 
 StrapString *strap_string_copy(StrapString *str1, const StrapString *str2)
 {
-	return strap_string_copy_from(str1, str2 ? str2->data : NULL);
+	return strap_string_copy_from(str1, strap_string_get_cstr(str2));
 }
 
 StrapString *strap_string_concat(StrapString *str1, const StrapString *str2)
@@ -77,7 +77,7 @@ StrapString *strap_string_copy_from(StrapString *str, const char *cstr)
 
 char *strap_string_copy_to(const StrapString *str, char *cstr)
 {
-	return strap_string_ncopy_to(str, cstr, str ? str->length : 0);
+	return strap_string_ncopy_to(str, cstr, strap_string_length(str));
 }
 
 StrapString *strap_string_strcat(StrapString *str, const char *cstr)
@@ -87,29 +87,12 @@ StrapString *strap_string_strcat(StrapString *str, const char *cstr)
 
 StrapString *strap_string_ncopy(StrapString *str1, const StrapString *str2, size_t n)
 {
-	return strap_string_ncopy_from(str1, str2 ? str2->data : NULL, n);
+	return strap_string_ncopy_from(str1, strap_string_get_cstr(str2), n);
 }
 
 StrapString *strap_string_nconcat(StrapString *str1, const StrapString *str2, size_t n)
 {
-	size_t newlen;
-
-	if (!str1)
-		return NULL;
-	if (!str2)
-		return str1;
-	if (n > str2->length)
-		n = str2->length;
-	newlen = str1->length + n;
-	if (newlen > str1->size) {
-		StrapString *s = strap_resize(str1, strap_next_pow2(newlen));
-		if (!s)
-			return str1;
-		str1 = s;
-	}
-	memcpy(str1->data + str1->length, str2->data, n);
-	str1->length = newlen;
-	return str1;
+	return strap_string_nstrcat(str1, strap_string_get_cstr(str2), n);
 }
 
 StrapString *strap_string_ncopy_from(StrapString *str, const char *cstr, size_t n)
@@ -193,6 +176,21 @@ int strap_string_compare(const StrapString *str1, const StrapString *str2)
 
 size_t strap_string_find(const StrapString *str1, const StrapString *str2)
 {
+	size_t i, j;
+
+	if (!(str1 && str2))
+		return -1;
+	i = 0;
+	while (i < str1->length) {
+		j = 0;
+		if (str1->data[i++] == str2->data[j++]) {
+			while (j < str2->length && str1->data[i++] == str2->data[j++]);
+			if (j == str2->length) {
+				return i - j;
+			}
+		}
+	}
+	return -1;
 }
 
 StrapArray *strap_string_split(StrapString *str, const char *sep)
@@ -219,6 +217,9 @@ StrapString *strap_string_reverse(StrapString *str)
 	return str;
 }
 
-void strap_string_shrink(StrapString *str)
+StrapString *strap_string_shrink(StrapString *str)
 {
+	if (!str)
+		return NULL;
+	return strap_resize(str, strap_next_pow2(str->length));
 }

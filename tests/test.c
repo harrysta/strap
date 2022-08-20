@@ -542,16 +542,25 @@ int test_string_compare_equal()
 
 int test_string_find_null()
 {
+	string = strap_string_alloc("str");
+	TEST_ASSERT_TRUE(strap_string_find(NULL, NULL) == -1);
+	TEST_ASSERT_TRUE(strap_string_find(string, NULL) == -1);
 	return 1;
 }
 
 int test_string_find_no_match()
 {
+	string = strap_string_alloc("str");
+	string2 = strap_string_alloc("a");
+	TEST_ASSERT_TRUE(strap_string_find(string, string2) == -1);
 	return 1;
 }
 
 int test_string_find_match()
 {
+	string = strap_string_alloc("this is a rather long string");
+	string2 = strap_string_alloc("long");
+	TEST_ASSERT_TRUE(strap_string_find(string, string2) == 17);
 	return 1;
 }
 

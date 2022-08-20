@@ -38,7 +38,7 @@ extern int          strap_string_compare(const StrapString *str1, const StrapStr
 extern size_t       strap_string_find(const StrapString *str1, const StrapString *str2);
 extern StrapArray  *strap_string_split(StrapString *str, const char *sep);
 extern StrapString *strap_string_reverse(StrapString *str);
-extern void         strap_string_shrink(StrapString *str);
+extern StrapString *strap_string_shrink(StrapString *str);
 
 
 extern StrapArray *strap_array_alloc(StrapType type);
