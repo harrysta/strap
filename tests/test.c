@@ -66,7 +66,7 @@ int test_array_append_cstr()
 	char buf[8];
 
 	// assert count
-	TEST_ASSERT_TRUE(!strap_array_append_cstr(arr_str, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr_str, "first"));
 	TEST_ASSERT_TRUE(strap_array_count(arr_str) == 1);
 	strap_array_append_cstr(arr_str, "second");
 	strap_array_append_cstr(arr_str, "third");
@@ -88,7 +88,7 @@ int test_array_append_large()
 	char buf[6] = "atest";
 
 	for (i = 0; i < size; i++) {
-		TEST_ASSERT_TRUE(!strap_array_append_cstr(arr_str, buf));
+		TEST_ASSERT_TRUE(strap_array_append_cstr(arr_str, buf));
 		TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr_str, i), buf) == 0);
 		buf[0] = (((buf[0] - 'a') + 1) % 26) + 'a';
 	}
@@ -487,8 +487,8 @@ int test_string_nstrcat_string()
 int test_string_substring_invalid()
 {
 	string = strap_string_alloc("first");
-	TEST_ASSERT_TRUE(string2 = strap_string_substring(string, 10, 10));
-	TEST_ASSERT_TRUE(string3 = strap_string_substring(string, 0, 0));
+	TEST_ASSERT_TRUE(string2 = strap_string_create_substring(string, 10, 10));
+	TEST_ASSERT_TRUE(string3 = strap_string_create_substring(string, 0, 0));
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "") == 0);
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string3), "") == 0);
 	return 1;
@@ -497,8 +497,8 @@ int test_string_substring_invalid()
 int test_string_substring_valid()
 {
 	string = strap_string_alloc("motherhood");
-	TEST_ASSERT_TRUE(string2 = strap_string_substring(string, 1, 5));
-	TEST_ASSERT_TRUE(string3 = strap_string_substring(string, 6, 999));
+	TEST_ASSERT_TRUE(string2 = strap_string_create_substring(string, 1, 5));
+	TEST_ASSERT_TRUE(string3 = strap_string_create_substring(string, 6, 999));
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "other") == 0);
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string3), "hood") == 0);
 	return 1;

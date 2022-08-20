@@ -73,7 +73,7 @@ StrapString *strap_string_copy_from(StrapString *str, const char *cstr)
 
 char *strap_string_copy_to(const StrapString *str, char *cstr)
 {
-	return strap_string_ncopy_to(str, cstr, strap_string_length(str)				);
+	return strap_string_ncopy_to(str, cstr, strap_string_length(str));
 }
 
 StrapString *strap_string_strcat(StrapString *str, const char *cstr)
@@ -147,7 +147,7 @@ StrapString *strap_string_nstrcat(StrapString *str, const char *cstr, size_t n)
 	return str;
 }
 
-StrapString *strap_string_substring(const StrapString *str, size_t start, size_t n)
+StrapString *strap_string_create_substring(const StrapString *str, size_t start, size_t n)
 {
 	StrapString *nstr;
 

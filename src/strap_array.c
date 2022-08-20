@@ -92,14 +92,14 @@ void strap_array_free(StrapArray *arr)
 	free(arr);
 }
 
-size_t strap_array_count(StrapArray *arr)
+size_t strap_array_count(const StrapArray *arr)
 {
 	if (!arr || arr->type != STRAP_TYPE_STRING)
 		return 0;
 	return ((StrapArray_str*) arr->data)->count;
 }
 
-const char* strap_array_get_cstr(StrapArray *arr, size_t index)
+const char* strap_array_get_cstr(const StrapArray *arr, size_t index)
 {
 	if (!arr || arr->type != STRAP_TYPE_STRING)
 		return NULL;
@@ -111,7 +111,7 @@ const char* strap_array_get_cstr(StrapArray *arr, size_t index)
 	return _strap_get_string(ptrstr);
 }
 
-int strap_array_append_cstr(StrapArray *arr, const char *str)
+StrapArray *strap_array_append_cstr(StrapArray *arr, const char *str)
 {
 	StrapArray_str *arr_s;
 	char *string;
@@ -121,7 +121,7 @@ int strap_array_append_cstr(StrapArray *arr, const char *str)
 	size_t string_size = 0;
 	size_t array_size = 0;
 	if (!arr || !str || arr->type != STRAP_TYPE_STRING)
-		return 1;
+		return arr;
 	arr_s = (StrapArray_str*) arr->data;
 	length = strlen(str);
 	if (arr_s->count)
@@ -136,11 +136,11 @@ int strap_array_append_cstr(StrapArray *arr, const char *str)
 	if (string_size + array_size) {
 		arr_s = _strap_strarray_resize(arr_s, array_size, string_size);
 		if (!arr_s)
-			return 1;
+			return arr;
 		arr->data = arr_s;
 	}
 	string = _strap_get_string(arr_s);
 	strcpy(string + pos, str);
 	arr_s->array[arr_s->count++] = pos + length;
-	return 0;
+	return arr;
 }
