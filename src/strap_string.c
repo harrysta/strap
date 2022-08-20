@@ -241,7 +241,7 @@ StrapString *strap_string_reverse(StrapString *str)
 		return NULL;
 	start = str->data;
 	end = str->data + str->length - 1;
-	while(start < end){
+	while (start < end){
 		tmp = *start;
 		*start = *end;
 		*end = tmp;
