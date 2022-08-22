@@ -43,7 +43,7 @@ static void (*test_after_each)(void);
 void test_prep();
 void test_cleanup();
 
-StrapArray *arr_str, *arr;
+StrapArray *arr;
 StrapString *string, *string2, *string3, *string4;
 
 int test_string_alloc_null()
@@ -557,7 +557,7 @@ int test_array_alloc()
 {
 	TEST_ASSERT_TRUE(!(arr = strap_array_alloc(STRAP_TYPE_COUNT)));
 	TEST_ASSERT_TRUE(arr = strap_array_alloc(STRAP_TYPE_STRING));
-	TEST_ASSERT_TRUE(!strap_array_count(arr_str));
+	TEST_ASSERT_TRUE(!strap_array_count(arr));
 	return 1;
 }
 
@@ -573,8 +573,9 @@ int test_array_get_cstr_empty()
 int test_array_append_cstr_null()
 {
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	TEST_ASSERT_TRUE(!strap_array_append_cstr(arr, NULL));
-	TEST_ASSERT_TRUE(!strap_array_count(arr));
+	TEST_ASSERT_TRUE(!strap_array_append_cstr(NULL, NULL));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, NULL));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 0);
 	return 1;
 }
 
@@ -596,9 +597,10 @@ int test_array_append_cstr_valid()
 	for (i = 0; i < 4; i++)
 		TEST_ASSERT_TRUE(strap_array_append_cstr(arr, buf[i]));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 4);
+	puts("");
+	strap_array_printf(arr);
 	for (i = 0; i < 4; i++)
 		TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, i), buf[i]) == 0);
-	strap_array_fprintf(arr, stdout);
 	return 1;
 }
 
@@ -610,12 +612,17 @@ int test_array_append_cstr_large()
 	memset(buf, 'a', size);
 	buf[size - 1] = '\0';
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	for (i = 0; i < size; i++)
+	puts("");
+	for (i = 0; i < size; i++) {
+	looping:
+		// logd(g_count);
 		TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "a"));
+	}
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, buf));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == size + 1);
 	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, size), buf) == 0);
 	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "a") == 0);
+	// strap_array_printf(arr);
 	return 1;
 }
 
@@ -723,18 +730,15 @@ int test_array_find_cstr_large()
 
 void test_prep()
 {
-	arr_str = strap_array_alloc(STRAP_TYPE_STRING);
 }
 
 void test_cleanup()
 {
-	strap_array_free(arr_str);
-	free(string);
-	free(string2);
-	free(string3);
-	free(string4);
+	strap_string_free(string);
+	strap_string_free(string2);
+	strap_string_free(string3);
+	strap_string_free(string4);
 	strap_array_free(arr);
-	arr_str = NULL;
 	string  = NULL;
 	string2 = NULL;
 	string3 = NULL;
@@ -750,6 +754,7 @@ int main ()
 	TEST_BEFORE_EACH(test_prep);
 	TEST_AFTER_EACH(test_cleanup);
 	puts("-- START --");
+
 	TEST_RUN(test_string_alloc_null);
 	TEST_RUN(test_string_alloc_empty);
 	TEST_RUN(test_string_alloc_string);
@@ -814,6 +819,7 @@ int main ()
 	TEST_RUN(test_string_reverse);
 
 	// ARRAY cstr
+
 	TEST_RUN(test_array_alloc);
 	TEST_RUN(test_array_get_cstr_empty);
 
@@ -822,21 +828,21 @@ int main ()
 	TEST_RUN(test_array_append_cstr_valid);
 	TEST_RUN(test_array_append_cstr_large);
 
-	TEST_RUN(test_array_insert_cstr_null);
-	TEST_RUN(test_array_insert_cstr_empty);
-	TEST_RUN(test_array_insert_cstr_valid);
-	TEST_RUN(test_array_insert_cstr_large);
-
-	TEST_RUN(test_array_replace_cstr_null);
-	TEST_RUN(test_array_replace_cstr_empty);
-	TEST_RUN(test_array_replace_cstr_valid);
-	TEST_RUN(test_array_replace_cstr_large);
-
-	TEST_RUN(test_array_find_cstr_null);
-	TEST_RUN(test_array_find_cstr_empty);
-	TEST_RUN(test_array_find_cstr_valid);
-	TEST_RUN(test_array_find_cstr_large);
-
+	// TEST_RUN(test_array_insert_cstr_null);
+	// TEST_RUN(test_array_insert_cstr_empty);
+	// TEST_RUN(test_array_insert_cstr_valid);
+	// TEST_RUN(test_array_insert_cstr_large);
+ //
+	// TEST_RUN(test_array_replace_cstr_null);
+	// TEST_RUN(test_array_replace_cstr_empty);
+	// TEST_RUN(test_array_replace_cstr_valid);
+	// TEST_RUN(test_array_replace_cstr_large);
+ //
+	// TEST_RUN(test_array_find_cstr_null);
+	// TEST_RUN(test_array_find_cstr_empty);
+	// TEST_RUN(test_array_find_cstr_valid);
+	// TEST_RUN(test_array_find_cstr_large);
+ //
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,
 				test_count - pass_count);

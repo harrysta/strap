@@ -6,7 +6,9 @@
 
 #include "strap.h"
 
-#define CHUNKIFY(a,b) ((a) / (b) + 1) * (b)
+#define S_ARRSTR(a) (char*) (a)->array + (a)->array_size
+#define S_ARRISTR(a,i) S_ARRSTR(a) + (i ? (a)->array[(i) - 1] + 1 : 0)
+#define S_STRLEN(a) (a) ? strlen((a)) : 0
 
 struct StrapString {
 	size_t length;
@@ -37,7 +39,7 @@ typedef struct {
 	char string[S_INIT_STR_SIZE];
 } StrapArray_str;
 
-extern size_t strap_next_pow2(size_t n);
+extern size_t strap_next_pow2(size_t n, size_t min);
 
 extern int strap_array_sprintf_str(const StrapArray_str *arr, char *cstr);
 extern int strap_array_fprintf_str(const StrapArray_str *arr, FILE *stream);
