@@ -5,6 +5,7 @@
 #define S_INIT_ARR_SIZE 16
 
 #include "strap.h"
+#include <stdio.h>
 
 #define S_ARRSTR(a) (char*) (a)->array + (a)->array_size
 #define S_ARRISTR(a,i) S_ARRSTR(a) + (i ? (a)->array[(i) - 1] + 1 : 0)

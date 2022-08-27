@@ -30,42 +30,103 @@ const char* strap_array_get_cstr(const StrapArray *arr, size_t index)
 	return S_ARRISTR(arr_s, index);
 }
 
+StrapArray_str *strap_ensure_size(StrapArray_str *arr, size_t newlen)
+{
+	size_t new_str_size = 0;
+	size_t new_arr_size = 0;
+
+	if (newlen >= arr->string_size)
+		new_str_size = strap_next_pow2(newlen + 1, S_INIT_STR_SIZE);
+	if (arr->array_size == arr->count * sizeof(size_t))
+		new_arr_size = arr->array_size * 2;
+	if (new_str_size || new_arr_size) {
+		arr = strap_resize(arr, new_arr_size, new_str_size);
+		if (!arr)
+			return NULL;
+	}
+	return arr;
+}
+
 StrapArray *strap_array_append_cstr(StrapArray *arr, const char *str)
 {
 	StrapArray_str *arr_s;
-	char *string;
 	size_t len;
-	size_t newlen;
-	size_t lastlen;
 	size_t pos;
-	size_t new_str_size = 0;
-	size_t new_arr_size = 0;
+	char *string;
 
 	if (!arr || !str || arr->type != STRAP_TYPE_STRING)
 		return arr;
 	arr_s = (StrapArray_str*) arr->data;
 	len = strlen(str);
 	pos = arr_s->count ? arr_s->array[arr_s->count - 1] + 1 : 0;
-	newlen = len + 1 + pos;
-	if (newlen >= arr_s->string_size)
-		new_str_size = strap_next_pow2(newlen + 1, S_INIT_STR_SIZE);
-	if (arr_s->array_size == arr_s->count * sizeof(size_t))
-		new_arr_size = arr_s->array_size * 2;
-	if (new_str_size || new_arr_size) {
-		arr_s = strap_resize(arr_s, new_arr_size, new_str_size);
-		if (!arr_s)
-			return arr;
-		arr->data = arr_s;
-	}
+	arr_s = strap_ensure_size(arr_s, len + 1 + pos);
+	if (!arr_s)
+		return arr;
+	arr->data = arr_s;
 	string = S_ARRSTR(arr_s);
 	memcpy(string + pos, str, len + 1);
 	arr_s->array[arr_s->count++] = pos + len;
 	return arr;
 }
 
-StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t i, const char *cstr)
+StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t idx, const char *str)
 {
-	return NULL;
+	StrapArray_str *arr_s;
+	size_t len;
+	size_t pos;
+	size_t stop;
+	char *string;
+	size_t mvlen;
+	size_t i;
+
+	if (!arr || !str || arr->type != STRAP_TYPE_STRING)
+		return arr;
+	arr_s = (StrapArray_str*) arr->data;
+	if (!arr_s->count || idx >= arr_s->count)
+		return strap_array_append_cstr(arr, str);
+	len = strlen(str) + 1;
+	arr_s = strap_ensure_size(arr_s, arr_s->array[arr_s->count - 1] + len);
+	if (!arr_s)
+		return arr;
+	arr->data = arr_s;
+	string = S_ARRSTR(arr_s);
+	pos = idx ? arr_s->array[idx - 1] + 1 : 0;
+	stop = idx ? idx : 1;
+	mvlen = arr_s->array[arr_s->count - 1] + 1 - pos;
+	memcpy(string + pos + len, string + pos, mvlen);
+	memcpy(string + pos, str, len);
+	for (i = arr_s->count; i >= stop; i--)
+		arr_s->array[i] = arr_s->array[i - 1] + len;
+	if (!idx )
+		arr_s->array[0] = len - 1;
+	arr_s->count++;
+	return arr;
+}
+
+void ptr(StrapArray *arr)
+{
+	size_t idx;
+	char c;
+	StrapArray_str *arr_s = (StrapArray_str*) arr->data;
+	char *string = S_ARRSTR(arr_s);
+	size_t s = 35;
+
+	puts("\n-- array -- ");
+	for (idx = 0 ; idx < arr_s->count; idx++) {
+		printf("%lu, ", arr_s->array[idx]);
+	}
+
+	puts("\n-- string -- ");
+	for (idx = 0; idx <= s; idx++) {
+		printf("%-4lu", idx);
+	}
+	puts("");
+	puts("-----------------------------------------------------------------------------------");
+	for (idx = 0; idx <= s; idx++) {
+		c = string[idx];
+		printf("%c   ",  c ? c : '-');
+	}
+	puts("");
 }
 
 StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t i, const char *cstr)
