@@ -4,6 +4,9 @@
 #include "strap.h"
 
 #define ERROR_MESSAGE_SIZE 512
+#define SIZE_LARGE 9999
+#define SIZE_EIGHT 8
+#define SIZE_MED 999
 
 #define TEST_BEFORE_EACH(a) test_before_each = a
 #define TEST_AFTER_EACH(a) test_after_each = a
@@ -76,29 +79,27 @@ int test_string_alloc_string()
 
 int test_string_alloc_array()
 {
-	const size_t size = 8;
-	char buf[size];
+	char buf[SIZE_EIGHT];
 
-	memset(buf, 'a', size);
+	memset(buf, 'a', SIZE_EIGHT);
 	buf[7] = '\0'; /* always required for c strings */
 
 	string = strap_string_alloc(buf);
 	TEST_ASSERT_TRUE(string);
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "aaaaaaa") == 0);
-	TEST_ASSERT_TRUE(strap_string_length(string) == size - 1);
+	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_EIGHT - 1);
 	return 1;
 }
 
 int test_string_alloc_large()
 {
-	const size_t size = 9999;
-	char buf[size];
-	memset(buf, 'a', size);
-	buf[size - 1] = 0;
+	char buf[SIZE_LARGE];
+	memset(buf, 'a', SIZE_LARGE);
+	buf[SIZE_LARGE - 1] = 0;
 	string = strap_string_alloc(buf);
 	TEST_ASSERT_TRUE(string);
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf) == 0);
-	TEST_ASSERT_TRUE(strap_string_length(string) == size - 1);
+	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
 
@@ -132,17 +133,16 @@ int test_string_clone_string()
 
 int test_string_clone_large()
 {
-	const size_t size = 9999;
-	char buf[size];
+	char buf[SIZE_LARGE];
 
-	memset(buf, 'a', size);
-	buf[size - 1] = 0;
+	memset(buf, 'a', SIZE_LARGE);
+	buf[SIZE_LARGE - 1] = 0;
 	string2 = strap_string_alloc(buf);
 	string = strap_string_clone(string2);
 
 	TEST_ASSERT_TRUE(string);
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf) == 0);
-	TEST_ASSERT_TRUE(strap_string_length(string) == size - 1);
+	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
 int test_string_copy_null()
@@ -176,15 +176,14 @@ int test_string_copy_string()
 
 int test_string_copy_large()
 {
-	const size_t size = 9999;
-	char buf[size];
-	memset(buf, 'a', size);
-	buf[size - 1] = 0;
+	char buf[SIZE_LARGE];
+	memset(buf, 'a', SIZE_LARGE);
+	buf[SIZE_LARGE - 1] = 0;
 	string = strap_string_alloc("first");
 	string2 = strap_string_alloc(buf);
 	TEST_ASSERT_TRUE(strap_string_copy(string, string2));
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf) == 0);
-	TEST_ASSERT_TRUE(strap_string_length(string) == size - 1);
+	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
 
@@ -233,20 +232,19 @@ int test_string_concat_string()
 int test_string_concat_large()
 {
 	const size_t size = 9994;
-	const size_t catsize = 9999;
 	char buf[] = "first";
 	char buf2[size];
-	char buf3[catsize];
+	char buf3[SIZE_LARGE];
 	memset(buf2, 'a', size);
-	memset(buf3, 'a', catsize);
+	memset(buf3, 'a', SIZE_LARGE);
 	buf2[size - 1] = 0;
-	buf3[catsize - 1] = 0;
+	buf3[SIZE_LARGE - 1] = 0;
 	memcpy(buf3, buf, 5);
 	string = strap_string_alloc(buf);
 	string2 = strap_string_alloc(buf2);
 	TEST_ASSERT_TRUE(strap_string_concat(string, string2));
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf3) == 0);
-	TEST_ASSERT_TRUE(strap_string_length(string) == catsize - 1);
+	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
 
@@ -295,17 +293,16 @@ int test_string_copy_from_string()
 
 int test_string_copy_from_large()
 {
-	const size_t size = 9999;
 	char str[] = "first";
-	char str2[size];
+	char str2[SIZE_LARGE];
 
 	string = strap_string_alloc(str);
-	memset(str2, 'a', size);
-	str2[size - 1] = 0;
+	memset(str2, 'a', SIZE_LARGE);
+	str2[SIZE_LARGE - 1] = 0;
 
 	TEST_ASSERT_TRUE(strap_string_copy_from(string, str2));
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), str2) == 0);
-	TEST_ASSERT_TRUE(strap_string_length(string) == size - 1);
+	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
 
@@ -388,20 +385,18 @@ int test_string_strcat_string()
 
 int test_string_strcat_large()
 {
-	const size_t size = 9996;
-	const size_t catsize = 9999;
-	char buf[size];
-	char buf2[catsize];
-	memset(buf, 'a', size);
-	memset(buf2, 'a', catsize);
-	buf[size - 1] = 0;
-	buf2[catsize - 1] = 0;
+	char buf[9996];
+	char buf2[SIZE_LARGE];
+	memset(buf, 'a', 9996);
+	memset(buf2, 'a', SIZE_LARGE);
+	buf[9995] = 0;
+	buf2[SIZE_LARGE - 1] = 0;
 	memcpy(buf2, "str", 3);
 
 	string = strap_string_alloc("str");
 	TEST_ASSERT_TRUE(strap_string_strcat(string, buf));
 	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf2) == 0);
-	TEST_ASSERT_TRUE(strap_string_length(string) == catsize - 1);
+	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
 
@@ -565,7 +560,7 @@ int test_array_get_cstr_empty()
 {
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
 	TEST_ASSERT_TRUE(!strap_array_get_cstr(arr, 0));
-	TEST_ASSERT_TRUE(!strap_array_get_cstr(arr, 9999));
+	TEST_ASSERT_TRUE(!strap_array_get_cstr(arr, SIZE_LARGE));
 	TEST_ASSERT_TRUE(!strap_array_count(arr));
 	return 1;
 }
@@ -605,16 +600,15 @@ int test_array_append_cstr_valid()
 int test_array_append_cstr_large()
 {
 	int i;
-	const size_t size = 9999;
-	char buf[size];
-	memset(buf, 'a', size);
-	buf[size - 1] = '\0';
+	char buf[SIZE_LARGE];
+	memset(buf, 'a', SIZE_LARGE);
+	buf[SIZE_LARGE - 1] = '\0';
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	for (i = 0; i < size; i++)
+	for (i = 0; i < SIZE_LARGE; i++)
 		TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "a"));
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, buf));
-	TEST_ASSERT_TRUE(strap_array_count(arr) == size + 1);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, size), buf) == 0);
+	TEST_ASSERT_TRUE(strap_array_count(arr) == SIZE_LARGE + 1);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, SIZE_LARGE), buf) == 0);
 	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "a") == 0);
 	return 1;
 }
@@ -664,15 +658,14 @@ int test_array_insert_cstr_valid()
 int test_array_insert_cstr_large()
 {
 	int i;
-	const size_t size = 9999;
-	char buf[size];
-	memset(buf, 'a', size);
-	buf[size - 1] = '\0';
+	char buf[SIZE_LARGE];
+	memset(buf, 'a', SIZE_LARGE);
+	buf[SIZE_LARGE - 1] = '\0';
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	for (i = 0; i < size; i++)
+	for (i = 0; i < SIZE_LARGE; i++)
 		TEST_ASSERT_TRUE(strap_array_insert_cstr(arr, 0, "a"));
 	TEST_ASSERT_TRUE(strap_array_insert_cstr(arr, 0, buf));
-	TEST_ASSERT_TRUE(strap_array_count(arr) == size + 1);
+	TEST_ASSERT_TRUE(strap_array_count(arr) == SIZE_LARGE + 1);
 	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), buf) == 0);
 	return 1;
 }
