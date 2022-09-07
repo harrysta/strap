@@ -672,21 +672,54 @@ int test_array_insert_cstr_large()
 
 int test_array_replace_cstr_null()
 {
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(!strap_array_replace_cstr(NULL, 0, NULL));
+	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 0, NULL));
+	TEST_ASSERT_TRUE(!strap_array_count(arr));
 	return 1;
 }
 
 int test_array_replace_cstr_empty()
 {
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "one"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 0, ""));
+	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 2, ""));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "second") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "") == 0);
 	return 1;
 }
 
 int test_array_replace_cstr_valid()
 {
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "one"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 0, "first"));
+	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 1, ""));
+	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 2, "3rd"));
+	ptr(arr);
+	strap_array_printf(arr);
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "first") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "3rd") == 0);
 	return 1;
 }
 
 int test_array_replace_cstr_large()
 {
+	char buf[SIZE_LARGE];
+	memset(buf, 'a', SIZE_LARGE);
+	buf[SIZE_LARGE - 1] = '\0';
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 0, buf));
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), buf) == 0);
 	return 1;
 }
 
@@ -825,11 +858,11 @@ int main ()
 	TEST_RUN(test_array_insert_cstr_valid);
 	TEST_RUN(test_array_insert_cstr_large);
 
-	// TEST_RUN(test_array_replace_cstr_null);
-	// TEST_RUN(test_array_replace_cstr_empty);
-	// TEST_RUN(test_array_replace_cstr_valid);
-	// TEST_RUN(test_array_replace_cstr_large);
- //
+	TEST_RUN(test_array_replace_cstr_null);
+	TEST_RUN(test_array_replace_cstr_empty);
+	TEST_RUN(test_array_replace_cstr_valid);
+	TEST_RUN(test_array_replace_cstr_large);
+
 	// TEST_RUN(test_array_find_cstr_null);
 	// TEST_RUN(test_array_find_cstr_empty);
 	// TEST_RUN(test_array_find_cstr_valid);

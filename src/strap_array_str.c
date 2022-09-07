@@ -129,9 +129,66 @@ void ptr(StrapArray *arr)
 	puts("");
 }
 
-StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t i, const char *cstr)
+StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t idx, const char *str)
 {
-	return NULL;
+	StrapArray_str *arr_s;
+	size_t len;
+	size_t prevlen;
+	size_t diff;
+	char *string;
+	size_t pos;
+	size_t stop;
+	size_t mvlen;
+	size_t mvstart;
+	size_t mvdest;
+	size_t i;
+
+	if (!arr || !str || arr->type != STRAP_TYPE_STRING)
+		return arr;
+	arr_s = (StrapArray_str*) arr->data;
+	if (!arr_s->count || idx >= arr_s->count)
+		return strap_array_append_cstr(arr, str);
+	len = strlen(str) + 1;
+	prevlen = arr_s->array[idx] + 1 - (idx ? arr_s->array[idx - 1] + 1 : 0);
+	diff = len - prevlen;
+	logd(arr_s->array[idx]);
+	logs(str);
+	logs(strap_array_get_cstr(arr, idx));
+	logd(len);
+	logd(prevlen);
+	logd(diff);
+
+	if (diff > 0) {
+		arr_s = strap_ensure_size(arr_s, arr_s->array[arr_s->count - 1] + diff);
+		if (!arr_s)
+			return arr;
+		arr->data = arr_s;
+	}
+	string = S_ARRSTR(arr_s);
+	pos = idx ? arr_s->array[idx - 1] + 1 : 0;
+	stop = idx ? idx : 1;
+	mvlen = arr_s->array[arr_s->count - 1] + 1 + diff;
+
+	// move chars forward if new str len is greater than prev
+	// otherwise move backward
+	//  measure index start and char len to move
+
+	if (idx == arr_s->count - 1) {
+		// no need to move chars if at end of array
+	}
+	mvstart = arr_s->array[idx] + 1;
+	mvlen = arr_s->array[arr_s->count - 1] - arr_s->array[idx];
+	mvdest = mvstart + diff;
+	memmove(string + mvdest, string + mvstart, mvlen);
+	strcpy(string + pos, str);
+
+	// update the null term pos (arr_s->array) of each element
+	for (i = idx; i < arr_s->count; i++) {
+		arr_s->array[i] += diff;
+	}
+
+
+	return arr;
 }
 
 size_t *strap_array_find_cstr(const StrapArray *arr, const char *cstr)
