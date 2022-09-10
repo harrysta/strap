@@ -105,13 +105,13 @@ extern StrapArray *strap_array_replace_long(StrapArray *arr, size_t i, long num)
 extern StrapArray *strap_array_replace_float(StrapArray *arr, size_t i, float num);
 extern StrapArray *strap_array_replace_double(StrapArray *arr, size_t i, double num);
 
-extern size_t *strap_array_find_string(const StrapArray *arr, StrapString *str);
-extern size_t *strap_array_find_cstr(const StrapArray *arr, const char *cstr);
-extern size_t *strap_array_find_short(const StrapArray *arr, short num);
-extern size_t *strap_array_find_int(const StrapArray *arr, int num);
-extern size_t *strap_array_find_long(const StrapArray *arr, long num);
-extern size_t *strap_array_find_float(const StrapArray *arr, float num);
-extern size_t *strap_array_find_double(const StrapArray *arr, double num);
+extern size_t strap_array_find_string(const StrapArray *arr, StrapString *str);
+extern size_t strap_array_find_cstr(const StrapArray *arr, const char *cstr);
+extern size_t strap_array_find_short(const StrapArray *arr, short num);
+extern size_t strap_array_find_int(const StrapArray *arr, int num);
+extern size_t strap_array_find_long(const StrapArray *arr, long num);
+extern size_t strap_array_find_float(const StrapArray *arr, float num);
+extern size_t strap_array_find_double(const StrapArray *arr, double num);
 
 extern short  strap_array_sum_short(const StrapArray *arr);
 extern int    strap_array_sum_int(const StrapArray *arr);

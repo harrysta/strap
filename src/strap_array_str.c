@@ -137,7 +137,6 @@ StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t idx, const char *st
 	size_t diff;
 	char *string;
 	size_t pos;
-	size_t stop;
 	size_t mvlen;
 	size_t mvstart;
 	size_t mvdest;
@@ -147,17 +146,10 @@ StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t idx, const char *st
 		return arr;
 	arr_s = (StrapArray_str*) arr->data;
 	if (!arr_s->count || idx >= arr_s->count)
-		return strap_array_append_cstr(arr, str);
+		return arr; /* ignore invalid index */
 	len = strlen(str) + 1;
 	prevlen = arr_s->array[idx] + 1 - (idx ? arr_s->array[idx - 1] + 1 : 0);
 	diff = len - prevlen;
-	logd(arr_s->array[idx]);
-	logs(str);
-	logs(strap_array_get_cstr(arr, idx));
-	logd(len);
-	logd(prevlen);
-	logd(diff);
-
 	if (diff > 0) {
 		arr_s = strap_ensure_size(arr_s, arr_s->array[arr_s->count - 1] + diff);
 		if (!arr_s)
@@ -166,34 +158,37 @@ StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t idx, const char *st
 	}
 	string = S_ARRSTR(arr_s);
 	pos = idx ? arr_s->array[idx - 1] + 1 : 0;
-	stop = idx ? idx : 1;
-	mvlen = arr_s->array[arr_s->count - 1] + 1 + diff;
-
-	// move chars forward if new str len is greater than prev
-	// otherwise move backward
-	//  measure index start and char len to move
-
-	if (idx == arr_s->count - 1) {
-		// no need to move chars if at end of array
-	}
 	mvstart = arr_s->array[idx] + 1;
 	mvlen = arr_s->array[arr_s->count - 1] - arr_s->array[idx];
 	mvdest = mvstart + diff;
 	memmove(string + mvdest, string + mvstart, mvlen);
 	strcpy(string + pos, str);
-
-	// update the null term pos (arr_s->array) of each element
-	for (i = idx; i < arr_s->count; i++) {
+	for (i = idx; i < arr_s->count; i++)
 		arr_s->array[i] += diff;
-	}
-
-
 	return arr;
 }
 
-size_t *strap_array_find_cstr(const StrapArray *arr, const char *cstr)
+size_t strap_array_find_cstr(const StrapArray *arr, const char *cstr)
 {
-	return NULL;
+	StrapArray_str *arr_s;
+	char *string;
+	size_t offset;
+	size_t i;
+
+	if (!arr || !cstr || arr->type != STRAP_TYPE_STRING)
+		return -1;
+	arr_s = (StrapArray_str*) arr->data;
+	if (!arr_s->count)
+		return -1;
+	string = S_ARRSTR(arr_s);
+	offset = 0;
+	i = 0;
+	for (i = 0; i < arr_s->count; i++) {
+		if (strcmp(string + offset, cstr) == 0)
+			return i;
+		offset = arr_s->array[i] + 1;
+	}
+	return -1;
 }
 
 int strap_array_sprintf_str(const StrapArray_str *arr, char *cstr)
