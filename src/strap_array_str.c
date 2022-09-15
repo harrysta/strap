@@ -168,12 +168,13 @@ StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t idx, const char *st
 	return arr;
 }
 
-size_t strap_array_find_cstr(const StrapArray *arr, const char *cstr)
+size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 {
 	StrapArray_str *arr_s;
 	char *string;
 	size_t offset;
 	size_t i;
+	size_t count;
 
 	if (!arr || !cstr || arr->type != STRAP_TYPE_STRING)
 		return -1;
@@ -182,14 +183,40 @@ size_t strap_array_find_cstr(const StrapArray *arr, const char *cstr)
 		return -1;
 	string = S_ARRSTR(arr_s);
 	offset = 0;
-	i = 0;
-	for (i = 0; i < arr_s->count; i++) {
-		if (strcmp(string + offset, cstr) == 0)
-			return i;
+	for (i = 0, count = 0; i < arr_s->count && count <= n; i++) {
+		if (strcmp(string + offset, cstr) == 0) {
+			if (count == n)
+				return i;
+			count++;
+		}
 		offset = arr_s->array[i] + 1;
 	}
 	return -1;
 }
+
+size_t strap_array_find_cstr(const StrapArray *arr, const char *cstr)
+{
+	return strap_array_nfind_cstr(arr, cstr, 0);
+}
+
+size_t strap_array_find_string(const StrapArray *arr, StrapString *str)
+{
+	return strap_array_find_cstr(arr, strap_string_get_cstr(str));
+}
+
+StrapArray *strap_array_erase_range_str(StrapArray *arr, size_t i, size_t n)
+{
+	StrapArray_str *arr_s;
+	size_t mvlen;
+
+	arr_s = (StrapArray_str*) arr->data;
+	if (i >= arr_s->count || n == 0 || i + n > arr_s->count)
+		return arr;
+	// get amount of chars that should be moved to i
+	
+	return arr;
+}
+
 
 int strap_array_sprintf_str(const StrapArray_str *arr, char *cstr)
 {

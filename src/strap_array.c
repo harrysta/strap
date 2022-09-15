@@ -47,6 +47,19 @@ size_t strap_array_count(const StrapArray *arr)
 	return ((StrapArray_str*) arr->data)->count;
 }
 
+StrapArray *strap_array_erase_range(StrapArray *arr, size_t i, size_t n)
+{
+	if (!arr)
+		return NULL;
+	switch (arr->type) {
+		case STRAP_TYPE_STRING:
+			return strap_array_erase_range_str(arr, i, n);
+		default:
+			return arr;
+	}
+	return arr;
+}
+
 int strap_array_sprintf(const StrapArray *arr, char *cstr)
 {
 	if (!arr)
