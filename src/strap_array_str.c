@@ -1,4 +1,3 @@
-#include "strap.h"
 #include "strap_internal.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -216,7 +215,6 @@ StrapArray *strap_array_erase_range_str(StrapArray *arr, size_t i, size_t n)
 	
 	return arr;
 }
-
 
 int strap_array_sprintf_str(const StrapArray_str *arr, char *cstr)
 {
