@@ -52,7 +52,8 @@ extern StrapString *strap_string_erase(StrapString *str, size_t start, size_t n)
 extern StrapString *strap_string_trim(StrapString *str);
 extern int          strap_string_compare(const StrapString *str1, const StrapString *str2);
 extern size_t       strap_string_find(const StrapString *str1, const StrapString *str2);
-extern StrapArray  *strap_string_split(StrapString *str, const char *sep);
+extern size_t       strap_string_nfind(const StrapString *str1, const StrapString *str2, size_t n);
+extern StrapArray  *strap_string_split(StrapString *str, const char *sep); // TODO
 extern StrapString *strap_string_reverse(StrapString *str);
 extern StrapString *strap_string_shrink(StrapString *str);
 
@@ -88,7 +89,7 @@ extern StrapArray *strap_array_append_double(StrapArray *arr, double num); // TO
 extern StrapArray *strap_array_append_array(StrapArray *arr1, const StrapArray *arr2); // TODO
 
 extern StrapArray *strap_array_insert_string(StrapArray *arr, size_t i, const StrapString *str); // TODO
-extern StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t i, const char *cstr); // TODO
+extern StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t i, const char *cstr);
 extern StrapArray *strap_array_insert_short(StrapArray *arr, size_t i, short num); // TODO
 extern StrapArray *strap_array_insert_int(StrapArray *arr, size_t i, int num); // TODO
 extern StrapArray *strap_array_insert_long(StrapArray *arr, size_t i, long num); // TODO
@@ -113,7 +114,7 @@ extern size_t strap_array_find_long(const StrapArray *arr, long num); // TODO
 extern size_t strap_array_find_float(const StrapArray *arr, float num); // TODO
 extern size_t strap_array_find_double(const StrapArray *arr, double num); // TODO
 
-extern size_t strap_array_nfind_string(const StrapArray *arr, StrapString *str, size_t n); // TODO
+extern size_t strap_array_nfind_string(const StrapArray *arr, StrapString *str, size_t n);
 extern size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n);
 extern size_t strap_array_nfind_short(const StrapArray *arr, short num, size_t n); // TODO
 extern size_t strap_array_nfind_int(const StrapArray *arr, int num, size_t n); // TODO
