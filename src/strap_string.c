@@ -246,9 +246,37 @@ size_t strap_string_find(const StrapString *str1, const StrapString *str2)
 	return -1;
 }
 
-StrapArray *strap_string_split(StrapString *str, const char *sep)
+StrapArray *strap_string_split(StrapString *str, StrapArray *arr, const char *sep)
 {
-	return NULL;
+	StrapArray_str *arr_s;
+	size_t len;
+	size_t seplen;
+	size_t splitlen;
+	size_t i, j;
+	char *buf;
+
+	if (!str || !arr || !sep || arr->type != STRAP_TYPE_STRING)
+		return arr;
+	strap_array_clear(arr);
+	len = str->length;
+	buf = calloc(len, sizeof*buf);
+	seplen = strlen(sep);
+	i = 0;
+	splitlen = 0;
+	while (i <= len) {
+		if (memcmp(sep, str->data + i, seplen) == 0 || i == len) {
+			memcpy(buf, str->data + i - splitlen, splitlen);
+			buf[splitlen] = '\0';
+			strap_array_append_cstr(arr, buf);
+			splitlen = 0;
+			i += seplen;
+		} else {
+			splitlen++;
+			i++;
+		}
+	}
+	free(buf);
+	return arr;
 }
 
 StrapString *strap_string_reverse(StrapString *str)

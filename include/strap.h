@@ -53,7 +53,7 @@ extern StrapString *strap_string_trim(StrapString *str);
 extern int          strap_string_compare(const StrapString *str1, const StrapString *str2);
 extern size_t       strap_string_find(const StrapString *str1, const StrapString *str2);
 extern size_t       strap_string_nfind(const StrapString *str1, const StrapString *str2, size_t n);
-extern StrapArray  *strap_string_split(StrapString *str, const char *sep); // TODO
+extern StrapArray  *strap_string_split(StrapString *str, StrapArray *arr, const char *sep);
 extern StrapString *strap_string_reverse(StrapString *str);
 extern StrapString *strap_string_shrink(StrapString *str);
 

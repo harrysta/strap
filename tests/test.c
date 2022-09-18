@@ -519,21 +519,46 @@ int test_string_find_match()
 
 int test_string_split_null()
 {
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	string = strap_string_alloc("");
+	TEST_ASSERT_TRUE(strap_string_split(NULL, arr, ""));
+	TEST_ASSERT_TRUE(!strap_string_split(string, NULL, ""));
+	TEST_ASSERT_TRUE(strap_string_split(string, arr, NULL));
 	return 1;
 }
 
 int test_string_split_empty()
 {
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	string = strap_string_alloc("");
+	TEST_ASSERT_TRUE(strap_string_split(string, arr, ","));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 1);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "") == 0);
 	return 1;
 }
 
 int test_string_split_comma()
 {
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	string = strap_string_alloc("one,two,three,four");
+	TEST_ASSERT_TRUE(strap_string_split(string, arr, ","));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 4);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "one") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "two") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "three") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 3), "four") == 0);
 	return 1;
 }
 
 int test_string_split_word()
 {
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	string = strap_string_alloc("one-w-two-w-three");
+	TEST_ASSERT_TRUE(strap_string_split(string, arr, "-w-"));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "one") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "two") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "three") == 0);
 	return 1;
 }
 
