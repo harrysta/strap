@@ -208,6 +208,12 @@ size_t strap_array_nfind_string(const StrapArray *arr, StrapString *str, size_t 
 	return strap_array_nfind_cstr(arr, strap_string_get_cstr(str), n);
 }
 
+StrapArray *strap_array_clear_str(StrapArray *arr)
+{
+	((StrapArray_str*) arr->data)->count = 0;
+	return arr;
+}
+
 StrapArray *strap_array_erase_range_str(StrapArray *arr, size_t i, size_t n)
 {
 	StrapArray_str *arr_s;

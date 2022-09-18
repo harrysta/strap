@@ -128,6 +128,7 @@ extern long   strap_array_sum_long(const StrapArray *arr); // TODO
 extern float  strap_array_sum_float(const StrapArray *arr); // TODO
 extern double strap_array_sum_double(const StrapArray *arr); // TODO
 
+extern StrapArray *strap_array_clear(StrapArray *arr);
 extern StrapArray *strap_array_erase(StrapArray *arr, size_t i); // TODO
 extern StrapArray *strap_array_erase_range(StrapArray *arr, size_t i, size_t n); // TODO
 extern StrapArray *strap_array_clear(StrapArray *arr); // TODO

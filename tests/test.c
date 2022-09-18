@@ -774,6 +774,23 @@ int test_array_nfind_cstr_no_match()
 	return 1;
 }
 
+int test_array_clear_null()
+{
+	TEST_ASSERT_TRUE(!strap_array_clear(NULL));
+	return 1;
+}
+
+int test_array_clear_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_clear(arr));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 0);
+	return 1;
+}
+
 void test_prep()
 {
 }
@@ -890,6 +907,9 @@ int main ()
 
 	TEST_RUN(test_array_nfind_cstr_valid);
 	TEST_RUN(test_array_nfind_cstr_no_match);
+
+	TEST_RUN(test_array_clear_null);
+	TEST_RUN(test_array_clear_valid);
 
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,
