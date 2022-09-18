@@ -68,6 +68,11 @@ StrapArray *strap_array_append_cstr(StrapArray *arr, const char *str)
 	return arr;
 }
 
+StrapArray *strap_array_append_string(StrapArray *arr, const StrapString *str)
+{
+	return strap_array_append_cstr(arr, str->data);
+}
+
 StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t idx, const char *str)
 {
 	StrapArray_str *arr_s;
@@ -100,6 +105,11 @@ StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t idx, const char *str
 		arr_s->array[0] = len - 1;
 	arr_s->count++;
 	return arr;
+}
+
+StrapArray *strap_array_insert_string(StrapArray *arr, size_t i, const StrapString *str)
+{
+	return strap_array_insert_cstr(arr, i, str->data);
 }
 
 void ptr(StrapArray *arr)
@@ -167,6 +177,26 @@ StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t idx, const char *st
 	return arr;
 }
 
+StrapArray *strap_array_replace_string(StrapArray *arr, size_t i, const StrapString *str)
+{
+	return strap_array_replace_cstr(arr, i, str->data);
+}
+
+size_t strap_array_find_string(const StrapArray *arr, StrapString *str)
+{
+	return strap_array_find_cstr(arr, str->data);
+}
+
+size_t strap_array_find_cstr(const StrapArray *arr, const char *cstr)
+{
+	return strap_array_nfind_cstr(arr, cstr, 0);
+}
+
+size_t strap_array_nfind_string(const StrapArray *arr, StrapString *str, size_t n)
+{
+	return strap_array_nfind_cstr(arr, str->data, n);
+}
+
 size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 {
 	StrapArray_str *arr_s;
@@ -191,21 +221,6 @@ size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 		offset = arr_s->array[i] + 1;
 	}
 	return -1;
-}
-
-size_t strap_array_find_cstr(const StrapArray *arr, const char *cstr)
-{
-	return strap_array_nfind_cstr(arr, cstr, 0);
-}
-
-size_t strap_array_find_string(const StrapArray *arr, StrapString *str)
-{
-	return strap_array_find_cstr(arr, strap_string_get_cstr(str));
-}
-
-size_t strap_array_nfind_string(const StrapArray *arr, StrapString *str, size_t n)
-{
-	return strap_array_nfind_cstr(arr, strap_string_get_cstr(str), n);
 }
 
 StrapArray *strap_array_clear_str(StrapArray *arr)

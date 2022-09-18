@@ -79,7 +79,7 @@ extern long        strap_array_get_long(const StrapArray *arr, size_t i); // TOD
 extern float       strap_array_get_float(const StrapArray *arr, size_t i); // TODO
 extern double      strap_array_get_double(const StrapArray *arr, size_t i); // TODO
 
-extern StrapArray *strap_array_append_string(StrapArray *arr, const StrapString *str); // TODO
+extern StrapArray *strap_array_append_string(StrapArray *arr, const StrapString *str);
 extern StrapArray *strap_array_append_cstr(StrapArray *arr, const char *cstr);
 extern StrapArray *strap_array_append_short(StrapArray *arr, short num); // TODO
 extern StrapArray *strap_array_append_int(StrapArray *arr, int num); // TODO
@@ -88,7 +88,7 @@ extern StrapArray *strap_array_append_float(StrapArray *arr, float num); // TODO
 extern StrapArray *strap_array_append_double(StrapArray *arr, double num); // TODO
 extern StrapArray *strap_array_append_array(StrapArray *arr1, const StrapArray *arr2); // TODO
 
-extern StrapArray *strap_array_insert_string(StrapArray *arr, size_t i, const StrapString *str); // TODO
+extern StrapArray *strap_array_insert_string(StrapArray *arr, size_t i, const StrapString *str);
 extern StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t i, const char *cstr);
 extern StrapArray *strap_array_insert_short(StrapArray *arr, size_t i, short num); // TODO
 extern StrapArray *strap_array_insert_int(StrapArray *arr, size_t i, int num); // TODO
@@ -98,7 +98,7 @@ extern StrapArray *strap_array_insert_double(StrapArray *arr, size_t i, double n
 extern StrapArray *strap_array_insert_array(StrapArray *arr1, size_t i, const StrapArray *arr2); // TODO
 extern StrapArray *strap_array_insert_array_range(StrapArray *arr1, size_t i, const StrapArray *arr2, size_t start, size_t n); // TODO
 
-extern StrapArray *strap_array_replace_string(StrapArray *arr, size_t i, const StrapString *str); // TODO
+extern StrapArray *strap_array_replace_string(StrapArray *arr, size_t i, const StrapString *str);
 extern StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t i, const char *cstr);
 extern StrapArray *strap_array_replace_short(StrapArray *arr, size_t i, short num); // TODO
 extern StrapArray *strap_array_replace_int(StrapArray *arr, size_t i, int num); // TODO

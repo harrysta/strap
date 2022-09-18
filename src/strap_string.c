@@ -248,11 +248,10 @@ size_t strap_string_find(const StrapString *str1, const StrapString *str2)
 
 StrapArray *strap_string_split(StrapString *str, StrapArray *arr, const char *sep)
 {
-	StrapArray_str *arr_s;
 	size_t len;
 	size_t seplen;
 	size_t splitlen;
-	size_t i, j;
+	size_t i;
 	char *buf;
 
 	if (!str || !arr || !sep || arr->type != STRAP_TYPE_STRING)
