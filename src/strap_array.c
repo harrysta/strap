@@ -60,6 +60,11 @@ StrapArray *strap_array_clear(StrapArray *arr)
 	return arr;
 }
 
+StrapArray *strap_array_erase(StrapArray *arr, size_t i)
+{
+	return strap_array_erase_range(arr, i, 1);
+}
+
 StrapArray *strap_array_erase_range(StrapArray *arr, size_t i, size_t n)
 {
 	if (!arr)

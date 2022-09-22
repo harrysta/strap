@@ -816,6 +816,87 @@ int test_array_clear_valid()
 	return 1;
 }
 
+int test_array_erase_str_null()
+{
+	TEST_ASSERT_TRUE(!strap_array_erase(NULL, 0));
+	return 1;
+}
+
+int test_array_erase_str_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(!strap_array_erase(NULL, 0));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 0);
+	return 1;
+}
+
+int test_array_erase_str_invalid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, -1));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	return 1;
+}
+
+int test_array_erase_str_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 1));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "first") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "third") == 0);
+	return 1;
+}
+
+int test_array_erase_range_str_first_element()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 0, 1));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "second") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "third") == 0);
+	return 1;
+}
+
+int test_array_erase_range_str_large_range()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 2, 10));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	return 1;
+}
+
+int test_array_erase_range_str_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "fourth"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "five"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "six"));
+	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 2, 3));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "first") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "second") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "six") == 0);
+	return 1;
+}
+
+
 void test_prep()
 {
 }
@@ -935,6 +1016,15 @@ int main ()
 
 	TEST_RUN(test_array_clear_null);
 	TEST_RUN(test_array_clear_valid);
+
+	TEST_RUN(test_array_erase_str_null);
+	TEST_RUN(test_array_erase_str_empty);
+	TEST_RUN(test_array_erase_str_invalid);
+	TEST_RUN(test_array_erase_str_valid);
+
+	TEST_RUN(test_array_erase_range_str_first_element);
+	TEST_RUN(test_array_erase_range_str_large_range);
+	TEST_RUN(test_array_erase_range_str_valid);
 
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,

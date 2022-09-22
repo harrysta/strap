@@ -101,7 +101,7 @@ StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t idx, const char *str
 	memcpy(string + pos, str, len);
 	for (i = arr_s->count; i >= stop; i--)
 		arr_s->array[i] = arr_s->array[i - 1] + len;
-	if (!idx )
+	if (!idx)
 		arr_s->array[0] = len - 1;
 	arr_s->count++;
 	return arr;
@@ -229,16 +229,31 @@ StrapArray *strap_array_clear_str(StrapArray *arr)
 	return arr;
 }
 
-StrapArray *strap_array_erase_range_str(StrapArray *arr, size_t i, size_t n)
+StrapArray *strap_array_erase_range_str(StrapArray *arr, size_t idx, size_t n)
 {
 	StrapArray_str *arr_s;
+	size_t pos;
 	size_t mvlen;
+	size_t dst;
+	size_t i;
+	char *string;
 
 	arr_s = (StrapArray_str*) arr->data;
-	if (i >= arr_s->count || n == 0 || i + n > arr_s->count)
+	if (idx >= arr_s->count || n == 0)
 		return arr;
-	// get amount of chars that should be moved to i
-	
+	if (idx + n > arr_s->count) {
+		n = arr_s->count - idx;
+	}
+	if (idx + n != arr_s->count) {
+		pos = arr_s->array[idx - 1 + n] + 1;
+		dst = idx ? arr_s->array[idx - 1] + 1 : 0;
+		mvlen = arr_s->array[arr_s->count - 1] + 1 - pos;
+		string = S_ARRSTR(arr_s);
+		memcpy(string + dst, string + pos, mvlen);
+		for (i = idx; i < arr_s->count - 1; i++)
+			arr_s->array[i] = arr_s->array[i + 1];
+	}
+	arr_s->count -= n;
 	return arr;
 }
 
