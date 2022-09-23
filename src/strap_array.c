@@ -78,6 +78,19 @@ StrapArray *strap_array_erase_range(StrapArray *arr, size_t i, size_t n)
 	return arr;
 }
 
+StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t idx, size_t n)
+{
+	if (!arr || n == 0)
+		return NULL;
+	switch (arr->type) {
+		case STRAP_TYPE_STRING:
+			return strap_array_create_subarray_str(arr, idx, n);
+		default:
+			return NULL;
+	}
+	return NULL;
+}
+
 int strap_array_sprintf(const StrapArray *arr, char *cstr)
 {
 	if (!arr)

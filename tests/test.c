@@ -46,7 +46,7 @@ static void (*test_after_each)(void);
 void test_prep();
 void test_cleanup();
 
-StrapArray *arr;
+StrapArray *arr, *arr2;
 StrapString *string, *string2, *string3, *string4;
 
 int test_string_alloc_null()
@@ -896,6 +896,55 @@ int test_array_erase_range_str_valid()
 	return 1;
 }
 
+int test_array_create_subarray_str_null()
+{
+	TEST_ASSERT_TRUE(!strap_array_create_subarray(NULL, 5, 12));
+	return 1;
+}
+
+int test_array_create_subarray_str_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(!strap_array_create_subarray(arr, 0, 0));
+	TEST_ASSERT_TRUE(!strap_array_create_subarray(arr, 0, 1));
+	return 1;
+}
+
+int test_array_create_subarray_str_invalid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(!strap_array_create_subarray(arr, 5, 2));
+	return 1;
+}
+
+int test_array_create_subarray_str_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "fourth"));
+	TEST_ASSERT_TRUE(arr2 = strap_array_create_subarray(arr, 1, 2));
+	TEST_ASSERT_TRUE(strap_array_count(arr2) == 2);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 0), "second") == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 1), "third") == 0);
+	return 1;
+}
+
+int test_array_create_subarray_str_first_element()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "number"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "one"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "three"));
+	TEST_ASSERT_TRUE(arr2 = strap_array_create_subarray(arr, 0, 1));
+	TEST_ASSERT_TRUE(strap_array_count(arr2) == 1);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 0), "number") == 0);
+	return 1;
+}
+
 
 void test_prep()
 {
@@ -908,11 +957,13 @@ void test_cleanup()
 	strap_string_free(string3);
 	strap_string_free(string4);
 	strap_array_free(arr);
+	strap_array_free(arr2);
 	string  = NULL;
 	string2 = NULL;
 	string3 = NULL;
 	string4 = NULL;
 	arr = NULL;
+	arr2 = NULL;
 }
 
 int main ()
@@ -1025,6 +1076,11 @@ int main ()
 	TEST_RUN(test_array_erase_range_str_first_element);
 	TEST_RUN(test_array_erase_range_str_large_range);
 	TEST_RUN(test_array_erase_range_str_valid);
+
+	TEST_RUN(test_array_create_subarray_str_null);
+	TEST_RUN(test_array_create_subarray_str_invalid);
+	TEST_RUN(test_array_create_subarray_str_valid);
+	TEST_RUN(test_array_create_subarray_str_first_element);
 
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,

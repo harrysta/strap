@@ -129,10 +129,10 @@ extern float  strap_array_sum_float(const StrapArray *arr); // TODO
 extern double strap_array_sum_double(const StrapArray *arr); // TODO
 
 extern StrapArray *strap_array_clear(StrapArray *arr);
-extern StrapArray *strap_array_erase(StrapArray *arr, size_t i); // TODO
-extern StrapArray *strap_array_erase_range(StrapArray *arr, size_t i, size_t n); // TODO
+extern StrapArray *strap_array_erase(StrapArray *arr, size_t i);
+extern StrapArray *strap_array_erase_range(StrapArray *arr, size_t i, size_t n);
 extern StrapArray *strap_array_clear(StrapArray *arr); // TODO
-extern StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t start, size_t n); // TODO
+extern StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t i, size_t n); // TODO
 extern StrapArray *strap_array_reverse(StrapArray *arr); // TODO
 extern StrapArray *strap_array_shrink(StrapArray *arr); // TODO
 extern StrapArray *strap_array_sort(StrapArray *arr, int ascending); // TODO
