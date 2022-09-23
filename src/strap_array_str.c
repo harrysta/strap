@@ -19,6 +19,23 @@ static StrapArray_str *strap_resize(StrapArray_str *ptr,
 	return arr;
 }
 
+StrapString *strap_array_create_string(const StrapArray *arr, size_t idx)
+{
+	StrapString *str;
+	StrapArray_str *arr_s;
+	char *string;
+	size_t pos;
+
+	if (!arr)
+		return NULL;
+	arr_s = (StrapArray_str*) arr->data;
+	if (idx >= arr_s->count)
+		return NULL;
+	pos = idx ? arr_s->array[idx - 1] + 1 : 0;
+	string = S_ARRSTR(arr_s);
+	return strap_string_alloc(string + pos);
+}
+
 const char* strap_array_get_cstr(const StrapArray *arr, size_t index)
 {
 	if (!arr || arr->type != STRAP_TYPE_STRING)

@@ -581,6 +581,32 @@ int test_array_alloc()
 	return 1;
 }
 
+int test_array_create_string_null()
+{
+	TEST_ASSERT_TRUE(!strap_array_create_string(NULL, 1));
+	return 1;
+}
+
+int test_array_create_string_invalid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "one"));
+	TEST_ASSERT_TRUE(!strap_array_create_string(arr, 4));
+	return 1;
+}
+
+int test_array_create_string_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "one"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "two"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "three"));
+	TEST_ASSERT_TRUE(string = strap_array_create_string(arr, 1));
+	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "two") == 0);
+	return 1;
+}
+
+
 int test_array_get_cstr_empty()
 {
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
@@ -1056,6 +1082,11 @@ int main ()
 	// ARRAY cstr
 
 	TEST_RUN(test_array_alloc);
+
+	TEST_RUN(test_array_create_string_null);
+	TEST_RUN(test_array_create_string_invalid);
+	TEST_RUN(test_array_create_string_valid);
+
 	TEST_RUN(test_array_get_cstr_empty);
 
 	TEST_RUN(test_array_append_cstr_null);
