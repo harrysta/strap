@@ -945,6 +945,21 @@ int test_array_create_subarray_str_first_element()
 	return 1;
 }
 
+int test_array_reverse_str_null()
+{
+	return 1;
+}
+
+int test_array_reverse_str_empty()
+{
+	return 1;
+}
+
+int test_array_reverse_str_valid()
+{
+	return 1;
+}
+
 
 void test_prep()
 {
@@ -1081,6 +1096,10 @@ int main ()
 	TEST_RUN(test_array_create_subarray_str_invalid);
 	TEST_RUN(test_array_create_subarray_str_valid);
 	TEST_RUN(test_array_create_subarray_str_first_element);
+
+	TEST_RUN(test_array_reverse_str_null);
+	TEST_RUN(test_array_reverse_str_empty);
+	TEST_RUN(test_array_reverse_str_valid);
 
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,

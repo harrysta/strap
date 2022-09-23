@@ -45,6 +45,7 @@ extern size_t strap_next_pow2(size_t n, size_t min);
 extern StrapArray *strap_array_erase_range_str(StrapArray *arr, size_t i, size_t n);
 extern StrapArray *strap_array_clear_str(StrapArray *arr);
 extern StrapArray *strap_array_create_subarray_str(const StrapArray *arr, size_t i, size_t n);
+extern StrapArray *strap_array_reverse_str(StrapArray *arr);
 
 extern int strap_array_sprintf_str(const StrapArray_str *arr, char *cstr);
 extern int strap_array_fprintf_str(const StrapArray_str *arr, FILE *stream);

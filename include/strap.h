@@ -58,7 +58,7 @@ extern StrapString *strap_string_reverse(StrapString *str);
 extern StrapString *strap_string_shrink(StrapString *str);
 
 extern StrapArray *strap_array_alloc(StrapType type);
-extern StrapArray *strap_array_nalloc(StrapType type, size_t capacity); // TODO
+extern StrapArray *strap_array_nalloc(StrapType type, size_t size); // TODO
 extern void        strap_array_free(StrapArray *arr);
 extern StrapArray *strap_array_clone(const StrapArray *arr); // TODO
 
@@ -132,7 +132,7 @@ extern StrapArray *strap_array_clear(StrapArray *arr);
 extern StrapArray *strap_array_erase(StrapArray *arr, size_t i);
 extern StrapArray *strap_array_erase_range(StrapArray *arr, size_t i, size_t n);
 extern StrapArray *strap_array_clear(StrapArray *arr); // TODO
-extern StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t i, size_t n); // TODO
+extern StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t i, size_t n);
 extern StrapArray *strap_array_reverse(StrapArray *arr); // TODO
 extern StrapArray *strap_array_shrink(StrapArray *arr); // TODO
 extern StrapArray *strap_array_sort(StrapArray *arr, int ascending); // TODO

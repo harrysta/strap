@@ -5,6 +5,11 @@
 
 StrapArray *strap_array_alloc(StrapType type)
 {
+	return strap_array_nalloc(type, S_INIT_ARR_SIZE);
+}
+
+StrapArray *strap_array_nalloc(StrapType type, size_t size)
+{
 	StrapArray *array;
 	void *data;
 
@@ -14,8 +19,8 @@ StrapArray *strap_array_alloc(StrapType type)
 			arr_s = malloc(sizeof *arr_s);
 			if (!arr_s)
 				return NULL;
-			arr_s->string_size = S_INIT_STR_SIZE;
-			arr_s->array_size = sizeof(size_t) * S_INIT_ARR_SIZE;
+			arr_s->string_size = size;
+			arr_s->array_size = sizeof(size_t) * size;
 			arr_s->count = 0;
 			data = arr_s;
 			break;
@@ -90,6 +95,20 @@ StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t idx, size_
 	}
 	return NULL;
 }
+
+StrapArray *strap_array_reverse(StrapArray *arr)
+{
+	if (!arr)
+		return NULL;
+	switch (arr->type) {
+		case STRAP_TYPE_STRING:
+			return strap_array_reverse_str(arr);
+		default:
+			return NULL;
+	}
+	return NULL;
+}
+
 
 int strap_array_sprintf(const StrapArray *arr, char *cstr)
 {

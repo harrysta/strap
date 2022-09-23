@@ -267,20 +267,25 @@ StrapArray *strap_array_create_subarray_str(const StrapArray *arr, size_t idx, s
 	char *string;
 	char *nstring;
 
-	narr = strap_array_alloc(STRAP_TYPE_STRING);
 	arr_s = (StrapArray_str*) arr->data;
-	narr_s = (StrapArray_str*) narr->data;
 	if (idx >= arr_s->count)
 		return NULL;
 	pos = idx ? arr_s->array[idx - 1] + 1 : 0;
 	len = arr_s->array[idx + n - 1] - arr_s->array[idx - 1];
 	string = S_ARRSTR(arr_s);
+	narr = strap_array_nalloc(STRAP_TYPE_STRING, len);
+	narr_s = (StrapArray_str*) narr->data;
 	nstring = S_ARRSTR(narr_s);
 	memcpy(nstring, string + pos, len);
 	for (i = 0; i < n; i++)
 		narr_s->array[i] = arr_s->array[i + idx] - pos;
 	narr_s->count = n;
 	return narr;
+}
+
+StrapArray *strap_array_reverse_str(StrapArray *arr)
+{
+	return arr;
 }
 
 int strap_array_sprintf_str(const StrapArray_str *arr, char *cstr)
