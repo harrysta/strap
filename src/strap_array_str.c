@@ -302,6 +302,33 @@ StrapArray *strap_array_create_subarray_str(const StrapArray *arr, size_t idx, s
 
 StrapArray *strap_array_reverse_str(StrapArray *arr)
 {
+	StrapArray_str *arr_s;
+	StrapArray_str *tmparr_s;
+	StrapArray *tmparr;
+	char *string;
+	char *tmpstr;
+	size_t bytes;
+	size_t pos;
+	size_t i;
+
+	arr_s = (StrapArray_str*) arr->data;
+	if (arr_s->count <= 1)
+		return arr;
+	tmparr = strap_array_nalloc(STRAP_TYPE_STRING, arr_s->count);
+	string = S_ARRSTR(arr_s);
+	if (!tmparr)
+		return arr;
+	for (i = arr_s->count - 1; i > 0; i--) {
+		pos = arr_s->array[i - 1] + 1;
+		strap_array_append_cstr(tmparr, string + pos);
+	}
+	strap_array_append_cstr(tmparr, string);
+	tmparr_s = (StrapArray_str*) tmparr->data;
+	tmpstr = S_ARRSTR(tmparr_s);
+	bytes = arr_s->array[arr_s->count - 1];
+	memcpy(string, tmpstr, bytes);
+	memcpy(arr_s->array, tmparr_s->array, sizeof(size_t)*arr_s->count);
+	strap_array_free(tmparr);
 	return arr;
 }
 
