@@ -303,32 +303,43 @@ StrapArray *strap_array_create_subarray_str(const StrapArray *arr, size_t idx, s
 StrapArray *strap_array_reverse_str(StrapArray *arr)
 {
 	StrapArray_str *arr_s;
-	StrapArray_str *tmparr_s;
-	StrapArray *tmparr;
 	char *string;
-	char *tmpstr;
+	char *tmp_string;
+	size_t *tmp_len_arr;
 	size_t bytes;
-	size_t pos;
+	size_t pos1;
+	size_t pos2;
+	size_t len;
 	size_t i;
 
 	arr_s = (StrapArray_str*) arr->data;
 	if (arr_s->count <= 1)
 		return arr;
-	tmparr = strap_array_nalloc(STRAP_TYPE_STRING, arr_s->count);
-	string = S_ARRSTR(arr_s);
-	if (!tmparr)
-		return arr;
-	for (i = arr_s->count - 1; i > 0; i--) {
-		pos = arr_s->array[i - 1] + 1;
-		strap_array_append_cstr(tmparr, string + pos);
-	}
-	strap_array_append_cstr(tmparr, string);
-	tmparr_s = (StrapArray_str*) tmparr->data;
-	tmpstr = S_ARRSTR(tmparr_s);
 	bytes = arr_s->array[arr_s->count - 1];
-	memcpy(string, tmpstr, bytes);
-	memcpy(arr_s->array, tmparr_s->array, sizeof(size_t)*arr_s->count);
-	strap_array_free(tmparr);
+	tmp_string = malloc(bytes);
+	if (!tmp_string)
+		return arr;
+	tmp_len_arr = malloc(sizeof(size_t)*arr_s->count);
+	if (!tmp_len_arr) {
+		free(tmp_string);
+		return arr;
+	}
+	string = S_ARRSTR(arr_s);
+	for (i = arr_s->count - 1; i > 0 ; i--) {
+		pos1 = i == (arr_s->count - 1) ? 0 : (pos1 + len);
+		pos2 = arr_s->array[i - 1] + 1;
+		len = arr_s->array[i] - arr_s->array[i - 1];
+		memcpy(tmp_string + pos1, string + pos2, len);
+		tmp_len_arr[arr_s->count - 1 - i] = pos1 + len - 1;
+	}
+	pos1 += len;
+	len = arr_s->array[i];
+	memcpy(tmp_string + pos1, string, len);
+	tmp_len_arr[arr_s->count - 1] = pos1 + len;
+	memcpy(arr_s->array, tmp_len_arr, sizeof(size_t)*arr_s->count);
+	memcpy(string, tmp_string, bytes);
+	free(tmp_string);
+	free(tmp_len_arr);
 	return arr;
 }
 
