@@ -1012,6 +1012,55 @@ int test_array_reverse_str_valid_even()
 	return 1;
 }
 
+int test_array_shrink_null()
+{
+	TEST_ASSERT_TRUE(!strap_array_shrink(NULL));
+	return 1;
+}
+
+int test_array_shrink_str_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_shrink(arr));
+	TEST_ASSERT_TRUE(strap_array_capacity(arr) == STRAP_INIT_CAPACITY);
+	TEST_ASSERT_TRUE(strap_array_size(arr) == STRAP_INIT_STR_SIZE);
+	return 1;
+}
+
+int test_array_shrink_str_valid()
+{
+	int i;
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	for (i = 0; i < 128; i++)
+		strap_array_append_cstr(arr, "test");
+	strap_array_clear(arr);
+	TEST_ASSERT_TRUE(strap_array_shrink(arr));
+	TEST_ASSERT_TRUE(strap_array_capacity(arr) == STRAP_INIT_CAPACITY);
+	TEST_ASSERT_TRUE(strap_array_size(arr) == STRAP_INIT_STR_SIZE);
+	return 1;
+}
+
+int test_array_sort_null()
+{
+	return 1;
+}
+
+int test_array_sort_str_empty()
+{
+	return 1;
+}
+
+int test_array_sort_str_ascending()
+{
+	return 1;
+}
+
+int test_array_sort_str_descending()
+{
+	return 1;
+}
+
+
 void test_prep()
 {
 }
@@ -1157,6 +1206,17 @@ int main ()
 	TEST_RUN(test_array_reverse_str_empty);
 	TEST_RUN(test_array_reverse_str_valid_odd);
 	TEST_RUN(test_array_reverse_str_valid_even);
+
+	TEST_RUN(test_array_sort_null);
+	TEST_RUN(test_array_sort_str_empty);
+	TEST_RUN(test_array_sort_str_ascending);
+	TEST_RUN(test_array_sort_str_descending);
+
+	TEST_RUN(test_array_shrink_null);
+	TEST_RUN(test_array_shrink_str_empty);
+	TEST_RUN(test_array_shrink_str_valid);
+
+
 
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,

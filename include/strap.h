@@ -5,6 +5,8 @@
 #include <stdio.h>
 
 #define strap_array_printf(a) strap_array_fprintf((a), stdout)
+#define STRAP_INIT_STR_SIZE 256
+#define STRAP_INIT_CAPACITY 16
 
 typedef enum {
 	STRAP_TYPE_SHORT,
@@ -60,14 +62,11 @@ extern StrapString *strap_string_shrink(StrapString *str);
 extern StrapArray *strap_array_alloc(StrapType type);
 extern StrapArray *strap_array_nalloc(StrapType type, size_t size);
 extern void        strap_array_free(StrapArray *arr);
-extern StrapArray *strap_array_clone(const StrapArray *arr); // TODO
+extern StrapArray *strap_array_clone(const StrapArray *arr);
 
-extern size_t strap_array_count(const StrapArray *arr); // TODO
-extern size_t strap_array_size(const StrapArray *arr); // TODO
-extern size_t strap_array_capacity(const StrapArray *arr); // TODO
-
-extern void *strap_array_begin(StrapArray *arr); // TODO
-extern void *strap_array_end(StrapArray *arr); // TODO
+extern size_t strap_array_count(const StrapArray *arr);
+extern size_t strap_array_size(const StrapArray *arr);
+extern size_t strap_array_capacity(const StrapArray *arr);
 
 extern StrapString *strap_array_create_string(const StrapArray *arr, size_t i); // TODO
 extern StrapString *strap_array_copy_string(const StrapArray *arr, size_t i, StrapString *str); // TODO
@@ -131,10 +130,9 @@ extern double strap_array_sum_double(const StrapArray *arr); // TODO
 extern StrapArray *strap_array_clear(StrapArray *arr);
 extern StrapArray *strap_array_erase(StrapArray *arr, size_t i);
 extern StrapArray *strap_array_erase_range(StrapArray *arr, size_t i, size_t n);
-extern StrapArray *strap_array_clear(StrapArray *arr); // TODO
 extern StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t i, size_t n);
-extern StrapArray *strap_array_reverse(StrapArray *arr); // TODO
-extern StrapArray *strap_array_shrink(StrapArray *arr); // TODO
+extern StrapArray *strap_array_reverse(StrapArray *arr);
+extern StrapArray *strap_array_shrink(StrapArray *arr);
 extern StrapArray *strap_array_sort(StrapArray *arr, int ascending); // TODO
 
 extern int strap_array_sprintf(const StrapArray *arr, char *cstr);

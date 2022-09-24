@@ -52,7 +52,7 @@ StrapArray_str *strap_ensure_size(StrapArray_str *arr, size_t newlen)
 	size_t new_arr_size = 0;
 
 	if (newlen >= arr->string_size)
-		new_str_size = strap_next_pow2(newlen + 1, S_INIT_STR_SIZE);
+		new_str_size = strap_next_pow2(newlen + 1, STRAP_INIT_STR_SIZE);
 	if (arr->array_size == arr->count * sizeof(size_t))
 		new_arr_size = arr->array_size * 2;
 	if (new_str_size || new_arr_size) {
@@ -340,6 +340,31 @@ StrapArray *strap_array_reverse_str(StrapArray *arr)
 	memcpy(string, tmp_string, bytes);
 	free(tmp_string);
 	free(tmp_len_arr);
+	return arr;
+}
+
+StrapArray *strap_array_shrink_str(StrapArray *arr)
+{
+	StrapArray_str *arr_s;
+	size_t new_str_size;
+	size_t new_arr_size;
+	size_t len;
+
+	if (!arr)
+		return NULL;
+	arr_s = (StrapArray_str*) arr->data;
+	new_arr_size = (arr_s->count ? arr_s->count : STRAP_INIT_CAPACITY)*sizeof(size_t);
+	len = arr_s->count ? arr_s->array[arr_s->count - 1] : 0;
+	new_str_size = len ? strap_next_pow2(len, STRAP_INIT_STR_SIZE) : STRAP_INIT_STR_SIZE;
+	arr_s = strap_resize(arr_s, new_arr_size, new_str_size);
+	if (!arr_s)
+		return NULL;
+	arr->data = arr_s;
+	return arr;
+}
+
+StrapArray *strap_array_sort_str(StrapArray *arr, int ascending)
+{
 	return arr;
 }
 
