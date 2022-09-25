@@ -40,6 +40,7 @@ typedef struct {
 struct num_array {
 	size_t count;
 	size_t capacity;
+	char array[1];
 };
 
 struct int_array {
@@ -54,13 +55,15 @@ struct float_array {
 	float array[STRAP_INIT_CAPACITY];
 };
 
-union num_t {
+union num {
 	short short_t;
 	int int_t;
 	long long_t;
 	float float_t;
 	double double_t;
 };
+
+typedef union num num_t;
 
 extern size_t strap_next_pow2(size_t n, size_t min);
 

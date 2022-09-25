@@ -3,22 +3,12 @@
 
 int strap_array_get_int(const StrapArray *arr, size_t idx)
 {
-	struct int_array *iarr;
-
-	if (!arr || arr->type != STRAP_TYPE_INT)
-		return 0;
-	iarr = (struct int_array*) arr->data;
-	return iarr->array[idx];
+	return strap_array_get_num(arr, idx, STRAP_TYPE_INT).int_t;
 }
 
 StrapArray *strap_array_append_int(StrapArray *arr, int num)
 {
-	struct int_array *iarr;
-
-	if (!arr || arr->type != STRAP_TYPE_INT)
-		return arr;
-	iarr = (struct int_array*) arr->data;
-	STRAP_ARRAY_APPEND_NUM(iarr, num);
+	return strap_array_append_num(arr, (num_t) { .int_t = num }, STRAP_TYPE_INT);
 }
 
 int strap_array_fprintf_int(const struct int_array *iarr, FILE *stream)
@@ -42,3 +32,4 @@ int strap_array_fprintf_int(const struct int_array *iarr, FILE *stream)
 	sum += fprintf(stream, "]");
 	return sum;
 }
+

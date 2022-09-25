@@ -12,3 +12,24 @@ size_t strap_next_pow2(size_t n, size_t min)
 		p <<= 1;
 	return p;
 }
+
+size_t strap_sizeof(StrapType type)
+{
+	switch (type) {
+		case STRAP_TYPE_SHORT:
+			return sizeof(short);
+		case STRAP_TYPE_INT:
+			return sizeof(int);
+		case STRAP_TYPE_LONG:
+			return sizeof(long);
+		case STRAP_TYPE_FLOAT:
+			return sizeof(float);
+		case STRAP_TYPE_DOUBLE:
+			return sizeof(double);
+		case STRAP_TYPE_STRING:
+		case STRAP_TYPE_CSTR:
+		case STRAP_TYPE_COUNT:
+		break;
+	}
+	return 0;
+}

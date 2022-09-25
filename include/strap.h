@@ -138,4 +138,6 @@ extern StrapArray *strap_array_sort(StrapArray *arr, int ascending); // TODO
 extern int strap_array_sprintf(const StrapArray *arr, char *cstr);
 extern int strap_array_fprintf(const StrapArray *arr, FILE *stream);
 
+extern size_t strap_sizeof(StrapType type);
+
 #endif

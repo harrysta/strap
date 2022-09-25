@@ -1,5 +1,4 @@
+#include "strap_internal.h"
 
-#define STRAP_ARRAY_APPEND_NUM(narr, num) \
-	narr->array[narr->count++] = num;       \
-	return arr;                             \
-
+extern num_t strap_array_get_num(const StrapArray* arr, size_t idx, StrapType type);
+extern StrapArray* strap_array_append_num(StrapArray *arr, num_t num, StrapType type);

@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,9 +8,11 @@
 #define SIZE_LARGE 9999
 #define SIZE_EIGHT 8
 #define SIZE_MED 999
+#define EPSILON 1e-7
 
 #define TEST_BEFORE_EACH(a) test_before_each = a
 #define TEST_AFTER_EACH(a) test_after_each = a
+#define FLOAT_EQUALS(a,b) fabs(a - b) < EPSILON
 
 #define TEST_RUN(a)              \
 do {                             \
@@ -1099,12 +1102,12 @@ float test_array_append_float_valid()
 {
 	int i;
 	float buf[5] = { 1.5, 3.3, 0.01, 5., 13.};
-	arr = strap_array_alloc(STRAP_TYPE_INT);
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
 	for (i = 0; i < 5; i++)
 		TEST_ASSERT_TRUE(strap_array_append_float(arr, buf[i]));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 5);
 	for (i = 0; i < 5; i++)
-		TEST_ASSERT_TRUE(strap_array_get_float(arr, i) == buf[i]);
+		TEST_ASSERT_TRUE(FLOAT_EQUALS(strap_array_get_float(arr, i), buf[i]));
 	return 1;
 }
 
