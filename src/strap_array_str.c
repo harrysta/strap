@@ -8,7 +8,12 @@ static StrapArray_str *strap_resize(StrapArray_str *ptr,
 {
 	arr_size = arr_size ? arr_size : ptr->array_size;
 	str_size = str_size ? str_size : ptr->string_size;
-	StrapArray_str *arr = realloc(ptr, 3 * sizeof(size_t) + arr_size + str_size);
+	size_t next_size = 3 * sizeof(size_t) + arr_size + str_size;
+	puts("\n-- RESIZE -- ");
+	printf("arr_size: %lu -> %lu\n", ptr->array_size, arr_size);
+	printf("str_size: %lu -> %lu\n", ptr->string_size, str_size);
+	logd(next_size);
+	StrapArray_str *arr = realloc(ptr, next_size);
 	if (!arr)
 		return NULL;
 	char *newstr = (char*) arr->array + arr_size;
@@ -345,6 +350,7 @@ StrapArray *strap_array_reverse_str(StrapArray *arr)
 
 StrapArray *strap_array_shrink_str(StrapArray *arr)
 {
+	// FIXME crashes next function that requires resize
 	StrapArray_str *arr_s;
 	size_t new_str_size;
 	size_t new_arr_size;

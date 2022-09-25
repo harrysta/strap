@@ -37,6 +37,31 @@ typedef struct {
 	char string[STRAP_INIT_STR_SIZE];
 } StrapArray_str;
 
+struct num_array {
+	size_t count;
+	size_t capacity;
+};
+
+struct int_array {
+	size_t count;
+	size_t capacity;
+	int array[STRAP_INIT_CAPACITY];
+};
+
+struct float_array {
+	size_t count;
+	size_t capacity;
+	float array[STRAP_INIT_CAPACITY];
+};
+
+union num_t {
+	short short_t;
+	int int_t;
+	long long_t;
+	float float_t;
+	double double_t;
+};
+
 extern size_t strap_next_pow2(size_t n, size_t min);
 
 extern StrapArray *strap_array_erase_range_str(StrapArray *arr, size_t i, size_t n);
@@ -49,5 +74,6 @@ extern StrapArray *strap_array_sort_str(StrapArray *arr, int ascending);
 
 extern int strap_array_sprintf_str(const StrapArray_str *arr, char *cstr);
 extern int strap_array_fprintf_str(const StrapArray_str *arr, FILE *stream);
+extern int strap_array_fprintf_int(const struct int_array *iarr, FILE *stream);
 
 #endif

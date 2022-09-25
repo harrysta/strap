@@ -12,6 +12,8 @@ StrapArray *strap_array_nalloc(StrapType type, size_t size)
 {
 	StrapArray *array;
 	void *data;
+		void *arr;
+		struct num_array *narr;
 
 	switch (type) {
 		StrapArray_str *arr_s;
@@ -23,10 +25,20 @@ StrapArray *strap_array_nalloc(StrapType type, size_t size)
 			arr_s->array_size = sizeof(size_t) * size;
 			arr_s->count = 0;
 			data = arr_s;
-			break;
+			goto array_init;
+		case STRAP_TYPE_INT:   arr = malloc(sizeof(struct int_array));   break;
+		case STRAP_TYPE_FLOAT: arr = malloc(sizeof(struct float_array)); break;
 		default:
 		return NULL;
 	}
+	// this section is only for num types: string should skip this
+	if (!arr)
+		return NULL;
+	narr = (struct num_array*) arr;
+	narr->count = 0;
+	narr->capacity = size;
+	data = arr;
+array_init:
 	array = malloc(sizeof *array);
 	if (!array) {
 		free(data);
@@ -52,9 +64,18 @@ StrapArray *strap_array_clone(const StrapArray *arr)
 
 size_t strap_array_count(const StrapArray *arr)
 {
-	if (!arr || arr->type != STRAP_TYPE_STRING)
+	if (!arr)
 		return 0;
-	return ((StrapArray_str*) arr->data)->count;
+	switch (arr->type) {
+		case STRAP_TYPE_STRING:
+			return ((StrapArray_str*) arr->data)->count;
+		case STRAP_TYPE_INT:
+			return ((struct int_array*) arr->data)->count;
+		default:
+			return 0;
+	}
+		
+	return 0;
 }
 
 size_t strap_array_size(const StrapArray *arr)
@@ -188,6 +209,8 @@ int strap_array_fprintf(const StrapArray *arr, FILE *stream)
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
 			return strap_array_fprintf_str(arr->data, stream);
+		case STRAP_TYPE_INT:
+			return strap_array_fprintf_int(arr->data, stream);
 		default:
 			return -1;
 	}

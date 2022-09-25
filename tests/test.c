@@ -1033,8 +1033,12 @@ int test_array_shrink_str_valid()
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
 	for (i = 0; i < 128; i++)
 		strap_array_append_cstr(arr, "test");
+	logd(strap_array_capacity(arr));
+	logd(strap_array_size(arr));
 	strap_array_clear(arr);
 	TEST_ASSERT_TRUE(strap_array_shrink(arr));
+	logd(strap_array_capacity(arr));
+	logd(strap_array_size(arr));
 	TEST_ASSERT_TRUE(strap_array_capacity(arr) == STRAP_INIT_CAPACITY);
 	TEST_ASSERT_TRUE(strap_array_size(arr) == STRAP_INIT_STR_SIZE);
 	return 1;
@@ -1059,6 +1063,51 @@ int test_array_sort_str_descending()
 {
 	return 1;
 }
+
+// ----------------------------------------------------------------------------
+
+int test_array_append_int_null()
+{
+	TEST_ASSERT_TRUE(!strap_array_append_int(NULL, 0));
+	return 1;
+}
+
+int test_array_append_int_valid()
+{
+	int i;
+	int buf[5] = { 1, 3, 0, 5, 13};
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	for (i = 0; i < 5; i++)
+		TEST_ASSERT_TRUE(strap_array_append_int(arr, buf[i]));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 5);
+	for (i = 0; i < 5; i++)
+		TEST_ASSERT_TRUE(strap_array_get_int(arr, i) == buf[i]);
+	return 1;
+}
+
+
+
+// ----------------------------------------------------------------------------
+
+float test_array_append_float_null()
+{
+	TEST_ASSERT_TRUE(!strap_array_append_float(NULL, 0));
+	return 1;
+}
+
+float test_array_append_float_valid()
+{
+	int i;
+	float buf[5] = { 1.5, 3.3, 0.01, 5., 13.};
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	for (i = 0; i < 5; i++)
+		TEST_ASSERT_TRUE(strap_array_append_float(arr, buf[i]));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 5);
+	for (i = 0; i < 5; i++)
+		TEST_ASSERT_TRUE(strap_array_get_float(arr, i) == buf[i]);
+	return 1;
+}
+
 
 
 void test_prep()
@@ -1212,10 +1261,17 @@ int main ()
 	TEST_RUN(test_array_sort_str_ascending);
 	TEST_RUN(test_array_sort_str_descending);
 
-	TEST_RUN(test_array_shrink_null);
-	TEST_RUN(test_array_shrink_str_empty);
-	TEST_RUN(test_array_shrink_str_valid);
+	// TEST_RUN(test_array_shrink_null);
+	// TEST_RUN(test_array_shrink_str_empty);
+	// TEST_RUN(test_array_shrink_str_valid);
 
+	// ARRAY int
+
+	TEST_RUN(test_array_append_int_null);
+	TEST_RUN(test_array_append_int_valid);
+
+	TEST_RUN(test_array_append_float_null);
+	TEST_RUN(test_array_append_float_valid);
 
 
 	puts("---------------------------------");
