@@ -19,7 +19,7 @@ StrapArray *strap_array_nalloc(StrapType type, size_t size)
 			arr_s = malloc(sizeof *arr_s);
 			if (!arr_s)
 				return NULL;
-			arr_s->string_size = size;
+			arr_s->string_size = size > STRAP_INIT_STR_SIZE ? size : STRAP_INIT_STR_SIZE;
 			arr_s->array_size = sizeof(size_t) * size;
 			arr_s->count = 0;
 			data = arr_s;

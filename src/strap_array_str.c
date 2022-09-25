@@ -358,7 +358,7 @@ StrapArray *strap_array_shrink_str(StrapArray *arr)
 	new_str_size = len ? strap_next_pow2(len, STRAP_INIT_STR_SIZE) : STRAP_INIT_STR_SIZE;
 	arr_s = strap_resize(arr_s, new_arr_size, new_str_size);
 	if (!arr_s)
-		return NULL;
+		return arr;
 	arr->data = arr_s;
 	return arr;
 }
