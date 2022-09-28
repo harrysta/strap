@@ -9,6 +9,7 @@
 #define STRAP_INIT_CAPACITY 16
 
 typedef enum {
+	STRAP_TYPE_CHAR,
 	STRAP_TYPE_SHORT,
 	STRAP_TYPE_INT,
 	STRAP_TYPE_LONG,
@@ -77,6 +78,7 @@ extern int         strap_array_get_int(const StrapArray *arr, size_t i); // TODO
 extern long        strap_array_get_long(const StrapArray *arr, size_t i); // TODO
 extern float       strap_array_get_float(const StrapArray *arr, size_t i); // TODO
 extern double      strap_array_get_double(const StrapArray *arr, size_t i); // TODO
+extern StrapType   strap_array_get_type(const StrapArray *arr);
 
 extern StrapArray *strap_array_append_string(StrapArray *arr, const StrapString *str);
 extern StrapArray *strap_array_append_cstr(StrapArray *arr, const char *cstr);

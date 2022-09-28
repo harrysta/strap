@@ -16,6 +16,8 @@ size_t strap_next_pow2(size_t n, size_t min)
 size_t strap_sizeof(StrapType type)
 {
 	switch (type) {
+		case STRAP_TYPE_CHAR:
+			return sizeof(char);
 		case STRAP_TYPE_SHORT:
 			return sizeof(short);
 		case STRAP_TYPE_INT:

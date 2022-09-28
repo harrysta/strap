@@ -1,5 +1,5 @@
 #include "strap_internal.h"
-#include "strap_internal_num_array.h"
+#include "strap_array_num.h"
 
 int strap_array_get_int(const StrapArray *arr, size_t idx)
 {
