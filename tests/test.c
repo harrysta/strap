@@ -1088,17 +1088,39 @@ int test_array_append_int_valid()
 	return 1;
 }
 
+int test_array_insert_int_null()
+{
+	TEST_ASSERT_TRUE(!strap_array_insert_int(NULL, 0, 0));
+	return 1;
+}
+
+int test_array_insert_int_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_insert_int(arr, 0, 1));
+	TEST_ASSERT_TRUE(strap_array_insert_int(arr, 0, 2));
+	TEST_ASSERT_TRUE(strap_array_insert_int(arr, 0, 3));
+	TEST_ASSERT_TRUE(strap_array_insert_int(arr, 1, 4));
+	TEST_ASSERT_TRUE(strap_array_insert_int(arr, 0, 5));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 5);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 0) == 5);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 1) == 3);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 2) == 4);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 3) == 2);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 4) == 1);
+	return 1;
+}
 
 
 // ----------------------------------------------------------------------------
 
-float test_array_append_float_null()
+int test_array_append_float_null()
 {
 	TEST_ASSERT_TRUE(!strap_array_append_float(NULL, 0));
 	return 1;
 }
 
-float test_array_append_float_valid()
+int test_array_append_float_valid()
 {
 	int i;
 	float buf[5] = { 1.5, 3.3, 0.01, 5., 13.};
@@ -1110,6 +1132,7 @@ float test_array_append_float_valid()
 		TEST_ASSERT_TRUE(FLOAT_EQUALS(strap_array_get_float(arr, i), buf[i]));
 	return 1;
 }
+
 
 
 
@@ -1276,6 +1299,8 @@ int main ()
 	TEST_RUN(test_array_append_float_null);
 	TEST_RUN(test_array_append_float_valid);
 
+	TEST_RUN(test_array_insert_int_null);
+	TEST_RUN(test_array_insert_int_valid);
 
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,

@@ -8,37 +8,41 @@ StrapArray *strap_array_alloc(StrapType type)
 	return strap_array_nalloc(type, STRAP_INIT_CAPACITY);
 }
 
-StrapArray *strap_array_nalloc(StrapType type, size_t size)
+StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 {
 	StrapArray *array;
-	void *data;
-	void *arr;
 	struct num_array *narr;
+	StrapArray_str *arr_s;
+	char element_size;
+	void *data;
 
 	switch (type) {
-		StrapArray_str *arr_s;
+		case STRAP_TYPE_CHAR:
+		case STRAP_TYPE_SHORT:
+		case STRAP_TYPE_INT:
+		case STRAP_TYPE_LONG:
+		case STRAP_TYPE_FLOAT:
+		case STRAP_TYPE_DOUBLE:
+			element_size = strap_sizeof(type);
+			narr = malloc(sizeof(size_t)*2 - 1 + capacity*element_size);
+			if (!narr)
+				return NULL;
+			narr->capacity = capacity;
+			narr->count = 0;
+			data = narr;
+			break;
 		case STRAP_TYPE_STRING:
 			arr_s = malloc(sizeof *arr_s);
 			if (!arr_s)
 				return NULL;
-			arr_s->string_size = size > STRAP_INIT_STR_SIZE ? size : STRAP_INIT_STR_SIZE;
-			arr_s->array_size = sizeof(size_t) * size;
+			arr_s->string_size = capacity > STRAP_INIT_STR_SIZE ? capacity : STRAP_INIT_STR_SIZE;
+			arr_s->array_size = sizeof(size_t) * capacity;
 			arr_s->count = 0;
 			data = arr_s;
-			goto array_init;
-		case STRAP_TYPE_INT:   arr = malloc(sizeof(struct int_array));   break;
-		case STRAP_TYPE_FLOAT: arr = malloc(sizeof(struct float_array)); break;
+			break;
 		default:
-		return NULL;
+			return NULL;
 	}
-	// this section is only for num types: string should skip this
-	if (!arr)
-		return NULL;
-	narr = (struct num_array*) arr;
-	narr->count = 0;
-	narr->capacity = size;
-	data = arr;
-array_init:
 	array = malloc(sizeof *array);
 	if (!array) {
 		free(data);
@@ -46,7 +50,6 @@ array_init:
 	}
 	array->type = type;
 	array->data = data;
-
 	return array;
 }
 
@@ -71,9 +74,8 @@ size_t strap_array_count(const StrapArray *arr)
 		case STRAP_TYPE_STRING:
 			return ((StrapArray_str*) arr->data)->count;
 		case STRAP_TYPE_INT:
-			return ((struct int_array*) arr->data)->count;
 		case STRAP_TYPE_FLOAT:
-			return ((struct int_array*) arr->data)->count;
+			return ((struct num_array*) arr->data)->count;
 		default:
 			return 0;
 	}

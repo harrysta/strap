@@ -8,6 +8,12 @@
 #define S_ARRISTR(a,i) S_ARRSTR(a) + (i ? (a)->array[(i) - 1] + 1 : 0)
 #define S_STRLEN(a) (a) ? strlen((a)) : 0
 
+#define NARR_INIT(ret, t)             \
+	if (!arr || arr->type != t)         \
+		return ret;                       \
+	struct num_array *narr = arr->data  \
+
+
 struct StrapString {
 	size_t length;
 	size_t size;
@@ -38,32 +44,10 @@ typedef struct {
 } StrapArray_str;
 
 struct num_array {
-	size_t count;
 	size_t capacity;
+	size_t count;
 	char array[1];
 };
-
-struct int_array {
-	size_t count;
-	size_t capacity;
-	int array[STRAP_INIT_CAPACITY];
-};
-
-struct float_array {
-	size_t count;
-	size_t capacity;
-	float array[STRAP_INIT_CAPACITY];
-};
-
-union num {
-	short short_t;
-	int int_t;
-	long long_t;
-	float float_t;
-	double double_t;
-};
-
-typedef union num num_t;
 
 extern size_t strap_next_pow2(size_t n, size_t min);
 
@@ -77,6 +61,6 @@ extern StrapArray *strap_array_sort_str(StrapArray *arr, int ascending);
 
 extern int strap_array_sprintf_str(const StrapArray_str *arr, char *cstr);
 extern int strap_array_fprintf_str(const StrapArray_str *arr, FILE *stream);
-extern int strap_array_fprintf_int(const struct int_array *iarr, FILE *stream);
+extern int strap_array_fprintf_int(const struct num_array *narr, FILE *stream);
 
 #endif
