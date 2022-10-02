@@ -35,13 +35,13 @@ struct StrapArray {
 * Note: the above will not apply for the first element, as it doesn't/can't
 * refer to the previous element.
 */
-typedef struct {
+struct str_array {
 	size_t count;
 	size_t array_size;
 	size_t string_size;
 	size_t array[STRAP_INIT_CAPACITY];
 	char string[STRAP_INIT_STR_SIZE];
-} StrapArray_str;
+};
 
 struct num_array {
 	size_t capacity;
@@ -59,8 +59,8 @@ extern StrapArray *strap_array_shrink_str(StrapArray *arr);
 extern StrapArray *strap_array_sort_str(StrapArray *arr, int ascending);
 
 
-extern int strap_array_sprintf_str(const StrapArray_str *arr, char *cstr);
-extern int strap_array_fprintf_str(const StrapArray_str *arr, FILE *stream);
+extern int strap_array_sprintf_str(const struct str_array *arr, char *cstr);
+extern int strap_array_fprintf_str(const struct str_array *arr, FILE *stream);
 extern int strap_array_fprintf_int(const struct num_array *narr, FILE *stream);
 
 #endif
