@@ -12,7 +12,7 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 {
 	StrapArray *array;
 	struct num_array *narr;
-	struct str_array *arr_s;
+	struct str_array *sarr;
 	char element_size;
 	void *data;
 
@@ -32,13 +32,13 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 			data = narr;
 			break;
 		case STRAP_TYPE_STRING:
-			arr_s = malloc(sizeof *arr_s);
-			if (!arr_s)
+			sarr = malloc(sizeof *sarr);
+			if (!sarr)
 				return NULL;
-			arr_s->string_size = capacity > STRAP_INIT_STR_SIZE ? capacity : STRAP_INIT_STR_SIZE;
-			arr_s->array_size = sizeof(size_t) * capacity;
-			arr_s->count = 0;
-			data = arr_s;
+			sarr->capacity = capacity > STRAP_INIT_STR_SIZE ? capacity : STRAP_INIT_STR_SIZE;
+			sarr->array_size = sizeof(size_t) * capacity;
+			sarr->count = 0;
+			data = sarr;
 			break;
 		default:
 			return NULL;
@@ -89,7 +89,7 @@ size_t strap_array_size(const StrapArray *arr)
 		return 0;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
-			return ((struct str_array*) arr->data)->string_size;
+			return ((struct str_array*) arr->data)->capacity;
 		default:
 			return 0;
 	}

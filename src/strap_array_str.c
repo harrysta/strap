@@ -7,20 +7,20 @@ static struct str_array *strap_resize(struct str_array *ptr,
 	size_t arr_size, size_t str_size)
 {
 	arr_size = arr_size ? arr_size : ptr->array_size;
-	str_size = str_size ? str_size : ptr->string_size;
+	str_size = str_size ? str_size : ptr->capacity;
 	size_t next_size = 3 * sizeof(size_t) + arr_size + str_size;
 	puts("\n-- RESIZE -- ");
 	printf("arr_size: %lu -> %lu\n", ptr->array_size, arr_size);
-	printf("str_size: %lu -> %lu\n", ptr->string_size, str_size);
+	printf("str_size: %lu -> %lu\n", ptr->capacity, str_size);
 	logd(next_size);
 	struct str_array *arr = realloc(ptr, next_size);
 	if (!arr)
 		return NULL;
 	char *newstr = (char*) arr->array + arr_size;
 	if (arr_size != arr->array_size)
-		memcpy(newstr, S_ARRSTR(arr), arr->string_size);
+		memcpy(newstr, S_ARRSTR(arr), arr->capacity);
 	arr->array_size  = arr_size;
-	arr->string_size = str_size;
+	arr->capacity = str_size;
 	return arr;
 }
 
@@ -56,7 +56,7 @@ struct str_array *strap_ensure_size(struct str_array *arr, size_t newlen)
 	size_t new_str_size = 0;
 	size_t new_arr_size = 0;
 
-	if (newlen >= arr->string_size)
+	if (newlen >= arr->capacity)
 		new_str_size = strap_next_pow2(newlen + 1, STRAP_INIT_STR_SIZE);
 	if (arr->array_size == arr->count * sizeof(size_t))
 		new_arr_size = arr->array_size * 2;

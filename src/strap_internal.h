@@ -38,7 +38,7 @@ struct StrapArray {
 struct str_array {
 	size_t count;
 	size_t array_size;
-	size_t string_size;
+	size_t capacity;
 	size_t array[STRAP_INIT_CAPACITY];
 	char string[STRAP_INIT_STR_SIZE];
 };
