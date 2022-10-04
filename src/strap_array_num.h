@@ -1,45 +1,37 @@
-#include <stdlib.h>
-
-#define NARR_INITT(arr, ret, strap_type) \
-do {                                     \
-	if (!arr || arr->type != strap_type)   \
-		return ret;                          \
-	narr = arr->data;                      \
-} while (0)                              \
+#define NARR_INIT(arr, ret, strap_type, data_type) \
+do {                                               \
+	if (!arr || arr->type != strap_type)             \
+		return ret;                                    \
+	iarr = (data_type*) arr->data;                   \
+} while (0)                                        \
 
 #define STRAP_ARRAY_GET_NUM(arr, idx, strap_type, data_type) \
 do {                                                         \
-	struct num_array *narr;                                    \
 	size_t count;                                              \
 	data_type *iarr;                                           \
                                                              \
-	NARR_INITT(arr, 0, strap_type);                            \
+	NARR_INIT(arr, 0, strap_type, data_type);                  \
 	count = arr->count;                                        \
-	iarr = (data_type*) narr->array;                           \
 	return idx < count ? iarr[idx] : 0;                        \
 } while (0)                                                  \
 
 #define STRAP_ARRAY_APPEND_NUM(arr, num, strap_type, data_type) \
 do {                                                            \
-	struct num_array *narr;                                       \
 	data_type *iarr;                                              \
                                                                 \
-	NARR_INITT(arr, arr, strap_type);                             \
-	iarr = (data_type*) narr->array;                              \
+	NARR_INIT(arr, arr, strap_type, data_type);                   \
 	iarr[arr->count++] = num;                                     \
 	return arr;                                                   \
 } while (0)                                                     \
 
 #define STRAP_ARRAY_INSERT_NUM(arr, idx, num, strap_type, data_type) \
 do {                                                                 \
-	struct num_array *narr;                                            \
 	data_type *iarr;                                                   \
 	size_t count;                                                      \
 	size_t bytes;                                                      \
                                                                      \
-	NARR_INITT(arr, arr, strap_type);                                  \
+	NARR_INIT(arr, arr, strap_type, data_type);                        \
 	count = arr->count;                                                \
-	iarr = (data_type*) narr->array;                                   \
 	if (!count && !idx || count && idx == count) {                     \
 		iarr[arr->count++] = num;                                        \
 		return arr;                                                      \
@@ -53,4 +45,3 @@ do {                                                                 \
 	return arr;                                                        \
 } while (0)                                                          \
 
-struct num_array;

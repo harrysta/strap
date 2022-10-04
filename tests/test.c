@@ -1108,9 +1108,6 @@ int test_array_insert_int_valid()
 	TEST_ASSERT_TRUE(strap_array_get_int(arr, 2) == 4);
 	TEST_ASSERT_TRUE(strap_array_get_int(arr, 3) == 2);
 	TEST_ASSERT_TRUE(strap_array_get_int(arr, 4) == 1);
-	puts("");
-	strap_array_printf(arr);
-	puts("");
 	return 1;
 }
 

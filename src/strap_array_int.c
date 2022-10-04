@@ -19,30 +19,3 @@ StrapArray *strap_array_insert_int(StrapArray *arr, size_t idx, int num)
 {
 	INT_MACRO(STRAP_ARRAY_INSERT_NUM, arr, idx, num);
 }
-
-int strap_array_fprintf_int(const struct num_array *narr, FILE *stream)
-{
-	int n;
-	int sum;
-	size_t count;
-	size_t i;
-	int *iarr;
-
-	count = narr->count;
-	if (!count)
-		return fprintf(stream, "[]");
-	iarr = (int*) narr->array;
-	sum = fprintf(stream, "[");
-	for (i = 0; i < count; i++) {
-		n = fprintf(stream, "%d", iarr[i]);
-		if (n < 0) {
-			return -1;
-		}
-		sum += n;
-		if (i != count - 1)
-			sum += fprintf(stream, ", ");
-	}
-	sum += fprintf(stream, "]");
-	return sum;
-}
-
