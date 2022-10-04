@@ -63,8 +63,6 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 			narr = malloc(sizeof(size_t)*2 - 1 + capacity*element_size);
 			if (!narr)
 				return NULL;
-			narr->capacity = capacity;
-			narr->count = 0;
 			data = narr;
 			break;
 		case STRAP_TYPE_STRING:
@@ -86,6 +84,8 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 	}
 	array->type = type;
 	array->data = data;
+	array->capacity = capacity;
+	array->count  = 0;
 	return array;
 }
 
@@ -111,7 +111,7 @@ size_t strap_array_count(const StrapArray *arr)
 			return ((struct str_array*) arr->data)->count;
 		case STRAP_TYPE_INT:
 		case STRAP_TYPE_FLOAT:
-			return ((struct num_array*) arr->data)->count;
+			return arr->count;
 		default:
 			return 0;
 	}

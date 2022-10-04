@@ -22,6 +22,8 @@ struct StrapString {
 
 struct StrapArray {
 	StrapType type;
+	size_t capacity;
+	size_t count;
 	void *data;
 };
 

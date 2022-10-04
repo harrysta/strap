@@ -14,7 +14,7 @@ do {                                                         \
 	data_type *iarr;                                           \
                                                              \
 	NARR_INITT(arr, 0, strap_type);                            \
-	count = narr->count;                                       \
+	count = arr->count;                                        \
 	iarr = (data_type*) narr->array;                           \
 	return idx < count ? iarr[idx] : 0;                        \
 } while (0)                                                  \
@@ -26,7 +26,7 @@ do {                                                            \
                                                                 \
 	NARR_INITT(arr, arr, strap_type);                             \
 	iarr = (data_type*) narr->array;                              \
-	iarr[narr->count++] = num;                                    \
+	iarr[arr->count++] = num;                                     \
 	return arr;                                                   \
 } while (0)                                                     \
 
@@ -38,10 +38,10 @@ do {                                                                 \
 	size_t bytes;                                                      \
                                                                      \
 	NARR_INITT(arr, arr, strap_type);                                  \
-	count = narr->count;                                               \
+	count = arr->count;                                                \
 	iarr = (data_type*) narr->array;                                   \
 	if (!count && !idx || count && idx == count) {                     \
-		iarr[narr->count++] = num;                                       \
+		iarr[arr->count++] = num;                                        \
 		return arr;                                                      \
 	} else if (count && idx >= count) {                                \
 		return arr;                                                      \
@@ -49,7 +49,7 @@ do {                                                                 \
 	bytes = sizeof(data_type)*(count - idx);                           \
 	memcpy(&iarr[idx + 1], &iarr[idx], bytes);                         \
 	iarr[idx] = num;                                                   \
-	narr->count++;                                                     \
+	arr->count++;                                                      \
 	return arr;                                                        \
 } while (0)                                                          \
 
