@@ -3,6 +3,42 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define BUF_SIZE 32
+
+int strap_array_sprintf_element_i8(struct num_array *narr, char *buf, size_t idx)
+{
+	return 0;
+}
+
+int strap_array_sprintf_element_i16(struct num_array *narr, char *buf, size_t idx)
+{
+	return 0;
+}
+
+int strap_array_sprintf_element_i32(struct num_array *narr, char *buf, size_t idx)
+{
+	int *iarr = (int*) narr->array;
+	int n = sprintf(buf, "%d", iarr[idx]);
+	buf[n] = 0;
+	return n;
+}
+
+int strap_array_sprintf_element_i64(struct num_array *narr, char *buf, size_t idx)
+{
+	return 0;
+}
+
+int strap_array_sprintf_element_f32(struct num_array *narr, char *buf, size_t idx)
+{
+	return 0;
+}
+
+int strap_array_sprintf_element_f64(struct num_array *narr, char *buf, size_t idx)
+{
+	return 0;
+}
+
+
 StrapArray *strap_array_alloc(StrapType type)
 {
 	return strap_array_nalloc(type, STRAP_INIT_CAPACITY);
@@ -20,7 +56,7 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 		case STRAP_TYPE_CHAR:
 		case STRAP_TYPE_SHORT:
 		case STRAP_TYPE_INT:
-		case STRAP_TYPE_LONG:
+		case STRAP_TYPE_LONG_INT:
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_DOUBLE:
 			element_size = strap_sizeof(type);
@@ -209,15 +245,19 @@ int strap_array_sprintf(const StrapArray *arr, char *cstr)
 
 int strap_array_fprintf(const StrapArray *arr, FILE *stream)
 {
+	char buf[BUF_SIZE];
+	struct num_array *narr;
+	size_t count;
+	int (*sprintf_element_func)(struct num_array*, char*, size_t) = NULL;
+
 	if (!arr)
 		return -1;
 	switch (arr->type) {
+		case STRAP_TYPE_COUNT:
+			return -1;
 		case STRAP_TYPE_STRING:
 			return strap_array_fprintf_str(arr->data, stream);
-		case STRAP_TYPE_INT:
-			return strap_array_fprintf_int(arr->data, stream);
 		default:
-			return -1;
+			return strap_array_fprintf_int(arr->data, stream);
 	}
-	return -1;
 }

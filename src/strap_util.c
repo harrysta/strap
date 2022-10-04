@@ -22,14 +22,13 @@ size_t strap_sizeof(StrapType type)
 			return sizeof(short);
 		case STRAP_TYPE_INT:
 			return sizeof(int);
-		case STRAP_TYPE_LONG:
+		case STRAP_TYPE_LONG_INT:
 			return sizeof(long);
 		case STRAP_TYPE_FLOAT:
 			return sizeof(float);
 		case STRAP_TYPE_DOUBLE:
 			return sizeof(double);
 		case STRAP_TYPE_STRING:
-		case STRAP_TYPE_CSTR:
 		case STRAP_TYPE_COUNT:
 		break;
 	}

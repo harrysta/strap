@@ -1,47 +1,23 @@
 #include "strap_internal.h"
+#include "strap_array_num.h"
 #include <stdio.h>
 #include <string.h>
 
+#define INT_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_INT, int)
+
 int strap_array_get_int(const StrapArray *arr, size_t idx)
 {
-	size_t count;
-	int *iarr;
-
-	NARR_INIT(0, STRAP_TYPE_INT);
-	count = narr->count;
-	iarr = (int*) narr->array;
-	return idx < count ? iarr[idx] : 0;
+	INT_MACRO(STRAP_ARRAY_GET_NUM, arr, idx);
 }
 
 StrapArray *strap_array_append_int(StrapArray *arr, int num)
 {
-	int *iarr;
-
-	NARR_INIT(0, STRAP_TYPE_INT);
-	iarr = (int*) narr->array;
-	iarr[narr->count++] = num;
-	return arr;
-	// TODO ensure size
+	INT_MACRO(STRAP_ARRAY_APPEND_NUM, arr, num);
 }
 
 StrapArray *strap_array_insert_int(StrapArray *arr, size_t idx, int num)
 {
-	size_t count;
-	int *iarr;
-
-	NARR_INIT(0, STRAP_TYPE_INT);
-	count = narr->count;
-	iarr = (int*) narr->array;
-	if (!count && !idx || count && idx == count) {
-		iarr[narr->count++] = num;
-		return arr;
-	} else if (count && idx >= count) {
-		return arr;
-	}
-	memcpy(&iarr[idx + 1], &iarr[idx], sizeof(int)*(count - idx));
-	iarr[idx] = num;
-	narr->count++;
-	return arr;
+	INT_MACRO(STRAP_ARRAY_INSERT_NUM, arr, idx, num);
 }
 
 int strap_array_fprintf_int(const struct num_array *narr, FILE *stream)
