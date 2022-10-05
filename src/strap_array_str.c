@@ -397,25 +397,3 @@ int strap_array_sprintf_str(const struct str_array *arr, char *cstr)
 	// sum += sprintf(cstr + sum, "]");
 	// return sum;
 }
-
-int strap_array_fprintf_str(const struct str_array *arr, FILE *stream)
-{
-	// int n;
-	// int sum;
-	// size_t i;
-	//
-	// if (!arr->count)
-	// 	return fprintf(stream, "[]");
-	// sum = fprintf(stream, "[");
-	// for (i = 0; i < arr->count; i++) {
-	// 	n = fprintf(stream, "\"%s\"", S_ARRISTR(arr, i));
-	// 	if (n < 0) {
-	// 		return -1;
-	// 	}
-	// 	sum += n;
-	// 	if (i != arr->count - 1)
-	// 		sum += fprintf(stream, ", ");
-	// }
-	// sum += fprintf(stream, "]");
-	// return sum;
-}
