@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #define BUF_SIZE 32
 
@@ -238,21 +239,8 @@ StrapArray *strap_array_sort(StrapArray *arr, int ascending)
 	return NULL;
 }
 
-
-int strap_array_sprintf(const StrapArray *arr, char *cstr)
-{
-	if (!arr)
-		return -1;
-	switch (arr->type) {
-		case STRAP_TYPE_STRING:
-			return strap_array_sprintf_str(arr->data, cstr);
-		default:
-			return -1;
-	}
-	return -1;
-}
-
-int strap_array_fprintf(const StrapArray *arr, FILE *stream)
+int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
+	int (*printfunc)(void*, const char*, ...), int is_string)
 {
 	size_t count;
 	size_t bytes;
@@ -270,7 +258,7 @@ int strap_array_fprintf(const StrapArray *arr, FILE *stream)
 	count =  arr->count;
 	bytes = BUF_SIZE;
 	if (!count)
-		return fprintf(stream, "[]");
+		return printfunc(ptr, "[]");
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
 			func = strap_array_sprintf_element_str;
@@ -295,12 +283,44 @@ int strap_array_fprintf(const StrapArray *arr, FILE *stream)
 	buf = malloc(bytes);
 	if (!buf)
 		return 0;
-	n_total = fprintf(stream, "[");
+	n_total = printfunc(ptr, "[");
 	for (i = 0; i < count; i++) {
 		n = func(arr, buf, i);
 		sep = i == count - 1 ? "]" : ", ";
-		n_total += fprintf(stream, "%.*s%s", n, buf, sep);
+		n_total += printfunc(ptr + is_string*n_total, "%.*s%s", n, buf, sep);
 	}
 	free(buf);
 	return n_total;
+}
+
+int strap_array_sprintf_func(void *ptr, const char *format, ...)
+{
+	int n;
+	va_list args;
+
+	va_start(args, format);
+	n = vsprintf((char*) ptr, format, args);
+	va_end(args);
+	return n;
+}
+
+int strap_array_fprintf_func(void *ptr, const char *format, ...)
+{
+	int n;
+	va_list args;
+
+	va_start(args, format);
+	n = vfprintf((FILE*) ptr, format, args);
+	va_end(args);
+	return n;
+}
+
+int strap_array_sprintf(const StrapArray *arr, char *cstr)
+{
+	return strap_array_sfprintf_internal(arr, cstr, strap_array_sprintf_func, 1);
+}
+
+int strap_array_fprintf(const StrapArray *arr, FILE *stream)
+{
+	return strap_array_sfprintf_internal(arr, stream, strap_array_fprintf_func, 0);
 }

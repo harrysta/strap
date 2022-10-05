@@ -374,26 +374,3 @@ StrapArray *strap_array_sort_str(StrapArray *arr, int ascending)
 {
 	return arr;
 }
-
-int strap_array_sprintf_str(const struct str_array *arr, char *cstr)
-{
-	// int n;
-	// int sum;
-	// size_t i;
-	//
-	// if (!arr->count)
-	// 	return sprintf(cstr, "[]");
-	// sum = sprintf(cstr, "[");
-	// for (i = 0; i < arr->count; i++) {
-	// 	n = sprintf(cstr + sum, "\"%s\"", S_ARRISTR(arr, i));
-	// 	if (n < 0) {
-	// 		*cstr = '\0';
-	// 		return -1;
-	// 	}
-	// 	sum += n;
-	// 	if (i != arr->count - 1)
-	// 		sum += sprintf(cstr + sum, ", ");
-	// }
-	// sum += sprintf(cstr + sum, "]");
-	// return sum;
-}
