@@ -7,12 +7,14 @@
 
 int strap_array_sprintf_element_i8(const StrapArray *arr, char *buf, size_t idx)
 {
-	return 0;
+	char *iarr = (char*) arr->data;
+	return sprintf(buf, "%d", iarr[idx]);
 }
 
 int strap_array_sprintf_element_i16(const StrapArray *arr, char *buf, size_t idx)
 {
-	return 0;
+	short *iarr = (short*) arr->data;
+	return sprintf(buf, "%d", iarr[idx]);
 }
 
 int strap_array_sprintf_element_i32(const StrapArray *arr, char *buf, size_t idx)
@@ -23,7 +25,38 @@ int strap_array_sprintf_element_i32(const StrapArray *arr, char *buf, size_t idx
 
 int strap_array_sprintf_element_i64(const StrapArray *arr, char *buf, size_t idx)
 {
-	return 0;
+	long *iarr = (long*) arr->data;
+	return sprintf(buf, "%ld", iarr[idx]);
+}
+
+int strap_array_sprintf_element_u8(const StrapArray *arr, char *buf, size_t idx)
+{
+	char *iarr = (char*) arr->data;
+	return sprintf(buf, "%u", iarr[idx]);
+}
+
+int strap_array_sprintf_element_u16(const StrapArray *arr, char *buf, size_t idx)
+{
+	short *iarr = (short*) arr->data;
+	return sprintf(buf, "%u", iarr[idx]);
+}
+
+int strap_array_sprintf_element_u32(const StrapArray *arr, char *buf, size_t idx)
+{
+	int *iarr = (int*) arr->data;
+	return sprintf(buf, "%u", iarr[idx]);
+}
+
+int strap_array_sprintf_element_u64(const StrapArray *arr, char *buf, size_t idx)
+{
+	long *iarr = (long*) arr->data;
+	return sprintf(buf, "%lu", iarr[idx]);
+}
+
+int strap_array_sprintf_element_size_t(const StrapArray *arr, char *buf, size_t idx)
+{
+	size_t *iarr = (size_t*) arr->data;
+	return sprintf(buf, "%lu", iarr[idx]);
 }
 
 int strap_array_sprintf_element_f32(const StrapArray *arr, char *buf, size_t idx)
@@ -34,7 +67,8 @@ int strap_array_sprintf_element_f32(const StrapArray *arr, char *buf, size_t idx
 
 int strap_array_sprintf_element_f64(const StrapArray *arr, char *buf, size_t idx)
 {
-	return 0;
+	double *iarr = (double*) arr->data;
+	return sprintf(buf, "%g", iarr[idx]);
 }
 
 
@@ -64,9 +98,9 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 			sarr = malloc(sizeof *sarr);
 			if (!sarr)
 				return NULL;
-			sarr->capacity = capacity > STRAP_INIT_STR_SIZE ? capacity : STRAP_INIT_STR_SIZE;
+			// sarr->capacity = capacity > STRAP_INIT_STR_SIZE ? capacity : STRAP_INIT_STR_SIZE;
 			sarr->array_size = sizeof(size_t) * capacity;
-			sarr->count = 0;
+			// sarr->count = 0;
 			data = sarr;
 			break;
 		default:
@@ -99,32 +133,12 @@ StrapArray *strap_array_clone(const StrapArray *arr)
 
 size_t strap_array_count(const StrapArray *arr)
 {
-	if (!arr)
-		return 0;
-	switch (arr->type) {
-		case STRAP_TYPE_STRING:
-			return ((struct str_array*) arr->data)->count;
-		case STRAP_TYPE_INT:
-		case STRAP_TYPE_FLOAT:
-			return arr->count;
-		default:
-			return 0;
-	}
-		
-	return 0;
+	return arr ? arr->count : 0;
 }
 
 size_t strap_array_size(const StrapArray *arr)
 {
-	if (!arr)
-		return 0;
-	switch (arr->type) {
-		case STRAP_TYPE_STRING:
-			return ((struct str_array*) arr->data)->capacity;
-		default:
-			return 0;
-	}
-	return 0;
+	return arr ? arr->capacity : 0;
 }
 
 size_t strap_array_capacity(const StrapArray *arr)
@@ -144,12 +158,7 @@ StrapArray *strap_array_clear(StrapArray *arr)
 {
 	if (!arr)
 		return NULL;
-	switch (arr->type) {
-		case STRAP_TYPE_STRING:
-			return strap_array_clear_str(arr);
-		default:
-		return arr;
-	}
+	arr->count = 0;
 	return arr;
 }
 
@@ -241,10 +250,10 @@ int strap_array_sprintf(const StrapArray *arr, char *cstr)
 int strap_array_fprintf(const StrapArray *arr, FILE *stream)
 {
 	char buf[BUF_SIZE];
-	size_t count;
-	int (*sprintf_element_func)(const StrapArray*, char*, size_t) = NULL;
+	int (*func)(const StrapArray*, char*, size_t) = NULL;
 	int n;
 	size_t i;
+	size_t count;
 	char *sep;
 	int n_total;
 
@@ -258,18 +267,18 @@ int strap_array_fprintf(const StrapArray *arr, FILE *stream)
 			return strap_array_fprintf_str(arr->data, stream);
 		case STRAP_TYPE_INT:
 		case STRAP_TYPE_I32:
-			sprintf_element_func = strap_array_sprintf_element_i32;
+			func = strap_array_sprintf_element_i32;
 			break;
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_F32:
-			sprintf_element_func = strap_array_sprintf_element_f32;
+			func = strap_array_sprintf_element_f32;
 			break;
 		default:
 			return -1;
 	}
 	n_total = fprintf(stream, "[");
 	for (i = 0; i < count; i++) {
-		n = sprintf_element_func(arr, buf, i);
+		n = func(arr, buf, i);
 		sep = i == count - 1 ? "]" : ", ";
 		n_total += fprintf(stream, "%.*s%s", n, buf, sep);
 	}

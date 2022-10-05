@@ -32,9 +32,7 @@ struct StrapArray {
 * refer to the previous element.
 */
 struct str_array {
-	size_t count;
 	size_t array_size;
-	size_t capacity;
 	size_t array[STRAP_INIT_CAPACITY];
 	char string[STRAP_INIT_STR_SIZE];
 };
@@ -51,6 +49,5 @@ extern StrapArray *strap_array_sort_str(StrapArray *arr, int ascending);
 
 extern int strap_array_sprintf_str(const struct str_array *arr, char *cstr);
 extern int strap_array_fprintf_str(const struct str_array *arr, FILE *stream);
-// extern int strap_array_fprintf_int(const struct num_array *narr, FILE *stream);
 
 #endif
