@@ -4,8 +4,8 @@
 #include "strap.h"
 #include <stdio.h>
 
-#define S_ARRSTR(a) (char*) (a)->array + (a)->array_size
-#define S_ARRISTR(a,i) S_ARRSTR(a) + (i ? (a)->array[(i) - 1] + 1 : 0)
+#define S_ARRSTR(a) (char*) (a)->lens + (a)->buflen
+#define S_ARRISTR(a,i) S_ARRSTR(a) + (i ? (a)->lens[(i) - 1] + 1 : 0)
 #define S_STRLEN(a) (a) ? strlen((a)) : 0
 
 struct StrapString {
@@ -32,9 +32,9 @@ struct StrapArray {
 * refer to the previous element.
 */
 struct str_array {
-	size_t array_size;
-	size_t array[STRAP_INIT_CAPACITY];
-	char string[STRAP_INIT_STR_SIZE];
+	size_t buflen;
+	size_t lens[STRAP_INIT_CAPACITY];
+	char buf[STRAP_INIT_STR_SIZE];
 };
 
 extern size_t strap_next_pow2(size_t n, size_t min);

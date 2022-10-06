@@ -117,7 +117,7 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 			if (!sarr)
 				return NULL;
 			// sarr->capacity = capacity > STRAP_INIT_STR_SIZE ? capacity : STRAP_INIT_STR_SIZE;
-			sarr->array_size = sizeof(size_t) * capacity;
+			sarr->buflen = sizeof(size_t) * capacity;
 			// sarr->count = 0;
 			data = sarr;
 			break;
@@ -165,7 +165,7 @@ size_t strap_array_capacity(const StrapArray *arr)
 		return 0;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
-			return ((struct str_array*) arr->data)->array_size / sizeof(size_t);
+			return ((struct str_array*) arr->data)->buflen / sizeof(size_t);
 		default:
 			return 0;
 	}
@@ -276,7 +276,7 @@ int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
 			func = strap_array_sprintf_element_str;
 			sarr = arr->data;
 			for (i = 0; i < count; i++) {
-				len = sarr->array[i] - (i ? sarr->array[i - 1] : 0);
+				len = sarr->lens[i] - (i ? sarr->lens[i - 1] : 0);
 				if (len > bytes)
 					bytes = len;
 			}
