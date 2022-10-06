@@ -6,6 +6,18 @@
 
 #define BUF_SIZE 32
 
+#define STRAP_ARRAY_SFPRINTF_FUNC(ptr, format, func, type) \
+do {                                                       \
+	int n;                                                   \
+	va_list args;                                            \
+                                                           \
+	va_start(args, format);                                  \
+	n = func((type*) ptr, format, args);                     \
+	va_end(args);                                            \
+	return n;                                                \
+} while (0)
+
+
 int strap_array_sprintf_element_i8(const StrapArray *arr, char *buf, size_t idx)
 {
 	char *iarr = (char*) arr->data;
@@ -295,24 +307,12 @@ int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
 
 int strap_array_sprintf_func(void *ptr, const char *format, ...)
 {
-	int n;
-	va_list args;
-
-	va_start(args, format);
-	n = vsprintf((char*) ptr, format, args);
-	va_end(args);
-	return n;
+	STRAP_ARRAY_SFPRINTF_FUNC(ptr, format, vsprintf, char);
 }
 
 int strap_array_fprintf_func(void *ptr, const char *format, ...)
 {
-	int n;
-	va_list args;
-
-	va_start(args, format);
-	n = vfprintf((FILE*) ptr, format, args);
-	va_end(args);
-	return n;
+	STRAP_ARRAY_SFPRINTF_FUNC(ptr, format, vfprintf, FILE);
 }
 
 int strap_array_sprintf(const StrapArray *arr, char *cstr)
