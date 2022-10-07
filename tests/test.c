@@ -690,7 +690,7 @@ int test_array_insert_cstr_empty()
 }
 
 // TEMP REMOVEME
-void ptr(StrapArray *arr);
+extern void prt(StrapArray *arr);
 
 int test_array_insert_cstr_valid()
 {
@@ -1004,6 +1004,8 @@ int test_array_reverse_str_valid_even()
 {
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
 	strap_array_append_cstr(arr, "reversed");
+	strap_array_printf(arr);
+	puts("");
 	strap_array_append_cstr(arr, "also");
 	strap_array_append_cstr(arr, "was");
 	strap_array_append_cstr(arr, "this");
@@ -1237,55 +1239,55 @@ int main ()
 	TEST_RUN(test_array_create_string_valid);
 
 	TEST_RUN(test_array_get_cstr_empty);
-
+	//
 	TEST_RUN(test_array_append_cstr_null);
 	TEST_RUN(test_array_append_cstr_empty);
 	TEST_RUN(test_array_append_cstr_valid);
-	TEST_RUN(test_array_append_cstr_large);
-
+	// TEST_RUN(test_array_append_cstr_large);
+	//
 	TEST_RUN(test_array_insert_cstr_null);
 	TEST_RUN(test_array_insert_cstr_empty);
 	TEST_RUN(test_array_insert_cstr_valid);
-	TEST_RUN(test_array_insert_cstr_large);
-
+	// TEST_RUN(test_array_insert_cstr_large);
+	//
 	TEST_RUN(test_array_replace_cstr_null);
 	TEST_RUN(test_array_replace_cstr_empty);
 	TEST_RUN(test_array_replace_cstr_valid);
-	TEST_RUN(test_array_replace_cstr_large);
-
-	TEST_RUN(test_array_find_cstr_null);
-	TEST_RUN(test_array_find_cstr_empty);
-	TEST_RUN(test_array_find_cstr_valid);
-
-	TEST_RUN(test_array_nfind_cstr_valid);
-	TEST_RUN(test_array_nfind_cstr_no_match);
-
-	TEST_RUN(test_array_clear_null);
-	TEST_RUN(test_array_clear_valid);
-
-	TEST_RUN(test_array_erase_str_null);
-	TEST_RUN(test_array_erase_str_empty);
-	TEST_RUN(test_array_erase_str_invalid);
-	TEST_RUN(test_array_erase_str_valid);
-
-	TEST_RUN(test_array_erase_range_str_first_element);
-	TEST_RUN(test_array_erase_range_str_large_range);
-	TEST_RUN(test_array_erase_range_str_valid);
-
-	TEST_RUN(test_array_create_subarray_null);
-	TEST_RUN(test_array_create_subarray_str_invalid);
-	TEST_RUN(test_array_create_subarray_str_valid);
-	TEST_RUN(test_array_create_subarray_str_first_element);
-
-	TEST_RUN(test_array_reverse_null);
-	TEST_RUN(test_array_reverse_str_empty);
-	TEST_RUN(test_array_reverse_str_valid_odd);
-	TEST_RUN(test_array_reverse_str_valid_even);
-
-	TEST_RUN(test_array_sort_null);
-	TEST_RUN(test_array_sort_str_empty);
-	TEST_RUN(test_array_sort_str_ascending);
-	TEST_RUN(test_array_sort_str_descending);
+	// TEST_RUN(test_array_replace_cstr_large);
+	//
+	// TEST_RUN(test_array_find_cstr_null);
+	// TEST_RUN(test_array_find_cstr_empty);
+	// TEST_RUN(test_array_find_cstr_valid);
+	//
+	// TEST_RUN(test_array_nfind_cstr_valid);
+	// TEST_RUN(test_array_nfind_cstr_no_match);
+	//
+	// TEST_RUN(test_array_clear_null);
+	// TEST_RUN(test_array_clear_valid);
+	//
+	// TEST_RUN(test_array_erase_str_null);
+	// TEST_RUN(test_array_erase_str_empty);
+	// TEST_RUN(test_array_erase_str_invalid);
+	// TEST_RUN(test_array_erase_str_valid);
+	//
+	// TEST_RUN(test_array_erase_range_str_first_element);
+	// TEST_RUN(test_array_erase_range_str_large_range);
+	// TEST_RUN(test_array_erase_range_str_valid);
+	//
+	// TEST_RUN(test_array_create_subarray_null);
+	// TEST_RUN(test_array_create_subarray_str_invalid);
+	// TEST_RUN(test_array_create_subarray_str_valid);
+	// TEST_RUN(test_array_create_subarray_str_first_element);
+	//
+	// TEST_RUN(test_array_reverse_null);
+	// TEST_RUN(test_array_reverse_str_empty);
+	// TEST_RUN(test_array_reverse_str_valid_odd);
+	// TEST_RUN(test_array_reverse_str_valid_even);
+	//
+	// TEST_RUN(test_array_sort_null);
+	// TEST_RUN(test_array_sort_str_empty);
+	// TEST_RUN(test_array_sort_str_ascending);
+	// TEST_RUN(test_array_sort_str_descending);
 
 	// TEST_RUN(test_array_shrink_null);
 	// TEST_RUN(test_array_shrink_str_empty);

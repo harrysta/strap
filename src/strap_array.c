@@ -87,7 +87,7 @@ int strap_array_sprintf_element_f64(const StrapArray *arr, char *buf, size_t idx
 int strap_array_sprintf_element_str(const StrapArray *arr, char *buf, size_t idx)
 {
 	struct str_array *sarr = arr->data;
-	return sprintf(buf, "\"%s\"", S_ARRISTR(sarr, idx));
+	return sprintf(buf, "\"%s\"", str_buf(arr) + str_pos(arr, idx));
 }
 
 StrapArray *strap_array_alloc(StrapType type)
@@ -116,9 +116,7 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 			sarr = malloc(sizeof *sarr);
 			if (!sarr)
 				return NULL;
-			// sarr->capacity = capacity > STRAP_INIT_STR_SIZE ? capacity : STRAP_INIT_STR_SIZE;
-			sarr->buflen = sizeof(size_t) * capacity;
-			// sarr->count = 0;
+			sarr->buflen = STRAP_INIT_STR_SIZE;
 			data = sarr;
 			break;
 		default:

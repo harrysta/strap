@@ -8,6 +8,13 @@
 #define S_ARRISTR(a,i) S_ARRSTR(a) + (i ? (a)->lens[(i) - 1] + 1 : 0)
 #define S_STRLEN(a) (a) ? strlen((a)) : 0
 
+#define str_sarr(arr) ((struct str_array*) arr->data)
+#define str_lens(arr) str_sarr(arr)->lens
+#define str_buf(arr) (char*) (str_sarr(arr)->lens) + (sizeof *str_sarr(arr)->lens)*arr->capacity
+#define str_pos(arr, idx) ((idx) ? (str_sarr(arr)->lens[(idx) - 1] + 1) : 0)
+#define str_len(arr, idx) str_sarr(arr)->lens[idx] - ((idx) ? str_sarr(arr)->lens[(idx) - 1] : 0)
+#define max(x, y) ((x) > (y) ? (x) : (y))
+
 struct StrapString {
 	size_t length;
 	size_t size;
@@ -33,7 +40,7 @@ struct StrapArray {
 */
 struct str_array {
 	size_t buflen;
-	size_t lens[STRAP_INIT_CAPACITY];
+	unsigned short lens[STRAP_INIT_CAPACITY];
 	char buf[STRAP_INIT_STR_SIZE];
 };
 

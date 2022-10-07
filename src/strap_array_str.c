@@ -10,6 +10,7 @@ static struct str_array *strap_resize(StrapArray *arr,
 	struct str_array *sarr;
 	char *newstr;
 	size_t next_size;
+	return NULL;
 
 	ptr = arr->data;
 	arr_size = arr_size ? arr_size : ptr->buflen;
@@ -49,12 +50,9 @@ StrapString *strap_array_create_string(const StrapArray *arr, size_t idx)
 
 const char* strap_array_get_cstr(const StrapArray *arr, size_t index)
 {
-	if (!arr || arr->type != STRAP_TYPE_STRING)
+	if (!arr || arr->type != STRAP_TYPE_STRING || index >= arr->count)
 		return NULL;
-	struct str_array *sarr = (struct str_array*) arr->data;
-	if (index >= arr->count)
-		return NULL;
-	return S_ARRISTR(sarr, index);
+	return str_buf(arr) + str_pos(arr, index);
 }
 
 struct str_array *strap_ensure_size(StrapArray *arr, size_t newlen)
@@ -77,23 +75,19 @@ struct str_array *strap_ensure_size(StrapArray *arr, size_t newlen)
 
 StrapArray *strap_array_append_cstr(StrapArray *arr, const char *str)
 {
-	struct str_array *sarr;
+	size_t count;
 	size_t len;
 	size_t pos;
-	char *string;
+	char *buf;
 
 	if (!arr || !str || arr->type != STRAP_TYPE_STRING)
 		return arr;
-	sarr = (struct str_array*) arr->data;
+	count = arr->count;
 	len = strlen(str);
-	pos = arr->count ? sarr->lens[arr->count - 1] + 1 : 0;
-	sarr = strap_ensure_size(arr, len + 1 + pos);
-	if (!sarr)
-		return arr;
-	arr->data = sarr;
-	string = S_ARRSTR(sarr);
-	memcpy(string + pos, str, len + 1);
-	sarr->lens[arr->count++] = pos + len;
+	pos = str_pos(arr, count);
+	buf = str_buf(arr);
+	memcpy(buf + pos, str, len + 1);
+	str_lens(arr)[arr->count++] = pos + len;
 	return arr;
 }
 
@@ -104,34 +98,34 @@ StrapArray *strap_array_append_string(StrapArray *arr, const StrapString *str)
 
 StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t idx, const char *str)
 {
-	struct str_array *sarr;
+	size_t count;
 	size_t len;
-	size_t pos;
-	size_t stop;
-	char *string;
 	size_t mvlen;
+	size_t pos;
+	char *buf;
 	size_t i;
+	unsigned short *lens;
 
 	if (!arr || !str || arr->type != STRAP_TYPE_STRING)
 		return arr;
-	sarr = (struct str_array*) arr->data;
-	if (!arr->count || idx >= arr->count)
-		return strap_array_append_cstr(arr, str);
-	len = strlen(str) + 1;
-	sarr = strap_ensure_size(arr, sarr->lens[arr->count - 1] + len);
-	if (!sarr)
+	count = arr->count;
+	len = strlen(str);
+	buf = str_buf(arr);
+	if (!count || idx >= count) {
+		pos = str_pos(arr, count);
+		memcpy(buf + pos, str, len + 1);
+		str_lens(arr)[arr->count++] = pos + len;
 		return arr;
-	arr->data = sarr;
-	string = S_ARRSTR(sarr);
-	pos = idx ? sarr->lens[idx - 1] + 1 : 0;
-	stop = idx ? idx : 1;
-	mvlen = sarr->lens[arr->count - 1] + 1 - pos;
-	memcpy(string + pos + len, string + pos, mvlen);
-	memcpy(string + pos, str, len);
-	for (i = arr->count; i >= stop; i--)
-		sarr->lens[i] = sarr->lens[i - 1] + len;
+	}
+	pos = str_pos(arr, idx);
+	mvlen = str_lens(arr)[count - 1] - pos;
+	memcpy(buf + pos + len + 1, buf + pos, mvlen + 1);
+	memcpy(buf + pos, str, len + 1);
+	lens = str_lens(arr);
+	for (i = count; i >= max(idx, 1); i--)
+		lens[i] = lens[i - 1] + len + 1;
 	if (!idx)
-		sarr->lens[0] = len - 1;
+		lens[0] = len;
 	arr->count++;
 	return arr;
 }
@@ -141,17 +135,17 @@ StrapArray *strap_array_insert_string(StrapArray *arr, size_t i, const StrapStri
 	return strap_array_insert_cstr(arr, i, str->data);
 }
 
-void ptr(StrapArray *arr)
+void prt(StrapArray *arr)
 {
 	size_t idx;
 	char c;
 	struct str_array *sarr = (struct str_array*) arr->data;
-	char *string = S_ARRSTR(sarr);
-	size_t s = 35;
+	char *string = str_buf(arr);
+	size_t s = 50;
 
 	puts("\n-- array -- ");
 	for (idx = 0 ; idx < arr->count; idx++) {
-		printf("%lu, ", sarr->lens[idx]);
+		printf("%d, ", sarr->lens[idx]);
 	}
 
 	puts("\n-- string -- ");
@@ -159,11 +153,13 @@ void ptr(StrapArray *arr)
 		printf("%-4lu", idx);
 	}
 	puts("");
-	puts("-----------------------------------------------------------------------------------");
+	puts("---------------------------------------------------------------------------------------------------------");
 	for (idx = 0; idx <= s; idx++) {
 		c = string[idx];
 		printf("%c   ",  c ? c : '-');
 	}
+	puts("");
+	strap_array_printf(arr);
 	puts("");
 }
 
