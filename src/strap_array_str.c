@@ -1,7 +1,34 @@
 #include "strap_internal.h"
+#include "strap_array_str.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+int str_resize_capacity(StrapArray *arr, size_t capacity)
+{
+	struct str_array *sarr;
+	ushort *lens;
+
+	sarr = arr->data;
+	lens = realloc(sarr->lens, sizeof *lens*capacity);
+	if (!lens)
+		return 1;
+	sarr->lens = lens;
+	arr->capacity = capacity;
+	return 0;
+}
+
+int str_resize_buf(StrapArray *arr, size_t buflen)
+{
+	struct str_array *sarr;
+
+	sarr = realloc(arr->data, sizeof *sarr - 1 + buflen);
+	if (!sarr)
+		return 1;
+	sarr->buflen = buflen;
+	arr->data = sarr;
+	return 0;
+}
 
 static struct str_array *strap_resize(StrapArray *arr,
 	size_t arr_size, size_t str_size)
@@ -84,10 +111,11 @@ StrapArray *strap_array_append_cstr(StrapArray *arr, const char *str)
 		return arr;
 	count = arr->count;
 	len = strlen(str);
-	pos = str_pos(arr, count);
+	str_check_size(arr, len, arr);
 	buf = str_buf(arr);
+	pos = str_pos(arr, count);
 	memcpy(buf + pos, str, len + 1);
-	str_lens(arr)[arr->count++] = pos + len;
+	str_len(arr, arr->count++) = pos + len;
 	return arr;
 }
 
@@ -110,18 +138,19 @@ StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t idx, const char *str
 		return arr;
 	count = arr->count;
 	len = strlen(str);
+	str_check_size(arr, len, arr);
 	buf = str_buf(arr);
 	if (!count || idx >= count) {
 		pos = str_pos(arr, count);
 		memcpy(buf + pos, str, len + 1);
-		str_lens(arr)[arr->count++] = pos + len;
+		str_len(arr, arr->count++) = pos + len;
 		return arr;
 	}
 	pos = str_pos(arr, idx);
-	mvlen = str_lens(arr)[count - 1] - pos;
+	mvlen = str_len(arr, count - 1) - pos;
 	memcpy(buf + pos + len + 1, buf + pos, mvlen + 1);
 	memcpy(buf + pos, str, len + 1);
-	lens = str_lens(arr);
+	lens = str_sarr(arr)->lens;
 	for (i = count; i >= max(idx, 1); i--)
 		lens[i] = lens[i - 1] + len + 1;
 	if (!idx)
@@ -140,7 +169,7 @@ void prt(StrapArray *arr)
 	size_t idx;
 	char c;
 	struct str_array *sarr = (struct str_array*) arr->data;
-	char *string = str_buf(arr);
+	char *string = sarr->buf;
 	size_t s = 50;
 
 	puts("\n-- array -- ");

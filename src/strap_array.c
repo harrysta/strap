@@ -1,4 +1,4 @@
-#include "strap_internal.h"
+#include "strap_array_str.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -113,10 +113,13 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 				return NULL;
 			break;
 		case STRAP_TYPE_STRING:
-			sarr = malloc(sizeof *sarr);
+			sarr = malloc(sizeof *sarr - 1 + STRAP_INIT_STR_SIZE);
+			// sarr = malloc(sizeof(size_t) + STRAP_INIT_STR_SIZE
+			// 					 + sizeof(ushort)*STRAP_INIT_CAPACITY);
 			if (!sarr)
 				return NULL;
 			sarr->buflen = STRAP_INIT_STR_SIZE;
+			sarr->lens = malloc(sizeof(ushort)*capacity);
 			data = sarr;
 			break;
 		default:
@@ -138,6 +141,8 @@ void strap_array_free(StrapArray *arr)
 {
 	if (!arr)
 		return;
+	if (arr->type == STRAP_TYPE_STRING)
+		free(str_sarr(arr)->lens);
 	free(arr->data);
 	free(arr);
 }

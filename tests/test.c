@@ -651,7 +651,19 @@ int test_array_append_cstr_valid()
 	return 1;
 }
 
-int test_array_append_cstr_large()
+int test_array_append_cstr_large_string()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	const char *buf = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta orci orci. Donec convallis felis faucibus quam tempor lobortis. Suspendisse vitae velit ornare, pulvinar mauris ut, tempor nibh. Cras vitae lacus quis tortor viverra molestie. Etiam aliquam neque risus, vel mollis est dignissim at. Donec iaculis blandit finibus. Maecenas nec laoreet lorem, sed pellentesque erat. Nullam lacus dui, ultrices eget egestas vel, laoreet ut arcu. Aliquam eget ipsum egestas, convallis leo eu integer. ";
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, buf));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, buf));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), buf) == 0);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), buf) == 0);
+	return 1;
+}
+
+int test_array_append_cstr_large_count()
 {
 	int i;
 	char buf[SIZE_LARGE];
@@ -1167,94 +1179,95 @@ int main ()
 	TEST_AFTER_EACH(test_cleanup);
 	puts("-- START --");
 
-	TEST_RUN(test_string_alloc_null);
-	TEST_RUN(test_string_alloc_empty);
-	TEST_RUN(test_string_alloc_string);
-	TEST_RUN(test_string_alloc_array);
-	TEST_RUN(test_string_alloc_large);
-
-	TEST_RUN(test_string_clone_null);
-	TEST_RUN(test_string_clone_empty);
-	TEST_RUN(test_string_clone_string);
-	TEST_RUN(test_string_clone_large);
-
-	TEST_RUN(test_string_copy_null);
-	TEST_RUN(test_string_copy_empty);
-	TEST_RUN(test_string_copy_string);
-	TEST_RUN(test_string_copy_large);
-	TEST_RUN(test_string_ncopy_string);
-
-	TEST_RUN(test_string_concat_null);
-	TEST_RUN(test_string_concat_empty);
-	TEST_RUN(test_string_concat_string);
-	TEST_RUN(test_string_concat_large);
-	TEST_RUN(test_string_nconcat_string);
-
-	TEST_RUN(test_string_copy_from_null);
-	TEST_RUN(test_string_copy_from_empty);
-	TEST_RUN(test_string_copy_from_string);
-	TEST_RUN(test_string_copy_from_large);
-	TEST_RUN(test_string_ncopy_from_string);
-
-	TEST_RUN(test_string_copy_to_null);
-	TEST_RUN(test_string_copy_to_empty);
-	TEST_RUN(test_string_copy_to_string);
-	TEST_RUN(test_string_ncopy_to_string);
-
-	TEST_RUN(test_string_strcat_null);
-	TEST_RUN(test_string_strcat_empty);
-	TEST_RUN(test_string_strcat_string);
-	TEST_RUN(test_string_strcat_large);
-	TEST_RUN(test_string_nstrcat_string);
-
-	TEST_RUN(test_string_substring_invalid);
-	TEST_RUN(test_string_substring_valid);
-
-	TEST_RUN(test_string_erase_invalid);
-	TEST_RUN(test_string_erase_valid);
-
-	TEST_RUN(test_string_trim);
-
-	TEST_RUN(test_string_compare_null);
-	TEST_RUN(test_string_compare_nonequal);
-	TEST_RUN(test_string_compare_equal);
-
-	TEST_RUN(test_string_find_null);
-	TEST_RUN(test_string_find_no_match);
-	TEST_RUN(test_string_find_match);
-
-	TEST_RUN(test_string_split_null);
-	TEST_RUN(test_string_split_empty);
-	TEST_RUN(test_string_split_comma);
-	TEST_RUN(test_string_split_word);
-
-	TEST_RUN(test_string_reverse);
+	// TEST_RUN(test_string_alloc_null);
+	// TEST_RUN(test_string_alloc_empty);
+	// TEST_RUN(test_string_alloc_string);
+	// TEST_RUN(test_string_alloc_array);
+	// TEST_RUN(test_string_alloc_large);
+	//
+	// TEST_RUN(test_string_clone_null);
+	// TEST_RUN(test_string_clone_empty);
+	// TEST_RUN(test_string_clone_string);
+	// TEST_RUN(test_string_clone_large);
+	//
+	// TEST_RUN(test_string_copy_null);
+	// TEST_RUN(test_string_copy_empty);
+	// TEST_RUN(test_string_copy_string);
+	// TEST_RUN(test_string_copy_large);
+	// TEST_RUN(test_string_ncopy_string);
+	//
+	// TEST_RUN(test_string_concat_null);
+	// TEST_RUN(test_string_concat_empty);
+	// TEST_RUN(test_string_concat_string);
+	// TEST_RUN(test_string_concat_large);
+	// TEST_RUN(test_string_nconcat_string);
+	//
+	// TEST_RUN(test_string_copy_from_null);
+	// TEST_RUN(test_string_copy_from_empty);
+	// TEST_RUN(test_string_copy_from_string);
+	// TEST_RUN(test_string_copy_from_large);
+	// TEST_RUN(test_string_ncopy_from_string);
+	//
+	// TEST_RUN(test_string_copy_to_null);
+	// TEST_RUN(test_string_copy_to_empty);
+	// TEST_RUN(test_string_copy_to_string);
+	// TEST_RUN(test_string_ncopy_to_string);
+	//
+	// TEST_RUN(test_string_strcat_null);
+	// TEST_RUN(test_string_strcat_empty);
+	// TEST_RUN(test_string_strcat_string);
+	// TEST_RUN(test_string_strcat_large);
+	// TEST_RUN(test_string_nstrcat_string);
+	//
+	// TEST_RUN(test_string_substring_invalid);
+	// TEST_RUN(test_string_substring_valid);
+	//
+	// TEST_RUN(test_string_erase_invalid);
+	// TEST_RUN(test_string_erase_valid);
+	//
+	// TEST_RUN(test_string_trim);
+	//
+	// TEST_RUN(test_string_compare_null);
+	// TEST_RUN(test_string_compare_nonequal);
+	// TEST_RUN(test_string_compare_equal);
+	//
+	// TEST_RUN(test_string_find_null);
+	// TEST_RUN(test_string_find_no_match);
+	// TEST_RUN(test_string_find_match);
+	//
+	// TEST_RUN(test_string_split_null);
+	// TEST_RUN(test_string_split_empty);
+	// TEST_RUN(test_string_split_comma);
+	// TEST_RUN(test_string_split_word);
+	//
+	// TEST_RUN(test_string_reverse);
 
 	// ARRAY cstr
 
 	TEST_RUN(test_array_alloc);
 
-	TEST_RUN(test_array_create_string_null);
-	TEST_RUN(test_array_create_string_invalid);
-	TEST_RUN(test_array_create_string_valid);
+	// TEST_RUN(test_array_create_string_null);
+	// TEST_RUN(test_array_create_string_invalid);
+	// TEST_RUN(test_array_create_string_valid);
 
 	TEST_RUN(test_array_get_cstr_empty);
-	//
+
 	TEST_RUN(test_array_append_cstr_null);
 	TEST_RUN(test_array_append_cstr_empty);
 	TEST_RUN(test_array_append_cstr_valid);
-	// TEST_RUN(test_array_append_cstr_large);
-	//
+	TEST_RUN(test_array_append_cstr_large_string);
+	TEST_RUN(test_array_append_cstr_large_count);
+
 	TEST_RUN(test_array_insert_cstr_null);
 	TEST_RUN(test_array_insert_cstr_empty);
 	TEST_RUN(test_array_insert_cstr_valid);
-	// TEST_RUN(test_array_insert_cstr_large);
-	//
-	TEST_RUN(test_array_replace_cstr_null);
-	TEST_RUN(test_array_replace_cstr_empty);
-	TEST_RUN(test_array_replace_cstr_valid);
+	TEST_RUN(test_array_insert_cstr_large);
+
+	// TEST_RUN(test_array_replace_cstr_null);
+	// TEST_RUN(test_array_replace_cstr_empty);
+	// TEST_RUN(test_array_replace_cstr_valid);
 	// TEST_RUN(test_array_replace_cstr_large);
-	//
+
 	// TEST_RUN(test_array_find_cstr_null);
 	// TEST_RUN(test_array_find_cstr_empty);
 	// TEST_RUN(test_array_find_cstr_valid);
