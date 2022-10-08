@@ -4,6 +4,34 @@
 #include <stdlib.h>
 #include <string.h>
 
+void prt(StrapArray *arr)
+{
+	size_t idx;
+	char c;
+	struct str_array *sarr = (struct str_array*) arr->data;
+	char *string = sarr->buf;
+	size_t s = 40;
+
+
+	puts("");
+	for (idx = 0; idx <= s; idx++) {
+		printf("%-4lu", idx);
+	}
+	puts("");
+	puts("---------------------------------------------------------------------------------------------------------");
+	for (idx = 0; idx <= s; idx++) {
+		c = string[idx];
+		printf("%c   ",  c ? c : '-');
+	}
+	puts("");
+	for (idx = 0 ; idx < arr->count; idx++) {
+		printf("%d, ", sarr->lens[idx]);
+	}
+	puts("");
+	strap_array_printf(arr);
+	puts("");
+}
+
 int str_resize_capacity(StrapArray *arr, size_t capacity)
 {
 	struct str_array *sarr;
@@ -132,7 +160,7 @@ StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t idx, const char *str
 	size_t pos;
 	char *buf;
 	size_t i;
-	unsigned short *lens;
+	ushort *lens;
 
 	if (!arr || !str || arr->type != STRAP_TYPE_STRING)
 		return arr;
@@ -162,34 +190,6 @@ StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t idx, const char *str
 StrapArray *strap_array_insert_string(StrapArray *arr, size_t i, const StrapString *str)
 {
 	return strap_array_insert_cstr(arr, i, str->data);
-}
-
-void prt(StrapArray *arr)
-{
-	size_t idx;
-	char c;
-	struct str_array *sarr = (struct str_array*) arr->data;
-	char *string = sarr->buf;
-	size_t s = 50;
-
-	puts("\n-- array -- ");
-	for (idx = 0 ; idx < arr->count; idx++) {
-		printf("%d, ", sarr->lens[idx]);
-	}
-
-	puts("\n-- string -- ");
-	for (idx = 0; idx <= s; idx++) {
-		printf("%-4lu", idx);
-	}
-	puts("");
-	puts("---------------------------------------------------------------------------------------------------------");
-	for (idx = 0; idx <= s; idx++) {
-		c = string[idx];
-		printf("%c   ",  c ? c : '-');
-	}
-	puts("");
-	strap_array_printf(arr);
-	puts("");
 }
 
 StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t idx, const char *str)
