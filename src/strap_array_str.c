@@ -263,26 +263,28 @@ size_t strap_array_nfind_string(const StrapArray *arr, StrapString *str, size_t 
 
 size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 {
-	struct str_array *sarr;
-	char *string;
-	size_t offset;
 	size_t i;
+	size_t offset;
+	size_t counted;
 	size_t count;
+	ushort *lens;
+	char *buf;
 
 	if (!arr || !cstr || arr->type != STRAP_TYPE_STRING)
 		return -1;
-	sarr = (struct str_array*) arr->data;
-	if (!arr->count)
+	count = arr->count;
+	if (!count)
 		return -1;
-	string = S_ARRSTR(sarr);
+	buf = str_buf(arr);
+	lens = str_sarr(arr)->lens;
 	offset = 0;
-	for (i = 0, count = 0; i < arr->count && count <= n; i++) {
-		if (strcmp(string + offset, cstr) == 0) {
-			if (count == n)
+	for (i = 0, counted = 0; i < count && counted <= n; i++) {
+		if (strcmp(buf + offset, cstr) == 0) {
+			if (counted == n)
 				return i;
-			count++;
+			counted++;
 		}
-		offset = sarr->lens[i] + 1;
+		offset = lens[i] + 1;
 	}
 	return -1;
 }

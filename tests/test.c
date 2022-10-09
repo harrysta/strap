@@ -1281,13 +1281,13 @@ int main ()
 	TEST_RUN(test_array_replace_cstr_equal_length);
 	TEST_RUN(test_array_replace_cstr_large);
 
-	// TEST_RUN(test_array_find_cstr_null);
-	// TEST_RUN(test_array_find_cstr_empty);
-	// TEST_RUN(test_array_find_cstr_valid);
-	//
-	// TEST_RUN(test_array_nfind_cstr_valid);
-	// TEST_RUN(test_array_nfind_cstr_no_match);
-	//
+	TEST_RUN(test_array_find_cstr_null);
+	TEST_RUN(test_array_find_cstr_empty);
+	TEST_RUN(test_array_find_cstr_valid);
+
+	TEST_RUN(test_array_nfind_cstr_valid);
+	TEST_RUN(test_array_nfind_cstr_no_match);
+
 	// TEST_RUN(test_array_clear_null);
 	// TEST_RUN(test_array_clear_valid);
 	//
