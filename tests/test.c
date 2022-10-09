@@ -770,6 +770,18 @@ int test_array_replace_cstr_valid()
 	return 1;
 }
 
+int test_array_replace_cstr_equal_length()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 1, "number"));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "number") == 0);
+	return 1;
+}
+
 int test_array_replace_cstr_large()
 {
 	char buf[SIZE_LARGE];
@@ -1263,10 +1275,11 @@ int main ()
 	TEST_RUN(test_array_insert_cstr_valid);
 	TEST_RUN(test_array_insert_cstr_large);
 
-	// TEST_RUN(test_array_replace_cstr_null);
-	// TEST_RUN(test_array_replace_cstr_empty);
-	// TEST_RUN(test_array_replace_cstr_valid);
-	// TEST_RUN(test_array_replace_cstr_large);
+	TEST_RUN(test_array_replace_cstr_null);
+	TEST_RUN(test_array_replace_cstr_empty);
+	TEST_RUN(test_array_replace_cstr_valid);
+	TEST_RUN(test_array_replace_cstr_equal_length);
+	TEST_RUN(test_array_replace_cstr_large);
 
 	// TEST_RUN(test_array_find_cstr_null);
 	// TEST_RUN(test_array_find_cstr_empty);

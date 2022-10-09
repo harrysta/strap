@@ -32,6 +32,20 @@ void prt(StrapArray *arr)
 	puts("");
 }
 
+void prts(const char *str, int len)
+{
+	char s[512];
+	int i;
+
+	memcpy(s, str, len);
+	for (i = 0; i < len; i++) {
+		if (s[i] == 0) {
+			s[i] = '-';
+		}
+	}
+	printf("\"%.*s\" - %d", len, s, len);
+}
+
 int str_resize_capacity(StrapArray *arr, size_t capacity)
 {
 	struct str_array *sarr;
@@ -194,40 +208,36 @@ StrapArray *strap_array_insert_string(StrapArray *arr, size_t i, const StrapStri
 
 StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t idx, const char *str)
 {
-	struct str_array *sarr;
+	size_t count;
+	size_t pos;
+	size_t mvpos;
 	size_t len;
 	size_t prevlen;
-	size_t diff;
-	char *string;
-	size_t pos;
 	size_t mvlen;
-	size_t mvstart;
-	size_t mvdest;
 	size_t i;
+	char *buf;
 
 	if (!arr || !str || arr->type != STRAP_TYPE_STRING)
 		return arr;
-	sarr = (struct str_array*) arr->data;
-	if (!arr->count || idx >= arr->count)
-		return arr; /* ignore invalid index */
-	len = strlen(str) + 1;
-	prevlen = sarr->lens[idx] + 1 - (idx ? sarr->lens[idx - 1] + 1 : 0);
-	diff = len - prevlen;
-	if (diff > 0) {
-		sarr = strap_ensure_size(arr, sarr->lens[arr->count - 1] + diff);
-		if (!sarr)
-			return arr;
-		arr->data = sarr;
+	count = arr->count;
+	if (idx >= count)
+		return arr;
+	len = strlen(str);
+	prevlen = strlen(str_buf(arr) + str_pos(arr, idx));
+	str_check_size(arr, len - prevlen, arr);
+	buf = str_buf(arr);
+	pos = str_pos(arr, idx);
+	if (idx == count - 1) {
+		memcpy(buf + pos, str, len + 1);
+		str_len(arr, idx) = len + idx ? str_len(arr, idx - 1) : 0;
+		return arr;
 	}
-	string = S_ARRSTR(sarr);
-	pos = idx ? sarr->lens[idx - 1] + 1 : 0;
-	mvstart = sarr->lens[idx] + 1;
-	mvlen = sarr->lens[arr->count - 1] - sarr->lens[idx];
-	mvdest = mvstart + diff;
-	memmove(string + mvdest, string + mvstart, mvlen);
-	strcpy(string + pos, str);
-	for (i = idx; i < arr->count; i++)
-		sarr->lens[i] += diff;
+	mvpos = str_pos(arr, idx + 1);
+	mvlen = str_len(arr, count - 1) - mvpos;
+	memcpy(buf + pos + len + 1, buf + mvpos, mvlen + 1);
+	memcpy(buf + pos, str, len + 1);
+	for (i = idx; i < count; i++)
+		str_len(arr, i) += len - prevlen;
 	return arr;
 }
 
