@@ -1288,18 +1288,18 @@ int main ()
 	TEST_RUN(test_array_nfind_cstr_valid);
 	TEST_RUN(test_array_nfind_cstr_no_match);
 
-	// TEST_RUN(test_array_clear_null);
-	// TEST_RUN(test_array_clear_valid);
-	//
-	// TEST_RUN(test_array_erase_str_null);
-	// TEST_RUN(test_array_erase_str_empty);
-	// TEST_RUN(test_array_erase_str_invalid);
-	// TEST_RUN(test_array_erase_str_valid);
-	//
-	// TEST_RUN(test_array_erase_range_str_first_element);
-	// TEST_RUN(test_array_erase_range_str_large_range);
-	// TEST_RUN(test_array_erase_range_str_valid);
-	//
+	TEST_RUN(test_array_clear_null);
+	TEST_RUN(test_array_clear_valid);
+
+	TEST_RUN(test_array_erase_str_null);
+	TEST_RUN(test_array_erase_str_empty);
+	TEST_RUN(test_array_erase_str_invalid);
+	TEST_RUN(test_array_erase_str_valid);
+
+	TEST_RUN(test_array_erase_range_str_first_element);
+	TEST_RUN(test_array_erase_range_str_large_range);
+	TEST_RUN(test_array_erase_range_str_valid);
+
 	// TEST_RUN(test_array_create_subarray_null);
 	// TEST_RUN(test_array_create_subarray_str_invalid);
 	// TEST_RUN(test_array_create_subarray_str_valid);

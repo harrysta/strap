@@ -114,8 +114,6 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 			break;
 		case STRAP_TYPE_STRING:
 			sarr = malloc(sizeof *sarr - 1 + STRAP_INIT_STR_SIZE);
-			// sarr = malloc(sizeof(size_t) + STRAP_INIT_STR_SIZE
-			// 					 + sizeof(ushort)*STRAP_INIT_CAPACITY);
 			if (!sarr)
 				return NULL;
 			sarr->buflen = STRAP_INIT_STR_SIZE;
@@ -188,16 +186,39 @@ StrapArray *strap_array_erase(StrapArray *arr, size_t i)
 	return strap_array_erase_range(arr, i, 1);
 }
 
-StrapArray *strap_array_erase_range(StrapArray *arr, size_t i, size_t n)
+StrapArray *strap_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 {
+	size_t i;
+	size_t count;
+	size_t pos;
+	size_t mvpos;
+	size_t mvlen;
+	char *buf;
+	ushort *lens;
+
 	if (!arr)
 		return NULL;
+	count = arr->count;
+	if (!n || idx >= count)
+		return arr;
+	n = idx + n > count ? count - idx : n;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
-			return strap_array_erase_range_str(arr, i, n);
+			if (idx + n < count) {
+				pos = str_pos(arr, idx);
+				mvpos = str_pos(arr, idx + n);
+				mvlen = str_len(arr, n) - pos;
+				buf = str_buf(arr);
+				memcpy(buf + pos, buf + mvpos, mvlen);
+			}
+			lens = str_sarr(arr)->lens;
+			for (i = idx; i < count - 1; i++)
+				lens[i] = lens[i + 1];
+			break;
 		default:
 			return arr;
 	}
+	arr->count -= n;
 	return arr;
 }
 

@@ -289,33 +289,6 @@ size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 	return -1;
 }
 
-StrapArray *strap_array_erase_range_str(StrapArray *arr, size_t idx, size_t n)
-{
-	struct str_array *sarr;
-	size_t pos;
-	size_t mvlen;
-	size_t dst;
-	size_t i;
-	char *string;
-
-	sarr = (struct str_array*) arr->data;
-	if (idx >= arr->count || n == 0)
-		return arr;
-	if (idx + n > arr->count)
-		n = arr->count - idx;
-	if (idx + n != arr->count) {
-		pos = sarr->lens[idx - 1 + n] + 1;
-		dst = idx ? sarr->lens[idx - 1] + 1 : 0;
-		mvlen = sarr->lens[arr->count - 1] + 1 - pos;
-		string = S_ARRSTR(sarr);
-		memcpy(string + dst, string + pos, mvlen);
-		for (i = idx; i < arr->count - 1; i++)
-			sarr->lens[i] = sarr->lens[i + 1];
-	}
-	arr->count -= n;
-	return arr;
-}
-
 StrapArray *strap_array_create_subarray_str(const StrapArray *arr, size_t idx, size_t n)
 {
 	struct str_array *sarr;
