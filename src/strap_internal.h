@@ -4,10 +4,6 @@
 #include "strap.h"
 #include <stdlib.h>
 
-#define S_ARRSTR(a) (char*) (a)->lens + (a)->buflen
-#define S_ARRISTR(a,i) S_ARRSTR(a) + (i ? (a)->lens[(i) - 1] + 1 : 0)
-#define S_STRLEN(a) (a) ? strlen((a)) : 0
-
 #define max(x, y) ((x) > (y) ? (x) : (y))
 
 typedef unsigned char  uchar;

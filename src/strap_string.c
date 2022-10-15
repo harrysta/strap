@@ -5,6 +5,8 @@
 
 #include "strap_internal.h"
 
+#define str_len(a) (a) ? strlen((a)) : 0
+
 static StrapString *strap_resize(StrapString *str, size_t size)
 {
 	char *data = realloc(str->data, size);
@@ -36,14 +38,14 @@ StrapString *strap_string_nalloc_internal(const char *str, size_t size, size_t l
 
 StrapString *strap_string_alloc(const char *str)
 {
-	size_t len = S_STRLEN(str);
+	size_t len = str_len(str);
 	size_t size = strap_next_pow2(len, STRAP_INIT_STR_SIZE);
 	return strap_string_nalloc_internal(str, size, len);
 }
 
 StrapString *strap_string_nalloc(const char *str, size_t size)
 {
-	return strap_string_nalloc_internal(str, size, S_STRLEN(str));
+	return strap_string_nalloc_internal(str, size, str_len(str));
 }
 
 void strap_string_free(StrapString *str)
@@ -88,7 +90,7 @@ StrapString *strap_string_concat(StrapString *str1, const StrapString *str2)
 
 StrapString *strap_string_copy_from(StrapString *str, const char *cstr)
 {
-	return strap_string_ncopy_from(str, cstr, S_STRLEN(cstr));
+	return strap_string_ncopy_from(str, cstr, str_len(cstr));
 }
 
 char *strap_string_copy_to(const StrapString *str, char *cstr)
@@ -98,7 +100,7 @@ char *strap_string_copy_to(const StrapString *str, char *cstr)
 
 StrapString *strap_string_strcat(StrapString *str, const char *cstr)
 {
-	return strap_string_nstrcat(str, cstr, S_STRLEN(cstr));
+	return strap_string_nstrcat(str, cstr, str_len(cstr));
 }
 
 StrapString *strap_string_ncopy(StrapString *str1, const StrapString *str2, size_t n)
@@ -181,11 +183,7 @@ StrapString *strap_string_create_substring(const StrapString *str, size_t start,
 
 StrapString *strap_string_erase(StrapString *str, size_t start, size_t n)
 {
-	if (!str)
-		return NULL;
-	if (start >= str->length)
-		return str;
-	if (!n)
+	if (!str || start >= str->length || !n)
 		return str;
 	if (start + n > str->length)
 		n = str->length - start;
