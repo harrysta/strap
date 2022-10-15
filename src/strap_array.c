@@ -279,14 +279,14 @@ StrapArray *strap_array_reverse(StrapArray *arr)
 	count = arr->count;
 	if (!count)
 		return arr;
-	tmpbuf = malloc(str_len(arr, count - 1));
-	if (!tmpbuf)
-		goto out_free_tmpbuf;
-	tmplens = malloc(sizeof *tmplens*count);
-	if (!tmplens)
-		goto out_free_tmplens;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
+			tmpbuf = malloc(str_len(arr, count - 1));
+			if (!tmpbuf)
+				goto out_free_tmpbuf;
+			tmplens = malloc(sizeof *tmplens*count);
+			if (!tmplens)
+				goto out_free_tmplens;
 			sumlen = 0;
 			buf = str_buf(arr);
 			lens = str_sarr(arr)->lens;
