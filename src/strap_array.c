@@ -234,6 +234,8 @@ StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t idx, size_
 	ushort *newlens;
 	StrapArray *newarr;
 
+	// WARNING buflen should be manually set to fit all buf; current impl will
+	// cause UB with large string elements
 	if (!arr || n == 0)
 		return NULL;
 	count = arr->count;
@@ -262,15 +264,50 @@ StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t idx, size_
 
 StrapArray *strap_array_reverse(StrapArray *arr)
 {
+	size_t i;
+	size_t count;
+	size_t len;
+	size_t sumlen;
+	size_t pos;
+	char *buf;
+	char *tmpbuf;
+	ushort *lens;
+	ushort *tmplens;
+
 	if (!arr)
 		return NULL;
+	count = arr->count;
+	if (!count)
+		return arr;
+	tmpbuf = malloc(str_len(arr, count - 1));
+	if (!tmpbuf)
+		goto out_free_tmpbuf;
+	tmplens = malloc(sizeof *tmplens*count);
+	if (!tmplens)
+		goto out_free_tmplens;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
-			return strap_array_reverse_str(arr);
+			sumlen = 0;
+			buf = str_buf(arr);
+			lens = str_sarr(arr)->lens;
+			for (i = 0; i < count; i++) {
+				pos = str_pos(arr, count - 1 - i);
+				len = str_len(arr, count - 1 - i) - pos;
+				memcpy(tmpbuf + sumlen, buf + pos, len + 1);
+				sumlen += len + 1;
+				tmplens[i] = sumlen - 1;
+			}
+			memcpy(buf, tmpbuf, sumlen);
+			memcpy(lens, tmplens, sizeof *lens*count);
+			break;
 		default:
 			return NULL;
 	}
-	return NULL;
+out_free_tmplens:
+	free(tmplens);
+out_free_tmpbuf:
+	free(tmpbuf);
+	return arr;
 }
 
 StrapArray *strap_array_shrink(StrapArray *arr)

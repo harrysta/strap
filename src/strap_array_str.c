@@ -289,49 +289,6 @@ size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 	return -1;
 }
 
-StrapArray *strap_array_reverse_str(StrapArray *arr)
-{
-	struct str_array *sarr;
-	char *string;
-	char *tmp_string;
-	size_t *tmp_len_arr;
-	size_t bytes;
-	size_t pos1;
-	size_t pos2;
-	size_t len;
-	size_t i;
-
-	sarr = (struct str_array*) arr->data;
-	if (arr->count <= 1)
-		return arr;
-	bytes = sarr->lens[arr->count - 1];
-	tmp_string = malloc(bytes);
-	if (!tmp_string)
-		return arr;
-	tmp_len_arr = malloc(sizeof(size_t)*arr->count);
-	if (!tmp_len_arr) {
-		free(tmp_string);
-		return arr;
-	}
-	string = S_ARRSTR(sarr);
-	for (i = arr->count - 1; i > 0 ; i--) {
-		pos1 = i == (arr->count - 1) ? 0 : (pos1 + len);
-		pos2 = sarr->lens[i - 1] + 1;
-		len = sarr->lens[i] - sarr->lens[i - 1];
-		memcpy(tmp_string + pos1, string + pos2, len);
-		tmp_len_arr[arr->count - 1 - i] = pos1 + len - 1;
-	}
-	pos1 += len;
-	len = sarr->lens[i];
-	memcpy(tmp_string + pos1, string, len);
-	tmp_len_arr[arr->count - 1] = pos1 + len;
-	memcpy(sarr->lens, tmp_len_arr, sizeof(size_t)*arr->count);
-	memcpy(string, tmp_string, bytes);
-	free(tmp_string);
-	free(tmp_len_arr);
-	return arr;
-}
-
 StrapArray *strap_array_shrink_str(StrapArray *arr)
 {
 	// FIXME crashes next function that requires resize

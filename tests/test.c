@@ -1054,8 +1054,6 @@ int test_array_reverse_str_valid_even()
 {
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
 	strap_array_append_cstr(arr, "reversed");
-	strap_array_printf(arr);
-	puts("");
 	strap_array_append_cstr(arr, "also");
 	strap_array_append_cstr(arr, "was");
 	strap_array_append_cstr(arr, "this");
@@ -1332,11 +1330,11 @@ int main ()
 	TEST_RUN(test_array_create_subarray_str_first_element);
 	TEST_RUN(test_array_create_subarray_str_large_n);
 
-	// TEST_RUN(test_array_reverse_null);
-	// TEST_RUN(test_array_reverse_str_empty);
-	// TEST_RUN(test_array_reverse_str_valid_odd);
-	// TEST_RUN(test_array_reverse_str_valid_even);
-	//
+	TEST_RUN(test_array_reverse_null);
+	TEST_RUN(test_array_reverse_str_empty);
+	TEST_RUN(test_array_reverse_str_valid_odd);
+	TEST_RUN(test_array_reverse_str_valid_even);
+
 	// TEST_RUN(test_array_sort_null);
 	// TEST_RUN(test_array_sort_str_empty);
 	// TEST_RUN(test_array_sort_str_ascending);
