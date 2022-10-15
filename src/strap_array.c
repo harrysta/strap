@@ -224,15 +224,40 @@ StrapArray *strap_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 
 StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t idx, size_t n)
 {
+	size_t i;
+	size_t count;
+	size_t pos;
+	size_t len;
+	char *buf;
+	char *newbuf;
+	ushort *lens;
+	ushort *newlens;
+	StrapArray *newarr;
+
 	if (!arr || n == 0)
 		return NULL;
+	count = arr->count;
+	if (idx >= count)
+		return NULL;
+	n = idx + n > count ? count - idx : n;
+	newarr = strap_array_nalloc(arr->type, n);
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
-			return strap_array_create_subarray_str(arr, idx, n);
+			pos = str_pos(arr, idx);
+			lens = str_sarr(arr)->lens;
+			newlens = str_sarr(newarr)->lens;
+			for (i = 0; i < n; i++)
+				newlens[i] = lens[i + idx] - pos;
+			len = str_len(arr, n) - pos + 1;
+			buf = str_buf(arr);
+			newbuf = str_buf(newarr);
+			break;
 		default:
 			return NULL;
 	}
-	return NULL;
+	memcpy(newbuf, buf + pos, len);
+	newarr->count = n;
+	return newarr;
 }
 
 StrapArray *strap_array_reverse(StrapArray *arr)

@@ -289,33 +289,6 @@ size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 	return -1;
 }
 
-StrapArray *strap_array_create_subarray_str(const StrapArray *arr, size_t idx, size_t n)
-{
-	struct str_array *sarr;
-	struct str_array *narr_s;
-	StrapArray *narr;
-	size_t pos;
-	size_t len;
-	size_t i;
-	char *string;
-	char *nstring;
-
-	sarr = (struct str_array*) arr->data;
-	if (idx >= arr->count)
-		return NULL;
-	pos = idx ? sarr->lens[idx - 1] + 1 : 0;
-	len = sarr->lens[idx + n - 1] - sarr->lens[idx - 1];
-	string = S_ARRSTR(sarr);
-	narr = strap_array_nalloc(STRAP_TYPE_STRING, len);
-	narr_s = (struct str_array*) narr->data;
-	nstring = S_ARRSTR(narr_s);
-	memcpy(nstring, string + pos, len);
-	for (i = 0; i < n; i++)
-		narr_s->lens[i] = sarr->lens[i + idx] - pos;
-	narr->count = n;
-	return narr;
-}
-
 StrapArray *strap_array_reverse_str(StrapArray *arr)
 {
 	struct str_array *sarr;
