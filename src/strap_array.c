@@ -112,7 +112,7 @@ StrapArray *strap_array_nalloc_internal(StrapType type, size_t capacity, size_t 
 			if (!sarr)
 				return NULL;
 			sarr->buflen = buflen;
-			sarr->lens = malloc(sizeof(ushort)*capacity);
+			sarr->nulls = malloc(sizeof(ushort)*capacity);
 			data = sarr;
 			break;
 		default:
@@ -145,7 +145,7 @@ void strap_array_free(StrapArray *arr)
 	if (!arr)
 		return;
 	if (arr->type == STRAP_TYPE_STRING)
-		free(str_sarr(arr)->lens);
+		free(str_sarr(arr)->nulls);
 	free(arr->data);
 	free(arr);
 }
@@ -173,9 +173,9 @@ StrapArray *strap_array_clone(const StrapArray *arr)
 		case STRAP_TYPE_STRING:
 			buf = str_buf(arr);
 			newbuf = str_buf(newarr);
-			len = str_len(arr, count - 1) + 1;
+			len = str_null(arr, count - 1) + 1;
 			memcpy(newbuf, buf, len);
-			memcpy(str_sarr(newarr)->lens, str_sarr(arr)->lens, sizeof(ushort)*count);
+			memcpy(str_sarr(newarr)->nulls, str_sarr(arr)->nulls, sizeof(ushort)*count);
 			newarr->count = count;
 			break;
 		case STRAP_TYPE_INT:
@@ -232,7 +232,7 @@ StrapArray *strap_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 	size_t mvpos;
 	size_t mvlen;
 	char *buf;
-	ushort *lens;
+	ushort *nulls;
 
 	if (!arr)
 		return NULL;
@@ -245,13 +245,13 @@ StrapArray *strap_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 			if (idx + n < count) {
 				pos = str_pos(arr, idx);
 				mvpos = str_pos(arr, idx + n);
-				mvlen = str_len(arr, n) - pos;
+				mvlen = str_null(arr, n) - pos;
 				buf = str_buf(arr);
 				memcpy(buf + pos, buf + mvpos, mvlen);
 			}
-			lens = str_sarr(arr)->lens;
+			nulls = str_sarr(arr)->nulls;
 			for (i = idx; i < count - 1; i++)
-				lens[i] = lens[i + 1];
+				nulls[i] = nulls[i + 1];
 			break;
 		default:
 			return arr;
@@ -268,8 +268,8 @@ StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t idx, size_
 	size_t len;
 	char *buf;
 	char *newbuf;
-	ushort *lens;
-	ushort *newlens;
+	ushort *nulls;
+	ushort *newnulls;
 	StrapArray *newarr;
 
 	// WARNING buflen should be manually set to fit all buf; current impl will
@@ -284,11 +284,11 @@ StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t idx, size_
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
 			pos = str_pos(arr, idx);
-			lens = str_sarr(arr)->lens;
-			newlens = str_sarr(newarr)->lens;
+			nulls = str_sarr(arr)->nulls;
+			newnulls = str_sarr(newarr)->nulls;
 			for (i = 0; i < n; i++)
-				newlens[i] = lens[i + idx] - pos;
-			len = str_len(arr, n) - pos + 1;
+				newnulls[i] = nulls[i + idx] - pos;
+			len = str_null(arr, n) - pos + 1;
 			buf = str_buf(arr);
 			newbuf = str_buf(newarr);
 			break;
@@ -309,8 +309,8 @@ StrapArray *strap_array_reverse(StrapArray *arr)
 	size_t pos;
 	char *buf;
 	char *tmpbuf;
-	ushort *lens;
-	ushort *tmplens;
+	ushort *nulls;
+	ushort *tmpnulls;
 
 	if (!arr)
 		return NULL;
@@ -319,30 +319,30 @@ StrapArray *strap_array_reverse(StrapArray *arr)
 		return arr;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
-			tmpbuf = malloc(str_len(arr, count - 1));
+			tmpbuf = malloc(str_null(arr, count - 1));
 			if (!tmpbuf)
 				goto out_free_tmpbuf;
-			tmplens = malloc(sizeof *tmplens*count);
-			if (!tmplens)
-				goto out_free_tmplens;
+			tmpnulls = malloc(sizeof *tmpnulls*count);
+			if (!tmpnulls)
+				goto out_free_tmpnulls;
 			sumlen = 0;
 			buf = str_buf(arr);
-			lens = str_sarr(arr)->lens;
+			nulls = str_sarr(arr)->nulls;
 			for (i = 0; i < count; i++) {
 				pos = str_pos(arr, count - 1 - i);
-				len = str_len(arr, count - 1 - i) - pos;
+				len = str_null(arr, count - 1 - i) - pos;
 				memcpy(tmpbuf + sumlen, buf + pos, len + 1);
 				sumlen += len + 1;
-				tmplens[i] = sumlen - 1;
+				tmpnulls[i] = sumlen - 1;
 			}
 			memcpy(buf, tmpbuf, sumlen);
-			memcpy(lens, tmplens, sizeof *lens*count);
+			memcpy(nulls, tmpnulls, sizeof *nulls*count);
 			break;
 		default:
 			return NULL;
 	}
-out_free_tmplens:
-	free(tmplens);
+out_free_tmpnulls:
+	free(tmpnulls);
 out_free_tmpbuf:
 	free(tmpbuf);
 	return arr;
@@ -400,7 +400,7 @@ int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
 			func = strap_array_sprintf_element_str;
 			sarr = arr->data;
 			for (i = 0; i < count; i++) {
-				len = sarr->lens[i] - (i ? sarr->lens[i - 1] : 0);
+				len = sarr->nulls[i] - (i ? sarr->nulls[i - 1] : 0);
 				if (len > bytes)
 					bytes = len;
 			}

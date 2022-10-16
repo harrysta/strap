@@ -25,7 +25,7 @@ void prt(StrapArray *arr)
 	}
 	puts("");
 	for (idx = 0 ; idx < arr->count; idx++) {
-		printf("%d, ", sarr->lens[idx]);
+		printf("%d, ", sarr->nulls[idx]);
 	}
 	puts("");
 	strap_array_printf(arr);
@@ -49,13 +49,13 @@ void prts(const char *str, int len)
 int str_resize_capacity(StrapArray *arr, size_t capacity)
 {
 	struct str_array *sarr;
-	ushort *lens;
+	ushort *nulls;
 
 	sarr = arr->data;
-	lens = realloc(sarr->lens, sizeof *lens*capacity);
-	if (!lens)
+	nulls = realloc(sarr->nulls, sizeof *nulls*capacity);
+	if (!nulls)
 		return 1;
-	sarr->lens = lens;
+	sarr->nulls = nulls;
 	arr->capacity = capacity;
 	return 0;
 }
@@ -106,7 +106,7 @@ StrapArray *strap_array_append_cstr(StrapArray *arr, const char *str)
 	buf = str_buf(arr);
 	pos = str_pos(arr, count);
 	memcpy(buf + pos, str, len + 1);
-	str_len(arr, arr->count++) = pos + len;
+	str_null(arr, arr->count++) = pos + len;
 	return arr;
 }
 
@@ -123,7 +123,7 @@ StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t idx, const char *str
 	size_t pos;
 	char *buf;
 	size_t i;
-	ushort *lens;
+	ushort *nulls;
 
 	if (!arr || !str || arr->type != STRAP_TYPE_STRING)
 		return arr;
@@ -134,18 +134,18 @@ StrapArray *strap_array_insert_cstr(StrapArray *arr, size_t idx, const char *str
 	if (!count || idx >= count) {
 		pos = str_pos(arr, count);
 		memcpy(buf + pos, str, len + 1);
-		str_len(arr, arr->count++) = pos + len;
+		str_null(arr, arr->count++) = pos + len;
 		return arr;
 	}
 	pos = str_pos(arr, idx);
-	mvlen = str_len(arr, count - 1) - pos;
+	mvlen = str_null(arr, count - 1) - pos;
 	memcpy(buf + pos + len + 1, buf + pos, mvlen + 1);
 	memcpy(buf + pos, str, len + 1);
-	lens = str_sarr(arr)->lens;
+	nulls = str_sarr(arr)->nulls;
 	for (i = count; i >= max(idx, 1); i--)
-		lens[i] = lens[i - 1] + len + 1;
+		nulls[i] = nulls[i - 1] + len + 1;
 	if (!idx)
-		lens[0] = len;
+		nulls[0] = len;
 	arr->count++;
 	return arr;
 }
@@ -178,15 +178,15 @@ StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t idx, const char *st
 	pos = str_pos(arr, idx);
 	if (idx == count - 1) {
 		memcpy(buf + pos, str, len + 1);
-		str_len(arr, idx) = len + idx ? str_len(arr, idx - 1) : 0;
+		str_null(arr, idx) = len + idx ? str_null(arr, idx - 1) : 0;
 		return arr;
 	}
 	mvpos = str_pos(arr, idx + 1);
-	mvlen = str_len(arr, count - 1) - mvpos;
+	mvlen = str_null(arr, count - 1) - mvpos;
 	memcpy(buf + pos + len + 1, buf + mvpos, mvlen + 1);
 	memcpy(buf + pos, str, len + 1);
 	for (i = idx; i < count; i++)
-		str_len(arr, i) += len - prevlen;
+		str_null(arr, i) += len - prevlen;
 	return arr;
 }
 
@@ -216,7 +216,7 @@ size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 	size_t offset;
 	size_t counted;
 	size_t count;
-	ushort *lens;
+	ushort *nulls;
 	char *buf;
 
 	if (!arr || !cstr || arr->type != STRAP_TYPE_STRING)
@@ -225,7 +225,7 @@ size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 	if (!count)
 		return -1;
 	buf = str_buf(arr);
-	lens = str_sarr(arr)->lens;
+	nulls = str_sarr(arr)->nulls;
 	offset = 0;
 	for (i = 0, counted = 0; i < count && counted <= n; i++) {
 		if (strcmp(buf + offset, cstr) == 0) {
@@ -233,7 +233,7 @@ size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 				return i;
 			counted++;
 		}
-		offset = lens[i] + 1;
+		offset = nulls[i] + 1;
 	}
 	return -1;
 }
@@ -250,7 +250,7 @@ StrapArray *strap_array_shrink_str(StrapArray *arr)
 		return NULL;
 	sarr = (struct str_array*) arr->data;
 	new_arr_size = (arr->count ? arr->count : STRAP_INIT_CAPACITY)*sizeof(size_t);
-	len = arr->count ? sarr->lens[arr->count - 1] : 0;
+	len = arr->count ? sarr->nulls[arr->count - 1] : 0;
 	new_str_size = len ? strap_next_pow2(len, STRAP_INIT_STR_SIZE) : STRAP_INIT_STR_SIZE;
 	// sarr = strap_resize(arr, new_arr_size, new_str_size);
 	if (!sarr)
