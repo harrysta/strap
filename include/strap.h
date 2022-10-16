@@ -27,6 +27,7 @@ typedef enum {
 	STRAP_TYPE_SIZE_T,
 	STRAP_TYPE_STRING,
 
+	STRAP_TYPE_NONE,
 	STRAP_TYPE_COUNT
 } StrapType;
 
@@ -75,9 +76,9 @@ extern StrapArray *strap_array_nalloc(StrapType type, size_t size);
 extern void        strap_array_free(StrapArray *arr);
 extern StrapArray *strap_array_clone(const StrapArray *arr);
 
-extern size_t strap_array_count(const StrapArray *arr);
-extern size_t strap_array_size(const StrapArray *arr);
-extern size_t strap_array_capacity(const StrapArray *arr);
+extern size_t    strap_array_count(const StrapArray *arr);
+extern size_t    strap_array_capacity(const StrapArray *arr);
+extern StrapType strap_array_type(const StrapArray *arr);
 
 extern StrapString *strap_array_create_string(const StrapArray *arr, size_t i);
 extern StrapString *strap_array_copy_string(const StrapArray *arr, size_t i, StrapString *str); // TODO
@@ -88,7 +89,6 @@ extern int         strap_array_get_int(const StrapArray *arr, size_t i); // TODO
 extern long        strap_array_get_long(const StrapArray *arr, size_t i); // TODO
 extern float       strap_array_get_float(const StrapArray *arr, size_t i); // TODO
 extern double      strap_array_get_double(const StrapArray *arr, size_t i); // TODO
-extern StrapType   strap_array_get_type(const StrapArray *arr);
 
 extern StrapArray *strap_array_append_string(StrapArray *arr, const StrapString *str);
 extern StrapArray *strap_array_append_cstr(StrapArray *arr, const char *cstr);

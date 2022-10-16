@@ -176,15 +176,14 @@ StrapArray *strap_array_clone(const StrapArray *arr)
 			len = str_null(arr, count - 1) + 1;
 			memcpy(newbuf, buf, len);
 			memcpy(str_sarr(newarr)->nulls, str_sarr(arr)->nulls, sizeof(ushort)*count);
-			newarr->count = count;
 			break;
 		case STRAP_TYPE_INT:
-			// malloc arr at newarr->data
+			memcpy(newarr->data, arr->data, count*strap_sizeof(type));
 			break;
 		default:
 			return NULL;
 	}
-	prt(newarr);
+	newarr->count = count;
 	return newarr;
 }
 
@@ -193,22 +192,14 @@ size_t strap_array_count(const StrapArray *arr)
 	return arr ? arr->count : 0;
 }
 
-size_t strap_array_size(const StrapArray *arr)
+size_t strap_array_capacity(const StrapArray *arr)
 {
 	return arr ? arr->capacity : 0;
 }
 
-size_t strap_array_capacity(const StrapArray *arr)
+StrapType strap_array_type(const StrapArray *arr)
 {
-	if (!arr)
-		return 0;
-	switch (arr->type) {
-		case STRAP_TYPE_STRING:
-			return ((struct str_array*) arr->data)->buflen / sizeof(size_t);
-		default:
-			return 0;
-	}
-	return 0;
+	return arr ? arr->type : STRAP_TYPE_NONE;
 }
 
 StrapArray *strap_array_clear(StrapArray *arr)
