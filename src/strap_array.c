@@ -341,15 +341,21 @@ out_free_tmpbuf:
 
 StrapArray *strap_array_shrink(StrapArray *arr)
 {
+	size_t new_capacity;
+	size_t new_buflen;
+
 	if (!arr)
 		return NULL;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
-			return strap_array_shrink_str(arr);
+			// prt(arr);
+			// puts("");
+			// logd(arr->capacity);
+			// logd(str_sarr(arr)->buflen);
 		default:
 			return NULL;
 	}
-	return NULL;
+	return arr;
 }
 
 

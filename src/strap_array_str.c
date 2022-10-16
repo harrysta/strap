@@ -178,7 +178,7 @@ StrapArray *strap_array_replace_cstr(StrapArray *arr, size_t idx, const char *st
 	pos = str_pos(arr, idx);
 	if (idx == count - 1) {
 		memcpy(buf + pos, str, len + 1);
-		str_null(arr, idx) = len + idx ? str_null(arr, idx - 1) : 0;
+		str_null(arr, idx) = len;
 		return arr;
 	}
 	mvpos = str_pos(arr, idx + 1);
@@ -236,27 +236,6 @@ size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 		offset = nulls[i] + 1;
 	}
 	return -1;
-}
-
-StrapArray *strap_array_shrink_str(StrapArray *arr)
-{
-	// FIXME crashes next function that requires resize
-	struct str_array *sarr;
-	size_t new_str_size;
-	size_t new_arr_size;
-	size_t len;
-
-	if (!arr)
-		return NULL;
-	sarr = (struct str_array*) arr->data;
-	new_arr_size = (arr->count ? arr->count : STRAP_INIT_CAPACITY)*sizeof(size_t);
-	len = arr->count ? sarr->nulls[arr->count - 1] : 0;
-	new_str_size = len ? strap_next_pow2(len, STRAP_INIT_STR_SIZE) : STRAP_INIT_STR_SIZE;
-	// sarr = strap_resize(arr, new_arr_size, new_str_size);
-	if (!sarr)
-		return arr;
-	arr->data = sarr;
-	return arr;
 }
 
 StrapArray *strap_array_sort_str(StrapArray *arr, int ascending)
