@@ -27,22 +27,6 @@ typedef enum {
 	STRAP_TYPE_SIZE_T,
 	STRAP_TYPE_STRING,
 
-	STRAP_TYPE_I8,
-	STRAP_TYPE_I16,
-	STRAP_TYPE_I32,
-	STRAP_TYPE_I64,
-	STRAP_TYPE_I128,
-
-	STRAP_TYPE_U8,
-	STRAP_TYPE_U16,
-	STRAP_TYPE_U32,
-	STRAP_TYPE_U64,
-	STRAP_TYPE_U128,
-
-	STRAP_TYPE_F32,
-	STRAP_TYPE_F64,
-	STRAP_TYPE_F128,
-
 	STRAP_TYPE_COUNT
 } StrapType;
 
@@ -95,7 +79,7 @@ extern size_t strap_array_count(const StrapArray *arr);
 extern size_t strap_array_size(const StrapArray *arr);
 extern size_t strap_array_capacity(const StrapArray *arr);
 
-extern StrapString *strap_array_create_string(const StrapArray *arr, size_t i); // TODO
+extern StrapString *strap_array_create_string(const StrapArray *arr, size_t i);
 extern StrapString *strap_array_copy_string(const StrapArray *arr, size_t i, StrapString *str); // TODO
 
 extern const char *strap_array_get_cstr(const StrapArray *arr, size_t i);

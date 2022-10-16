@@ -90,12 +90,7 @@ int strap_array_sprintf_element_str(const StrapArray *arr, char *buf, size_t idx
 	return sprintf(buf, "\"%s\"", str_buf(arr) + str_pos(arr, idx));
 }
 
-StrapArray *strap_array_alloc(StrapType type)
-{
-	return strap_array_nalloc(type, STRAP_INIT_CAPACITY);
-}
-
-StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
+StrapArray *strap_array_nalloc_internal(StrapType type, size_t capacity, size_t buflen)
 {
 	StrapArray *array;
 	struct str_array *sarr;
@@ -113,10 +108,10 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 				return NULL;
 			break;
 		case STRAP_TYPE_STRING:
-			sarr = malloc(sizeof *sarr - 1 + STRAP_INIT_STR_SIZE);
+			sarr = malloc(sizeof *sarr - 1 + buflen);
 			if (!sarr)
 				return NULL;
-			sarr->buflen = STRAP_INIT_STR_SIZE;
+			sarr->buflen = buflen;
 			sarr->lens = malloc(sizeof(ushort)*capacity);
 			data = sarr;
 			break;
@@ -135,6 +130,16 @@ StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
 	return array;
 }
 
+StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
+{
+	return strap_array_nalloc_internal(type, capacity, STRAP_INIT_STR_SIZE);
+}
+
+StrapArray *strap_array_alloc(StrapType type)
+{
+	return strap_array_nalloc(type, STRAP_INIT_CAPACITY);
+}
+
 void strap_array_free(StrapArray *arr)
 {
 	if (!arr)
@@ -147,7 +152,40 @@ void strap_array_free(StrapArray *arr)
 
 StrapArray *strap_array_clone(const StrapArray *arr)
 {
-	return NULL; // TODO
+	StrapArray *newarr;
+	StrapType type;
+	size_t buflen;
+	size_t count;
+	size_t len;
+	char *buf;
+	char *newbuf;
+
+	if (!arr)
+		return NULL;
+	if (!arr->count)
+		return strap_array_alloc(arr->type);
+	type = arr->type;
+	buflen = type == STRAP_TYPE_STRING ? str_sarr(arr)->buflen : 0;
+	// TODO round capacity and buflen instead of using arr's directly
+	newarr = strap_array_nalloc_internal(type, arr->capacity, buflen);
+	count = arr->count;
+	switch (type) {
+		case STRAP_TYPE_STRING:
+			buf = str_buf(arr);
+			newbuf = str_buf(newarr);
+			len = str_len(arr, count - 1) + 1;
+			memcpy(newbuf, buf, len);
+			memcpy(str_sarr(newarr)->lens, str_sarr(arr)->lens, sizeof(ushort)*count);
+			newarr->count = count;
+			break;
+		case STRAP_TYPE_INT:
+			// malloc arr at newarr->data
+			break;
+		default:
+			return NULL;
+	}
+	prt(newarr);
+	return newarr;
 }
 
 size_t strap_array_count(const StrapArray *arr)
@@ -368,11 +406,9 @@ int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
 			}
 			break;
 		case STRAP_TYPE_INT:
-		case STRAP_TYPE_I32:
 			func = strap_array_sprintf_element_i32;
 			break;
 		case STRAP_TYPE_FLOAT:
-		case STRAP_TYPE_F32:
 			func = strap_array_sprintf_element_f32;
 			break;
 		default:

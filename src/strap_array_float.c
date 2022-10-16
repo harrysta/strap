@@ -5,10 +5,10 @@
 
 float strap_array_get_float(const StrapArray *arr, size_t idx)
 {
-	FLOAT_MACRO(STRAP_ARRAY_GET_NUM, arr, idx);
+	FLOAT_MACRO(strap_array_get_num, arr, idx);
 }
 
 StrapArray *strap_array_append_float(StrapArray *arr, float num)
 {
-	FLOAT_MACRO(STRAP_ARRAY_APPEND_NUM, arr, num);
+	FLOAT_MACRO(strap_array_append_num, arr, num);
 }

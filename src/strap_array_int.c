@@ -7,15 +7,15 @@
 
 int strap_array_get_int(const StrapArray *arr, size_t idx)
 {
-	INT_MACRO(STRAP_ARRAY_GET_NUM, arr, idx);
+	INT_MACRO(strap_array_get_num, arr, idx);
 }
 
 StrapArray *strap_array_append_int(StrapArray *arr, int num)
 {
-	INT_MACRO(STRAP_ARRAY_APPEND_NUM, arr, num);
+	INT_MACRO(strap_array_append_num, arr, num);
 }
 
 StrapArray *strap_array_insert_int(StrapArray *arr, size_t idx, int num)
 {
-	INT_MACRO(STRAP_ARRAY_INSERT_NUM, arr, idx, num);
+	INT_MACRO(strap_array_insert_num, arr, idx, num);
 }

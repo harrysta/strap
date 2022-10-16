@@ -79,8 +79,6 @@ StrapString *strap_array_create_string(const StrapArray *arr, size_t idx)
 
 	if (!arr || arr->type != STRAP_TYPE_STRING || idx >= arr->count)
 		return NULL;
-	if (idx >= arr->count)
-		return NULL;
 	pos = str_pos(arr, idx);
 	buf = str_buf(arr);
 	return strap_string_alloc(buf + pos);

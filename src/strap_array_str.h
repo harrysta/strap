@@ -23,11 +23,11 @@ do {                                                                            
 } while (0)
 
 /*
-* array[] contains the index of the null terminating char of each element
-* from string[], which is used for:
+* lens[] contains the index of the null terminating char of each element
+* from buf[], which is used for:
 *
-*   Getter: string + array[i-1] + 1
-*   Length: array[i] - array[i-1]
+*   Getter: buf + lens[i-1] + 1
+*   Length: lens[i] - lens[i-1]
 *
 * Note: the above will not apply for the first element, as it doesn't/can't
 * refer to the previous element.
