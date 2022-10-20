@@ -34,3 +34,13 @@ size_t strap_sizeof(StrapType type)
 	}
 	return 0;
 }
+
+int num_resize_capacity(StrapArray *arr, size_t capacity)
+{
+	void *ndata = realloc(arr->data, capacity*strap_sizeof(arr->type));
+	if (!ndata)
+		return 1;
+	arr->data = ndata;
+	arr->capacity = capacity;
+	return 0;
+}

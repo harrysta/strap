@@ -8,18 +8,18 @@
 #define str_null(arr, idx) (str_sarr(arr)->nulls[idx])
 #define str_pos(arr, idx) ((idx) ? (str_sarr(arr)->nulls[(idx) - 1] + 1) : 0)
 
-#define str_check_size(arr, len, ret)                                              \
-do {                                                                               \
-	struct str_array *sarr = arr->data;                                              \
-	ushort _len = str_null(arr, arr->count - 1);                                      \
-	if (_len + len > sarr->buflen) {                                                 \
-		if (str_resize_buf(arr, strap_next_pow2(_len + len + 1, STRAP_INIT_STR_SIZE))) \
-			return ret;                                                                  \
-	}                                                                                \
-	if (arr->count == arr->capacity) {                                               \
-		if (str_resize_capacity(arr, arr->capacity + STRAP_INIT_CAPACITY))             \
-			return ret;                                                                  \
-	}                                                                                \
+#define str_check_size(arr, len, ret)                                                 \
+do {                                                                                  \
+	struct str_array *sarr = arr->data;                                                 \
+	ushort nullpos = str_null(arr, arr->count - 1);                                     \
+	if (nullpos + len > sarr->buflen) {                                                 \
+		if (str_resize_buf(arr, strap_next_pow2(nullpos + len + 1, STRAP_INIT_STR_SIZE))) \
+			return ret;                                                                     \
+	}                                                                                   \
+	if (arr->count == arr->capacity) {                                                  \
+		if (str_resize_capacity(arr, arr->capacity + STRAP_INIT_CAPACITY))                \
+			return ret;                                                                     \
+	}                                                                                   \
 } while (0)
 
 /*

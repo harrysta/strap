@@ -343,15 +343,30 @@ StrapArray *strap_array_shrink(StrapArray *arr)
 {
 	size_t new_capacity;
 	size_t new_buflen;
+	size_t C;
+	size_t count;
+	void *ndata;
 
 	if (!arr)
 		return NULL;
+	count = arr->count;
+	C = STRAP_INIT_CAPACITY;
+	new_capacity = ((count + C) / C) * C;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
-			// prt(arr);
-			// puts("");
-			// logd(arr->capacity);
-			// logd(str_sarr(arr)->buflen);
+			new_buflen = strap_next_pow2(str_null(arr, count - 1), STRAP_INIT_STR_SIZE);
+			if (new_capacity != arr->capacity) {
+				if (str_resize_capacity(arr, new_capacity)) /* Non-zero value indicates resize failure */
+					return arr;
+			}
+			if (new_buflen != str_sarr(arr)->buflen) {
+				str_resize_buf(arr, new_buflen); /* No need to check since it's the last statement */
+			}
+			return arr;
+		case STRAP_TYPE_INT:
+			if (new_capacity != arr->capacity)
+				num_resize_capacity(arr, new_capacity);
+			return arr;
 		default:
 			return NULL;
 	}
