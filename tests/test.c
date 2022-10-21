@@ -920,7 +920,7 @@ int test_array_clear_null()
 	return 1;
 }
 
-int test_array_clear_valid()
+int test_array_clear_str_valid()
 {
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
@@ -1144,19 +1144,6 @@ int test_array_shrink_str_valid()
 	return 1;
 }
 
-int test_array_shrink_int_valid()
-{
-	int i;
-	arr = strap_array_alloc(STRAP_TYPE_INT);
-	for (i = 0; i < 128; i++)
-		strap_array_append_int(arr, i);
-	strap_array_clear(arr);
-	TEST_ASSERT_FALSE(strap_array_capacity(arr) == STRAP_INIT_CAPACITY);
-	TEST_ASSERT_TRUE(strap_array_shrink(arr));
-	TEST_ASSERT_TRUE(strap_array_capacity(arr) == STRAP_INIT_CAPACITY);
-	return 1;
-}
-
 int test_array_sort_null()
 {
 	return 1;
@@ -1220,6 +1207,162 @@ int test_array_insert_int_valid()
 	TEST_ASSERT_TRUE(strap_array_get_int(arr, 4) == 1);
 	return 1;
 }
+
+int test_array_replace_int_null()
+{
+	return 1;
+}
+
+int test_array_replace_int_empty()
+{
+	return 1;
+}
+
+int test_array_replace_int_valid()
+{
+	return 1;
+}
+
+
+int test_array_find_int_null()
+{
+	return 1;
+}
+
+int test_array_find_int_empty()
+{
+	return 1;
+}
+
+int test_array_find_int_valid()
+{
+	return 1;
+}
+
+
+int test_array_nfind_int_valid()
+{
+	return 1;
+}
+
+int test_array_nfind_int_no_match()
+{
+	return 1;
+}
+
+int test_array_clear_int_valid()
+{
+	return 1;
+}
+
+int test_array_erase_int_null()
+{
+	return 1;
+}
+
+int test_array_erase_int_empty()
+{
+	return 1;
+}
+
+int test_array_erase_int_invalid()
+{
+	return 1;
+}
+
+int test_array_erase_int_valid()
+{
+	return 1;
+}
+
+
+int test_array_erase_range_int_first_element()
+{
+	return 1;
+}
+
+int test_array_erase_range_int_large_range()
+{
+	return 1;
+}
+
+int test_array_erase_range_int_valid()
+{
+	return 1;
+}
+
+
+int test_array_create_subarray_int_invalid()
+{
+	return 1;
+}
+
+int test_array_create_subarray_int_valid()
+{
+	return 1;
+}
+
+int test_array_create_subarray_int_first_element()
+{
+	return 1;
+}
+
+int test_array_create_subarray_int_large_n()
+{
+	return 1;
+}
+
+int test_array_reverse_int_empty()
+{
+	return 1;
+}
+
+int test_array_reverse_int_valid_odd()
+{
+	return 1;
+}
+
+int test_array_reverse_int_valid_even()
+{
+	return 1;
+}
+
+
+int test_array_sort_int_empty()
+{
+	return 1;
+}
+
+int test_array_sort_int_ascending()
+{
+	return 1;
+}
+
+int test_array_sort_int_descending()
+{
+	return 1;
+}
+
+
+int test_array_shrink_int_empty()
+{
+	return 1;
+}
+
+int test_array_shrink_int_valid()
+{
+	int i;
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	for (i = 0; i < 128; i++)
+		strap_array_append_int(arr, i);
+	strap_array_clear(arr);
+	TEST_ASSERT_FALSE(strap_array_capacity(arr) == STRAP_INIT_CAPACITY);
+	TEST_ASSERT_TRUE(strap_array_shrink(arr));
+	TEST_ASSERT_TRUE(strap_array_capacity(arr) == STRAP_INIT_CAPACITY);
+	return 1;
+}
+
+
 
 
 // ----------------------------------------------------------------------------
@@ -1377,7 +1520,7 @@ int main ()
 	TEST_RUN(test_array_nfind_cstr_no_match);
 
 	TEST_RUN(test_array_clear_null);
-	TEST_RUN(test_array_clear_valid);
+	TEST_RUN(test_array_clear_str_valid);
 
 	TEST_RUN(test_array_erase_str_null);
 	TEST_RUN(test_array_erase_str_empty);
@@ -1407,18 +1550,56 @@ int main ()
 	TEST_RUN(test_array_shrink_null);
 	TEST_RUN(test_array_shrink_str_empty);
 	TEST_RUN(test_array_shrink_str_valid);
-	TEST_RUN(test_array_shrink_int_valid);
 
 	// ARRAY int
 
 	TEST_RUN(test_array_append_int_null);
 	TEST_RUN(test_array_append_int_valid);
 
-	TEST_RUN(test_array_append_float_null);
-	TEST_RUN(test_array_append_float_valid);
-
 	TEST_RUN(test_array_insert_int_null);
 	TEST_RUN(test_array_insert_int_valid);
+
+	TEST_RUN(test_array_replace_int_null);
+	TEST_RUN(test_array_replace_int_empty);
+	TEST_RUN(test_array_replace_int_valid);
+
+	TEST_RUN(test_array_find_int_null);
+	TEST_RUN(test_array_find_int_empty);
+	TEST_RUN(test_array_find_int_valid);
+
+	TEST_RUN(test_array_nfind_int_valid);
+	TEST_RUN(test_array_nfind_int_no_match);
+
+	TEST_RUN(test_array_clear_int_valid);
+
+	TEST_RUN(test_array_erase_int_null);
+	TEST_RUN(test_array_erase_int_empty);
+	TEST_RUN(test_array_erase_int_invalid);
+	TEST_RUN(test_array_erase_int_valid);
+
+	TEST_RUN(test_array_erase_range_int_first_element);
+	TEST_RUN(test_array_erase_range_int_large_range);
+	TEST_RUN(test_array_erase_range_int_valid);
+
+	TEST_RUN(test_array_create_subarray_int_invalid);
+	TEST_RUN(test_array_create_subarray_int_valid);
+	TEST_RUN(test_array_create_subarray_int_first_element);
+	TEST_RUN(test_array_create_subarray_int_large_n);
+
+	TEST_RUN(test_array_reverse_int_empty);
+	TEST_RUN(test_array_reverse_int_valid_odd);
+	TEST_RUN(test_array_reverse_int_valid_even);
+
+	TEST_RUN(test_array_sort_int_empty);
+	TEST_RUN(test_array_sort_int_ascending);
+	TEST_RUN(test_array_sort_int_descending);
+
+	TEST_RUN(test_array_shrink_int_empty);
+	TEST_RUN(test_array_shrink_int_valid);
+
+	// ARRAY float
+	TEST_RUN(test_array_append_float_null);
+	TEST_RUN(test_array_append_float_valid);
 
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,

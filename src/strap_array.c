@@ -362,7 +362,15 @@ StrapArray *strap_array_shrink(StrapArray *arr)
 				str_resize_buf(arr, new_buflen); /* No need to check since it's the last statement */
 			}
 			return arr;
+		case STRAP_TYPE_CHAR:
+		case STRAP_TYPE_SHORT:
 		case STRAP_TYPE_INT:
+		case STRAP_TYPE_LONG_INT:
+		case STRAP_TYPE_LONG_LONG_INT:
+		case STRAP_TYPE_FLOAT:
+		case STRAP_TYPE_DOUBLE:
+		case STRAP_TYPE_LONG_DOUBLE:
+		case STRAP_TYPE_SIZE_T:
 			if (new_capacity != arr->capacity)
 				num_resize_capacity(arr, new_capacity);
 			return arr;
