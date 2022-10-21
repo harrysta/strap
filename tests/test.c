@@ -606,28 +606,35 @@ int test_array_clone_valid_string()
 	strap_array_append_cstr(arr, "this");
 	strap_array_append_cstr(arr, "is");
 	strap_array_append_cstr(arr, "a");
+	strap_array_append_cstr(arr, "strap_array_clone");
+	strap_array_append_cstr(arr, "function");
 	strap_array_append_cstr(arr, "test");
 	TEST_ASSERT_TRUE(arr2 = strap_array_clone(arr));
-	TEST_ASSERT_TRUE(strap_array_count(arr2) == 4);
+	TEST_ASSERT_TRUE(strap_array_count(arr2) == 6);
 	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 0), "this"));
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 1), "is")  );
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 2), "a")   );
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 3), "test"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 1), "is"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 2), "a"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 3), "strap_array_clone"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 4), "function"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 5), "test"));
 	TEST_ASSERT_FALSE(arr == arr2);
 	return 1;
 }
 
 int test_array_clone_valid_int()
 {
+	int i;
 	arr = strap_array_alloc(STRAP_TYPE_INT);
-	strap_array_append_int(arr, 5);
-	strap_array_append_int(arr, 13);
-	strap_array_append_int(arr, 64);
+	for (i = 0; i < STRAP_INIT_CAPACITY*2; i++) {
+		strap_array_append_int(arr, i);
+	}
+	strap_array_clear(arr);
+	for (i = 0; i < STRAP_INIT_CAPACITY/2; i++) {
+		strap_array_append_int(arr, i);
+	}
 	TEST_ASSERT_TRUE(arr2 = strap_array_clone(arr));
-	TEST_ASSERT_TRUE(strap_array_count(arr2) == 3);
-	TEST_ASSERT_TRUE(strap_array_get_int(arr2, 0) == 5);
-	TEST_ASSERT_TRUE(strap_array_get_int(arr2, 1) == 13);
-	TEST_ASSERT_TRUE(strap_array_get_int(arr2, 2) == 64);
+	TEST_ASSERT_TRUE(strap_array_count(arr2) == STRAP_INIT_CAPACITY/2);
+	TEST_ASSERT_TRUE(strap_array_capacity(arr) != strap_array_capacity(arr2));
 	TEST_ASSERT_FALSE(arr == arr2);
 	return 1;
 }

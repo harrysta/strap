@@ -17,7 +17,6 @@ do {                                                       \
 	return n;                                                \
 } while (0)
 
-
 int strap_array_sprintf_element_i8(const StrapArray *arr, char *buf, size_t idx)
 {
 	char *iarr = (char*) arr->data;
@@ -152,29 +151,30 @@ void strap_array_free(StrapArray *arr)
 
 StrapArray *strap_array_clone(const StrapArray *arr)
 {
+	const int C = STRAP_INIT_CAPACITY;
 	StrapArray *newarr;
 	StrapType type;
 	size_t buflen;
+	size_t new_buflen;
+	size_t new_capacity;
 	size_t count;
-	size_t len;
-	char *buf;
-	char *newbuf;
 
 	if (!arr)
 		return NULL;
 	if (!arr->count)
 		return strap_array_alloc(arr->type);
 	type = arr->type;
-	buflen = type == STRAP_TYPE_STRING ? str_sarr(arr)->buflen : 0;
-	// TODO round capacity and buflen instead of using arr's directly
-	newarr = strap_array_nalloc_internal(type, arr->capacity, buflen);
 	count = arr->count;
+	buflen = str_sarr(arr)->buflen;
+	new_capacity = ((count + C) / C) * C;
+	if (type == STRAP_TYPE_STRING) {
+		new_buflen = count ? str_null(arr, count - 1) : 0;
+		new_buflen = strap_next_pow2(new_buflen + 1, STRAP_INIT_STR_SIZE);
+	}
+	newarr = strap_array_nalloc_internal(type, new_capacity, new_buflen);
 	switch (type) {
 		case STRAP_TYPE_STRING:
-			buf = str_buf(arr);
-			newbuf = str_buf(newarr);
-			len = str_null(arr, count - 1) + 1;
-			memcpy(newbuf, buf, len);
+			memcpy(str_buf(newarr), str_buf(arr), str_null(arr, count - 1) + 1);
 			memcpy(str_sarr(newarr)->nulls, str_sarr(arr)->nulls, sizeof(ushort)*count);
 			break;
 		case STRAP_TYPE_INT:
@@ -341,16 +341,15 @@ out_free_tmpbuf:
 
 StrapArray *strap_array_shrink(StrapArray *arr)
 {
+	const int C = STRAP_INIT_CAPACITY;
 	size_t new_capacity;
 	size_t new_buflen;
-	size_t C;
 	size_t count;
 	void *ndata;
 
 	if (!arr)
 		return NULL;
 	count = arr->count;
-	C = STRAP_INIT_CAPACITY;
 	new_capacity = ((count + C) / C) * C;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
@@ -399,7 +398,7 @@ int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
 	int n_total;
 	size_t i;
 	int n;
-	char *sep;
+	const char *prefix = "";
 
 	if (!arr)
 		return -1;
@@ -432,9 +431,10 @@ int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
 	n_total = printfunc(ptr, "[");
 	for (i = 0; i < count; i++) {
 		n = func(arr, buf, i);
-		sep = i == count - 1 ? "]" : ", ";
-		n_total += printfunc(ptr + is_string*n_total, "%.*s%s", n, buf, sep);
+		n_total += printfunc(ptr + is_string*n_total, "%s%.*s", prefix, n, buf);
+		prefix = ", ";
 	}
+	n_total += printfunc(ptr + is_string*n_total, "]");
 	free(buf);
 	return n_total;
 }
