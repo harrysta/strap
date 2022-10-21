@@ -66,7 +66,7 @@ int test_string_alloc_null()
 {
 	string = strap_string_alloc(NULL);
 	TEST_ASSERT_TRUE(string);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), ""));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 0);
 	return 1;
 }
@@ -75,7 +75,7 @@ int test_string_alloc_empty()
 {
 	string = strap_string_alloc("");
 	TEST_ASSERT_TRUE(string);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), ""));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 0);
 	return 1;
 }
@@ -85,7 +85,7 @@ int test_string_alloc_string()
 	char str[] = "string";
 	string = strap_string_alloc(str);
 	TEST_ASSERT_TRUE(string);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), str) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), str));
 	TEST_ASSERT_TRUE(strap_string_length(string) == strlen(str));
 	return 1;
 }
@@ -99,7 +99,7 @@ int test_string_alloc_array()
 
 	string = strap_string_alloc(buf);
 	TEST_ASSERT_TRUE(string);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "aaaaaaa") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "aaaaaaa"));
 	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_EIGHT - 1);
 	return 1;
 }
@@ -111,7 +111,7 @@ int test_string_alloc_large()
 	buf[SIZE_LARGE - 1] = 0;
 	string = strap_string_alloc(buf);
 	TEST_ASSERT_TRUE(string);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), buf));
 	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
@@ -128,7 +128,7 @@ int test_string_clone_empty()
 	string2 = strap_string_alloc("");
 	string = strap_string_clone(string2);
 	TEST_ASSERT_TRUE(string);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), ""));
 	TEST_ASSERT_TRUE(strap_string_length(string) == strap_string_length(string2));
 	return 1;
 }
@@ -138,7 +138,7 @@ int test_string_clone_string()
 	string2 = strap_string_alloc("first");
 	string = strap_string_clone(string2);
 	TEST_ASSERT_TRUE(string);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "first") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "first"));
 	TEST_ASSERT_TRUE(strap_string_length(string) == strap_string_length(string2));
 	return 1;
 }
@@ -154,7 +154,7 @@ int test_string_clone_large()
 	string = strap_string_clone(string2);
 
 	TEST_ASSERT_TRUE(string);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), buf));
 	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
@@ -162,7 +162,7 @@ int test_string_copy_null()
 {
 	string = strap_string_alloc("str");
 	TEST_ASSERT_TRUE(strap_string_copy(string, NULL));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), ""));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 0);
 	return 1;
 }
@@ -172,7 +172,7 @@ int test_string_copy_empty()
 	string = strap_string_alloc("first");
 	string2 = strap_string_alloc(NULL);
 	TEST_ASSERT_TRUE(strap_string_copy(string, string2));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), ""));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 0);
 	return 1;
 }
@@ -182,7 +182,7 @@ int test_string_copy_string()
 	string = strap_string_alloc("first");
 	string2 = strap_string_alloc("second");
 	TEST_ASSERT_TRUE(strap_string_copy(string, string2));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "second") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "second"));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 6);
 	return 1;
 }
@@ -195,7 +195,7 @@ int test_string_copy_large()
 	string = strap_string_alloc("first");
 	string2 = strap_string_alloc(buf);
 	TEST_ASSERT_TRUE(strap_string_copy(string, string2));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), buf));
 	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
@@ -205,7 +205,7 @@ int test_string_ncopy_string()
 	string = strap_string_alloc("first");
 	string2 = strap_string_alloc("second");
 	TEST_ASSERT_TRUE(strap_string_ncopy(string, string2, 3));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "sec") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "sec"));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 3);
 	return 1;
 }
@@ -215,7 +215,7 @@ int test_string_concat_null()
 	char str[] = "str";
 	string = strap_string_alloc(str);
 	TEST_ASSERT_TRUE(strap_string_concat(string, NULL));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), str) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), str));
 	TEST_ASSERT_TRUE(strap_string_length(string) == strlen(str));
 	return 1;
 }
@@ -226,7 +226,7 @@ int test_string_concat_empty()
 	string = strap_string_alloc(str);
 	string2 = strap_string_alloc(NULL);
 	TEST_ASSERT_TRUE(strap_string_concat(string, string2));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), str) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), str));
 	TEST_ASSERT_TRUE(strap_string_length(string) == strlen(str));
 	return 1;
 }
@@ -237,7 +237,7 @@ int test_string_concat_string()
 	string2 = strap_string_alloc("second");
 	char catstr[] = "firstsecond";
 	TEST_ASSERT_TRUE(strap_string_concat(string, string2));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), catstr) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), catstr));
 	TEST_ASSERT_TRUE(strap_string_length(string) == strlen(catstr));
 	return 1;
 }
@@ -256,7 +256,7 @@ int test_string_concat_large()
 	string = strap_string_alloc(buf);
 	string2 = strap_string_alloc(buf2);
 	TEST_ASSERT_TRUE(strap_string_concat(string, string2));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf3) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), buf3));
 	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
@@ -267,7 +267,7 @@ int test_string_nconcat_string()
 	string2 = strap_string_alloc("second");
 	char catstr[] = "firstsec";
 	TEST_ASSERT_TRUE(strap_string_nconcat(string, string2, 3));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), catstr) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), catstr));
 	TEST_ASSERT_TRUE(strap_string_length(string) == strlen(catstr));
 	return 1;
 }
@@ -278,7 +278,7 @@ int test_string_copy_from_null()
 	string = strap_string_alloc(str);
 	TEST_ASSERT_TRUE(!strap_string_copy_from(NULL, NULL));
 	TEST_ASSERT_TRUE(strap_string_copy_from(string, NULL));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), ""));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 0);
 	return 1;
 }
@@ -288,7 +288,7 @@ int test_string_copy_from_empty()
 	char str[] = "first";
 	string = strap_string_alloc(str);
 	TEST_ASSERT_TRUE(strap_string_copy_from(string, ""));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), ""));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 0);
 	return 1;
 }
@@ -299,7 +299,7 @@ int test_string_copy_from_string()
 	char str2[] = "second";
 	string = strap_string_alloc(str);
 	TEST_ASSERT_TRUE(strap_string_copy_from(string, str2));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), str2) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), str2));
 	TEST_ASSERT_TRUE(strap_string_length(string) == strlen(str2));
 	return 1;
 }
@@ -314,7 +314,7 @@ int test_string_copy_from_large()
 	str2[SIZE_LARGE - 1] = 0;
 
 	TEST_ASSERT_TRUE(strap_string_copy_from(string, str2));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), str2) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), str2));
 	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
@@ -325,7 +325,7 @@ int test_string_ncopy_from_string()
 	char str2[] = "second";
 	string = strap_string_alloc(str);
 	TEST_ASSERT_TRUE(strap_string_ncopy_from(string, str2, 3));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "sec") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "sec"));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 3);
 	return 1;
 }
@@ -343,7 +343,7 @@ int test_string_copy_to_empty()
 	char str[16];
 	string = strap_string_alloc("str");
 	TEST_ASSERT_TRUE(strap_string_copy_to(string, str));
-	TEST_ASSERT_TRUE(strcmp(str, "str") == 0);
+	TEST_ASSERT_TRUE(!strcmp(str, "str"));
 	TEST_ASSERT_TRUE(strlen(str) == 3);
 	return 1;
 }
@@ -353,7 +353,7 @@ int test_string_copy_to_string()
 	char str[16] = "first";
 	string = strap_string_alloc("str");
 	TEST_ASSERT_TRUE(strap_string_copy_to(string, str));
-	TEST_ASSERT_TRUE(strcmp(str, "str") == 0);
+	TEST_ASSERT_TRUE(!strcmp(str, "str"));
 	TEST_ASSERT_TRUE(strlen(str) == 3);
 	return 1;
 }
@@ -363,7 +363,7 @@ int test_string_ncopy_to_string()
 	char str[16] = "first";
 	string = strap_string_alloc("second");
 	TEST_ASSERT_TRUE(strap_string_ncopy_to(string, str, 3));
-	TEST_ASSERT_TRUE(strcmp(str, "sec") == 0);
+	TEST_ASSERT_TRUE(!strcmp(str, "sec"));
 	TEST_ASSERT_TRUE(strlen(str) == 3);
 	return 1;
 }
@@ -373,7 +373,7 @@ int test_string_strcat_null()
 	string = strap_string_alloc("str");
 	TEST_ASSERT_TRUE(!strap_string_strcat(NULL, NULL));
 	TEST_ASSERT_TRUE(strap_string_strcat(string, NULL));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "str") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "str"));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 3);
 	return 1;
 }
@@ -382,7 +382,7 @@ int test_string_strcat_empty()
 {
 	string = strap_string_alloc("str");
 	TEST_ASSERT_TRUE(strap_string_strcat(string, ""));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "str") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "str"));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 3);
 	return 1;
 }
@@ -391,7 +391,7 @@ int test_string_strcat_string()
 {
 	string = strap_string_alloc("str");
 	TEST_ASSERT_TRUE(strap_string_strcat(string, "ing"));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "string") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "string"));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 6);
 	return 1;
 }
@@ -408,7 +408,7 @@ int test_string_strcat_large()
 
 	string = strap_string_alloc("str");
 	TEST_ASSERT_TRUE(strap_string_strcat(string, buf));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf2) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), buf2));
 	TEST_ASSERT_TRUE(strap_string_length(string) == SIZE_LARGE - 1);
 	return 1;
 }
@@ -417,7 +417,7 @@ int test_string_nstrcat_string()
 {
 	string = strap_string_alloc("first");
 	TEST_ASSERT_TRUE(strap_string_nstrcat(string, "second", 3));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "firstsec") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "firstsec"));
 	TEST_ASSERT_TRUE(strap_string_length(string) == 8);
 	return 1;
 }
@@ -427,8 +427,8 @@ int test_string_substring_invalid()
 	string = strap_string_alloc("first");
 	TEST_ASSERT_TRUE(string2 = strap_string_create_substring(string, 10, 10));
 	TEST_ASSERT_TRUE(string3 = strap_string_create_substring(string, 0, 0));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string3), "") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string2), ""));
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string3), ""));
 	return 1;
 }
 
@@ -437,8 +437,8 @@ int test_string_substring_valid()
 	string = strap_string_alloc("motherhood");
 	TEST_ASSERT_TRUE(string2 = strap_string_create_substring(string, 1, 5));
 	TEST_ASSERT_TRUE(string3 = strap_string_create_substring(string, 6, 999));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "other") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string3), "hood") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string2), "other"));
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string3), "hood"));
 	return 1;
 }
 
@@ -449,7 +449,7 @@ int test_string_erase_invalid()
 	TEST_ASSERT_FALSE(strap_string_erase(NULL, 5, 10));
 	TEST_ASSERT_TRUE(strap_string_erase(string, 10, 10));
 	TEST_ASSERT_TRUE(strap_string_erase(string, 0, 0));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), buf) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), buf));
 	return 1;
 }
 
@@ -457,9 +457,9 @@ int test_string_erase_valid()
 {
 	string = strap_string_alloc("string motherhood");
 	TEST_ASSERT_TRUE(strap_string_erase(string, 0, 7));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "motherhood") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "motherhood"));
 	TEST_ASSERT_TRUE(strap_string_erase(string, 6, 10));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "mother") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "mother"));
 	return 1;
 }
 
@@ -473,10 +473,10 @@ int test_string_trim()
 	TEST_ASSERT_TRUE(strap_string_trim(string2));
 	TEST_ASSERT_TRUE(strap_string_trim(string3));
 	TEST_ASSERT_TRUE(strap_string_trim(string4));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "this string") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string2), "nospace") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string4), "") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string3), "") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "this string"));
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string2), "nospace"));
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string4), ""));
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string3), ""));
 	return 1;
 }
 
@@ -546,7 +546,7 @@ int test_string_split_empty()
 	string = strap_string_alloc("");
 	TEST_ASSERT_TRUE(strap_string_split(string, arr, ","));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 1);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), ""));
 	return 1;
 }
 
@@ -556,10 +556,10 @@ int test_string_split_comma()
 	string = strap_string_alloc("one,two,three,four");
 	TEST_ASSERT_TRUE(strap_string_split(string, arr, ","));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 4);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "one") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "two") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "three") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 3), "four") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "one"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "two"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "three"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 3), "four"));
 	return 1;
 }
 
@@ -569,9 +569,9 @@ int test_string_split_word()
 	string = strap_string_alloc("one-w-two-w-three");
 	TEST_ASSERT_TRUE(strap_string_split(string, arr, "-w-"));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "one") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "two") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "three") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "one"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "two"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "three"));
 	return 1;
 }
 
@@ -580,7 +580,7 @@ int test_string_reverse()
 	string = strap_string_alloc("this is my string");
 	TEST_ASSERT_TRUE(!strap_string_reverse(NULL));
 	TEST_ASSERT_TRUE(strap_string_reverse(string));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "gnirts ym si siht") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "gnirts ym si siht"));
 	return 1;
 }
 
@@ -609,10 +609,10 @@ int test_array_clone_valid_string()
 	strap_array_append_cstr(arr, "test");
 	TEST_ASSERT_TRUE(arr2 = strap_array_clone(arr));
 	TEST_ASSERT_TRUE(strap_array_count(arr2) == 4);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 0), "this") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 1), "is")   == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 2), "a")    == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 3), "test") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 0), "this"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 1), "is")  );
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 2), "a")   );
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 3), "test"));
 	TEST_ASSERT_FALSE(arr == arr2);
 	return 1;
 }
@@ -653,7 +653,7 @@ int test_array_create_string_valid()
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "two"));
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "three"));
 	TEST_ASSERT_TRUE(string = strap_array_create_string(arr, 1));
-	TEST_ASSERT_TRUE(strcmp(strap_string_get_cstr(string), "two") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_string_get_cstr(string), "two"));
 	return 1;
 }
 
@@ -695,19 +695,26 @@ int test_array_append_cstr_valid()
 		TEST_ASSERT_TRUE(strap_array_append_cstr(arr, buf[i]));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 4);
 	for (i = 0; i < 4; i++)
-		TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, i), buf[i]) == 0);
+		TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, i), buf[i]));
 	return 1;
 }
 
 int test_array_append_cstr_large_string()
 {
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	const char *buf = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta orci orci. Donec convallis felis faucibus quam tempor lobortis. Suspendisse vitae velit ornare, pulvinar mauris ut, tempor nibh. Cras vitae lacus quis tortor viverra molestie. Etiam aliquam neque risus, vel mollis est dignissim at. Donec iaculis blandit finibus. Maecenas nec laoreet lorem, sed pellentesque erat. Nullam lacus dui, ultrices eget egestas vel, laoreet ut arcu. Aliquam eget ipsum egestas, convallis leo eu integer. ";
+	const char *buf = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+		"Vivamus porta orci orci. Donec convallis felis faucibus quam tempor "
+		"lobortis. Suspendisse vitae velit ornare, pulvinar mauris ut, tempor nibh. "
+		"Cras vitae lacus quis tortor viverra molestie. Etiam aliquam neque risus, "
+		"vel mollis est dignissim at. Donec iaculis blandit finibus. Maecenas nec "
+		"laoreet lorem, sed pellentesque erat. Nullam lacus dui, ultrices eget "
+		"egestas vel, laoreet ut arcu. Aliquam eget ipsum egestas, convallis "
+		"leo eu integer. ";
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, buf));
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, buf));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), buf) == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), buf) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), buf));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), buf));
 	return 1;
 }
 
@@ -722,8 +729,8 @@ int test_array_append_cstr_large_count()
 		TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "a"));
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, buf));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == SIZE_LARGE + 1);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, SIZE_LARGE), buf) == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "a") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, SIZE_LARGE), buf));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "a"));
 	return 1;
 }
 
@@ -743,9 +750,9 @@ int test_array_insert_cstr_empty()
 	TEST_ASSERT_TRUE(strap_array_insert_cstr(arr, 0, ""));
 	TEST_ASSERT_TRUE(strap_array_insert_cstr(arr, 0, ""));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "third") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), ""));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), ""));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "third"));
 	return 1;
 }
 
@@ -761,11 +768,11 @@ int test_array_insert_cstr_valid()
 	TEST_ASSERT_TRUE(strap_array_insert_cstr(arr, 1, "a second long string"));
 	TEST_ASSERT_TRUE(strap_array_insert_cstr(arr, 10, "last"));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 5);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "one") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "a second long string") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "second") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 3), "third") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 4), "last") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "one"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "a second long string"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "second"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 3), "third"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 4), "last"));
 	return 1;
 }
 
@@ -780,7 +787,7 @@ int test_array_insert_cstr_large()
 		TEST_ASSERT_TRUE(strap_array_insert_cstr(arr, 0, "a"));
 	TEST_ASSERT_TRUE(strap_array_insert_cstr(arr, 0, buf));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == SIZE_LARGE + 1);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), buf) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), buf));
 	return 1;
 }
 
@@ -812,9 +819,9 @@ int test_array_replace_cstr_valid()
 	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 1, ""));
 	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 2, "3rd"));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "first") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "3rd") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "first"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), ""));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "3rd"));
 	return 1;
 }
 
@@ -826,7 +833,7 @@ int test_array_replace_cstr_equal_length()
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
 	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 1, "number"));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "number") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "number"));
 	return 1;
 }
 
@@ -838,7 +845,7 @@ int test_array_replace_cstr_large()
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
 	strap_array_append_cstr(arr, "test");
 	TEST_ASSERT_TRUE(strap_array_replace_cstr(arr, 0, buf));
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), buf) == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), buf));
 	return 1;
 }
 
@@ -951,8 +958,8 @@ int test_array_erase_str_valid()
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
 	TEST_ASSERT_TRUE(strap_array_erase(arr, 1));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "first") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "third") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "first"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "third"));
 	return 1;
 }
 
@@ -964,8 +971,8 @@ int test_array_erase_range_str_first_element()
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
 	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 0, 1));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "second") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "third") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "second"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "third"));
 	return 1;
 }
 
@@ -991,9 +998,9 @@ int test_array_erase_range_str_valid()
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "six"));
 	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 2, 3));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "first") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "second") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "six") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "first"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "second"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "six"));
 	return 1;
 }
 
@@ -1031,8 +1038,8 @@ int test_array_create_subarray_str_valid()
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "fourth"));
 	TEST_ASSERT_TRUE(arr2 = strap_array_create_subarray(arr, 1, 2));
 	TEST_ASSERT_TRUE(strap_array_count(arr2) == 2);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 0), "second") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 1), "third") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 0), "second"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 1), "third"));
 	return 1;
 }
 
@@ -1044,7 +1051,7 @@ int test_array_create_subarray_str_first_element()
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "three"));
 	TEST_ASSERT_TRUE(arr2 = strap_array_create_subarray(arr, 0, 1));
 	TEST_ASSERT_TRUE(strap_array_count(arr2) == 1);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 0), "number") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 0), "number"));
 	return 1;
 }
 
@@ -1056,9 +1063,9 @@ int test_array_create_subarray_str_large_n()
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "three"));
 	TEST_ASSERT_TRUE(arr2 = strap_array_create_subarray(arr, 0, 100));
 	TEST_ASSERT_TRUE(strap_array_count(arr2) == 3);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 0), "number") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 1), "one") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr2, 2), "three") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 0), "number"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 1), "one"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 2), "three"));
 	return 1;
 }
 
@@ -1082,9 +1089,9 @@ int test_array_reverse_str_valid_odd()
 	strap_array_append_cstr(arr, "was");
 	strap_array_append_cstr(arr, "this");
 	TEST_ASSERT_TRUE(strap_array_reverse(arr) == arr);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "this") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "was") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "reversed") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "this"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "was"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "reversed"));
 	return 1;
 }
 
@@ -1096,10 +1103,10 @@ int test_array_reverse_str_valid_even()
 	strap_array_append_cstr(arr, "was");
 	strap_array_append_cstr(arr, "this");
 	TEST_ASSERT_TRUE(strap_array_reverse(arr) == arr);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 0), "this") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 1), "was") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 2), "also") == 0);
-	TEST_ASSERT_TRUE(strcmp(strap_array_get_cstr(arr, 3), "reversed") == 0);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "this"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "was"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "also"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 3), "reversed"));
 	return 1;
 }
 
