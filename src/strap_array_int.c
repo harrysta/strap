@@ -1,6 +1,5 @@
 #include "strap_internal.h"
 #include "strap_array_num.h"
-#include <stdio.h>
 #include <string.h>
 
 #define INT_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_INT, int)

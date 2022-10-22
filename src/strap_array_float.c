@@ -1,5 +1,6 @@
 #include "strap_internal.h"
 #include "strap_array_num.h"
+#include <string.h>
 
 #define FLOAT_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_FLOAT, float)
 
