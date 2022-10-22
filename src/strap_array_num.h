@@ -1,3 +1,5 @@
+#pragma once
+
 #define narr_init(arr, ret, strap_type, data_type) \
 do {                                               \
 	if (!arr || arr->type != strap_type)             \
@@ -54,3 +56,34 @@ do {                                                                 \
 	return arr;                                                        \
 } while (0)
 
+#define strap_array_replace_num(arr, idx, num, strap_type, data_type) \
+do {                                                                  \
+	data_type *iarr;                                                    \
+                                                                      \
+	narr_init(arr, arr, strap_type, data_type);                         \
+	if (idx > arr->count - 1)                                           \
+		return arr;                                                       \
+	iarr[idx] = num;                                                    \
+	return arr;                                                         \
+} while (0)
+
+#define strap_array_nfind_num(arr, num, n, strap_type, data_type) \
+do {                                                              \
+	data_type *iarr;                                                \
+	size_t counted;                                                 \
+	size_t count;                                                   \
+	size_t i;                                                       \
+                                                                  \
+	narr_init(arr, -1, strap_type, data_type);                      \
+	count = arr->count;                                             \
+	if (!count)                                                     \
+		return -1;                                                    \
+	for (i = 0, counted = 0; i < count && counted <= n; i++) {      \
+		if (iarr[i] == num) {                                         \
+			if (counted == n)                                           \
+				return i;                                                 \
+			counted++;                                                  \
+		}                                                             \
+	}                                                               \
+	return -1;                                                      \
+} while (0)

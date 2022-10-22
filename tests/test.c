@@ -1210,43 +1210,89 @@ int test_array_insert_int_valid()
 
 int test_array_replace_int_null()
 {
+	TEST_ASSERT_FALSE(strap_array_replace_int(NULL, 0, 23));
 	return 1;
 }
 
-int test_array_replace_int_empty()
+int test_array_replace_int_invalid_index()
 {
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_replace_int(arr, 0, 23));
+	TEST_ASSERT_TRUE(strap_array_replace_int(arr, 1, 35));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 0);
 	return 1;
 }
 
 int test_array_replace_int_valid()
 {
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_replace_int(arr, 0, 1));
+	TEST_ASSERT_TRUE(strap_array_replace_int(arr, 1, 13));
+	TEST_ASSERT_TRUE(strap_array_replace_int(arr, 2, 25));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 0) == 1);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 1) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 2) == 25);
 	return 1;
 }
 
-
 int test_array_find_int_null()
 {
+	TEST_ASSERT_TRUE(strap_array_find_int(NULL, 55) == -1);
 	return 1;
 }
 
 int test_array_find_int_empty()
 {
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_find_int(arr, 5) == -1);
 	return 1;
 }
 
 int test_array_find_int_valid()
 {
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 23));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 15));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 99));
+	TEST_ASSERT_TRUE(strap_array_find_int(arr, 5) == 0);
+	TEST_ASSERT_TRUE(strap_array_find_int(arr, 15) == 2);
 	return 1;
 }
 
 
 int test_array_nfind_int_valid()
 {
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 1));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 3));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 4));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 99));
+	TEST_ASSERT_TRUE(strap_array_nfind_int(arr, 13, 0) == 1);
+	TEST_ASSERT_TRUE(strap_array_nfind_int(arr, 13, 1) == 4);
+	TEST_ASSERT_TRUE(strap_array_nfind_int(arr, 13, 2) == 5);
+	TEST_ASSERT_TRUE(strap_array_nfind_int(arr, 13, 3) == -1);
 	return 1;
 }
 
 int test_array_nfind_int_no_match()
 {
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 1));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 2));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 3));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 4));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 6));
+	TEST_ASSERT_TRUE(strap_array_nfind_int(arr, 13, 0) == -1);
+	TEST_ASSERT_TRUE(strap_array_nfind_int(arr, 13, 1) == -1);
 	return 1;
 }
 
@@ -1560,7 +1606,7 @@ int main ()
 	TEST_RUN(test_array_insert_int_valid);
 
 	TEST_RUN(test_array_replace_int_null);
-	TEST_RUN(test_array_replace_int_empty);
+	TEST_RUN(test_array_replace_int_invalid_index);
 	TEST_RUN(test_array_replace_int_valid);
 
 	TEST_RUN(test_array_find_int_null);

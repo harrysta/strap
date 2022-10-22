@@ -228,7 +228,7 @@ size_t strap_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 	nulls = str_sarr(arr)->nulls;
 	offset = 0;
 	for (i = 0, counted = 0; i < count && counted <= n; i++) {
-		if (strcmp(buf + offset, cstr) == 0) {
+		if (!strcmp(buf + offset, cstr)) {
 			if (counted == n)
 				return i;
 			counted++;

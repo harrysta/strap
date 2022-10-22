@@ -19,3 +19,18 @@ StrapArray *strap_array_insert_int(StrapArray *arr, size_t idx, int num)
 {
 	INT_MACRO(strap_array_insert_num, arr, idx, num);
 }
+
+StrapArray *strap_array_replace_int(StrapArray *arr, size_t idx, int num)
+{
+	INT_MACRO(strap_array_replace_num, arr, idx, num);
+}
+
+size_t strap_array_find_int(const StrapArray *arr, int num)
+{
+	return strap_array_nfind_int(arr, num, 0);
+}
+
+size_t strap_array_nfind_int(const StrapArray *arr, int num, size_t n)
+{
+	INT_MACRO(strap_array_nfind_num, arr, num, n);
+}
