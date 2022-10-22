@@ -1,5 +1,4 @@
-#ifndef STRAP_INTERNAL_H
-#define STRAP_INTERNAL_H
+#pragma once
 
 #include "strap.h"
 #include <stdlib.h>
@@ -34,5 +33,3 @@ extern StrapArray *strap_array_shrink_str(StrapArray *arr);
 extern StrapArray *strap_array_sort_str(StrapArray *arr, int ascending);
 
 extern int num_resize_capacity(StrapArray *arr, size_t capacity);
-
-#endif

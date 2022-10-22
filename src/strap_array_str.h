@@ -1,5 +1,4 @@
-#ifndef STRAP_ARRAY_STR_H
-#define STRAP_ARRAY_STR_H
+#pragma once
 
 #include "strap_internal.h"
 
@@ -48,8 +47,4 @@ struct str_array {
 
 extern int str_resize_capacity(StrapArray *arr, size_t capacity);
 extern int str_resize_buf(StrapArray *arr, size_t buflen);
-
-extern struct str_array* str_resize(StrapArray *arr,
-	size_t capacity, size_t buflen);
-
-#endif
+extern struct str_array* str_resize(StrapArray *arr, size_t capacity, size_t buflen);

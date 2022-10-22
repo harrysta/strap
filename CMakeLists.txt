@@ -7,6 +7,7 @@ file(GLOB TESTS tests/*.c)
 include_directories(include)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 90)
+add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 add_executable(test ${TESTS})
 target_link_libraries(test PUBLIC ${PROJECT_NAME})

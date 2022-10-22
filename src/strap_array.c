@@ -65,12 +65,6 @@ int strap_array_sprintf_element_u64(const StrapArray *arr, char *buf, size_t idx
 	return sprintf(buf, "%lu", iarr[idx]);
 }
 
-int strap_array_sprintf_element_size_t(const StrapArray *arr, char *buf, size_t idx)
-{
-	size_t *iarr = (size_t*) arr->data;
-	return sprintf(buf, "%lu", iarr[idx]);
-}
-
 int strap_array_sprintf_element_f32(const StrapArray *arr, char *buf, size_t idx)
 {
 	float *iarr = (float*) arr->data;
@@ -366,11 +360,9 @@ StrapArray *strap_array_shrink(StrapArray *arr)
 		case STRAP_TYPE_SHORT:
 		case STRAP_TYPE_INT:
 		case STRAP_TYPE_LONG_INT:
-		case STRAP_TYPE_LONG_LONG_INT:
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_DOUBLE:
 		case STRAP_TYPE_LONG_DOUBLE:
-		case STRAP_TYPE_SIZE_T:
 			if (new_capacity != arr->capacity)
 				num_resize_capacity(arr, new_capacity);
 			return arr;
