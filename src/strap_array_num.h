@@ -1,6 +1,7 @@
 #pragma once
 
 #include "strap.h"
+#include <sys/types.h>
 
 #define CHAR_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_CHAR, char)
 #define SHORT_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_SHORT, short)
@@ -116,31 +117,3 @@ do {                                                              \
 } while (0)
 
 extern int num_resize_capacity(StrapArray *arr, size_t capacity);
-
-extern int num_char_as_int(const StrapArray *arr, size_t idx);
-extern int num_short_as_int(const StrapArray *arr, size_t idx);
-extern int num_int_as_int(const StrapArray *arr, size_t idx);
-extern int num_long_as_int(const StrapArray *arr, size_t idx);
-
-extern long num_char_as_long(const StrapArray *arr, size_t idx);
-extern long num_short_as_long(const StrapArray *arr, size_t idx);
-extern long num_int_as_long(const StrapArray *arr, size_t idx);
-extern long num_long_as_long(const StrapArray *arr, size_t idx);
-
-extern unsigned int num_char_as_uint(const StrapArray *arr, size_t idx);
-extern unsigned int num_short_as_uint(const StrapArray *arr, size_t idx);
-extern unsigned int num_int_as_uint(const StrapArray *arr, size_t idx);
-extern unsigned int num_long_as_uint(const StrapArray *arr, size_t idx);
-
-extern unsigned long num_char_as_ulong(const StrapArray *arr, size_t idx);
-extern unsigned long num_short_as_ulong(const StrapArray *arr, size_t idx);
-extern unsigned long num_int_as_ulong(const StrapArray *arr, size_t idx);
-extern unsigned long num_long_as_ulong(const StrapArray *arr, size_t idx);
-
-extern double num_float_as_double(const StrapArray *arr, size_t idx);
-extern double num_double_as_double(const StrapArray *arr, size_t idx);
-extern double num_longdouble_as_double(const StrapArray *arr, size_t idx);
-
-extern long double num_float_as_longdouble(const StrapArray *arr, size_t idx);
-extern long double num_double_as_longdouble(const StrapArray *arr, size_t idx);
-extern long double num_longdouble_as_longdouble(const StrapArray *arr, size_t idx);
