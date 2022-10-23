@@ -414,7 +414,7 @@ int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
 	int n;
 	const char *prefix = "";
 
-	if (!arr)
+	if (!arr || !ptr)
 		return -1;
 	count =  arr->count;
 	bytes = BUF_SIZE;
@@ -430,12 +430,13 @@ int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
 					bytes = len;
 			}
 			break;
-		case STRAP_TYPE_INT:
-			func = strap_array_sprintf_element_i32;
-			break;
-		case STRAP_TYPE_FLOAT:
-			func = strap_array_sprintf_element_f32;
-			break;
+		case STRAP_TYPE_CHAR: func = strap_array_sprintf_element_i8; break;
+		case STRAP_TYPE_SHORT: func = strap_array_sprintf_element_i16; break;
+		case STRAP_TYPE_INT: func = strap_array_sprintf_element_i32; break;
+		case STRAP_TYPE_LONG_INT: func = strap_array_sprintf_element_i64; break;
+		case STRAP_TYPE_FLOAT: func = strap_array_sprintf_element_f32; break;
+		case STRAP_TYPE_DOUBLE: func = strap_array_sprintf_element_f64; break;
+		// case STRAP_TYPE_LONG_DOUBLE: func = strap_array_sprintf_element_f128; break;
 		default:
 			return -1;
 	}

@@ -2219,6 +2219,140 @@ test_t test_array_erase_float_valid()
 	return 1;
 }
 
+test_t test_array_sprintf_null()
+{
+	char buf[16];
+
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_sprintf(NULL, NULL) == -1);
+	TEST_ASSERT_TRUE(strap_array_sprintf(NULL, buf)  == -1);
+	TEST_ASSERT_TRUE(strap_array_sprintf(arr, NULL)  == -1);
+	return 1;
+}
+
+test_t test_array_sprintf_empty()
+{
+	char buf[16];
+	const char *expected_str =  "[]";
+
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
+	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
+	return 1;
+}
+
+test_t test_array_sprintf_str()
+{
+	char buf[32];
+	const char *expected_str =  "[\"sprintf\", \"testing\", \"str\"]";
+
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	strap_array_append_cstr(arr, "sprintf");
+	strap_array_append_cstr(arr, "testing");
+	strap_array_append_cstr(arr, "str");
+	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
+	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
+	return 1;
+}
+
+test_t test_array_sprintf_char()
+{
+	char buf[32];
+	const char *expected_str =  "[13, 24, 122]";
+
+	arr = strap_array_alloc(STRAP_TYPE_CHAR);
+	strap_array_append_char(arr, 13);
+	strap_array_append_char(arr, 24);
+	strap_array_append_char(arr, 122);
+	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
+	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
+	return 1;
+}
+
+test_t test_array_sprintf_short()
+{
+	char buf[32];
+	const char *expected_str =  "[13, 24, 122]";
+
+	arr = strap_array_alloc(STRAP_TYPE_SHORT);
+	strap_array_append_short(arr, 13);
+	strap_array_append_short(arr, 24);
+	strap_array_append_short(arr, 122);
+	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
+	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
+	return 1;
+}
+
+test_t test_array_sprintf_int()
+{
+	char buf[32];
+	const char *expected_str =  "[13, 24, 137]";
+
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	strap_array_append_int(arr, 13);
+	strap_array_append_int(arr, 24);
+	strap_array_append_int(arr, 137);
+	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
+	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
+	return 1;
+}
+
+test_t test_array_sprintf_long()
+{
+	char buf[32];
+	const char *expected_str =  "[13, 24, 137]";
+
+	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	strap_array_append_long(arr, 13);
+	strap_array_append_long(arr, 24);
+	strap_array_append_long(arr, 137);
+	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
+	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
+	return 1;
+}
+
+test_t test_array_sprintf_float()
+{
+	char buf[32];
+	const char *expected_str =  "[0.005, 1.3, 137]";
+
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	strap_array_append_float(arr, 0.005);
+	strap_array_append_float(arr, 1.3);
+	strap_array_append_float(arr, 137);
+	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
+	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
+	return 1;
+}
+
+test_t test_array_sprintf_double()
+{
+	char buf[32];
+	const char *expected_str =  "[0.005, 1.3, 137]";
+
+	arr = strap_array_alloc(STRAP_TYPE_DOUBLE);
+	strap_array_append_double(arr, 0.005);
+	strap_array_append_double(arr, 1.3);
+	strap_array_append_double(arr, 137);
+	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
+	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
+	return 1;
+}
+
+test_t test_array_sprintf_longdouble()
+{
+	char buf[32];
+	const char *expected_str =  "[0.005, 1.3, 137]";
+
+	arr = strap_array_alloc(STRAP_TYPE_LONG_DOUBLE);
+	strap_array_append_longdouble(arr, 0.005);
+	strap_array_append_longdouble(arr, 1.3);
+	strap_array_append_longdouble(arr, 137);
+	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
+	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
+	return 1;
+}
+
 
 
 
@@ -2561,6 +2695,18 @@ int main ()
 	// TEST_RUN(test_array_shrink_null);
 	// TEST_RUN(test_array_shrink_str_empty);
 	// TEST_RUN(test_array_shrink_str_valid);
+
+	TEST_RUN(test_array_sprintf_null);
+	TEST_RUN(test_array_sprintf_empty);
+
+	TEST_RUN(test_array_sprintf_str);
+	TEST_RUN(test_array_sprintf_char);
+	TEST_RUN(test_array_sprintf_short);
+	TEST_RUN(test_array_sprintf_int);
+	TEST_RUN(test_array_sprintf_long);
+	TEST_RUN(test_array_sprintf_float);
+	TEST_RUN(test_array_sprintf_double);
+	TEST_RUN(test_array_sprintf_longdouble);
 
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,
