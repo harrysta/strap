@@ -2,8 +2,6 @@
 #include "strap_array_num.h"
 #include <string.h>
 
-#define SHORT_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_SHORT, short)
-
 short strap_array_get_short(const StrapArray *arr, size_t idx)
 {
 	SHORT_MACRO(strap_array_get_num, arr, idx);

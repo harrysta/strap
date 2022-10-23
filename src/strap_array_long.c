@@ -2,8 +2,6 @@
 #include "strap_array_num.h"
 #include <string.h>
 
-#define LONG_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_LONG_INT, long)
-
 long strap_array_get_long(const StrapArray *arr, size_t idx)
 {
 	LONG_MACRO(strap_array_get_num, arr, idx);

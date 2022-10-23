@@ -1,10 +1,28 @@
 #pragma once
 
+#include "strap.h"
+
+#define CHAR_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_CHAR, char)
+#define SHORT_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_SHORT, short)
+#define INT_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_INT, int)
+#define LONG_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_LONG_INT, long)
+#define FLOAT_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_FLOAT, float)
+#define DOUBLE_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_DOUBLE, double)
+#define LONGDOUBLE_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_LONG_DOUBLE, long double)
+
 #define narr_init(arr, ret, strap_type, data_type) \
 do {                                               \
 	if (!arr || arr->type != strap_type)             \
 		return ret;                                    \
 	iarr = (data_type*) arr->data;                   \
+} while (0)
+
+#define num_check_size(arr, capacity, ret)                             \
+do {                                                                   \
+	if (arr->count == arr->capacity) {                                   \
+		if (num_resize_capacity(arr, arr->capacity + STRAP_INIT_CAPACITY)) \
+			return ret;                                                      \
+	}                                                                    \
 } while (0)
 
 #define strap_array_get_num(arr, idx, strap_type, data_type) \
@@ -15,14 +33,6 @@ do {                                                         \
 	narr_init(arr, 0, strap_type, data_type);                  \
 	count = arr->count;                                        \
 	return idx < count ? iarr[idx] : 0;                        \
-} while (0)
-
-#define num_check_size(arr, capacity, ret)                             \
-do {                                                                   \
-	if (arr->count == arr->capacity) {                                   \
-		if (num_resize_capacity(arr, arr->capacity + STRAP_INIT_CAPACITY)) \
-			return ret;                                                      \
-	}                                                                    \
 } while (0)
 
 #define strap_array_append_num(arr, num, strap_type, data_type)        \
@@ -87,3 +97,50 @@ do {                                                              \
 	}                                                               \
 	return -1;                                                      \
 } while (0)
+
+#define strap_array_sum_num(arr, sum_type, strap_type, data_type) \
+do {                                                              \
+	data_type *iarr;                                                \
+	sum_type sum;                                                   \
+	size_t count;                                                   \
+	size_t i;                                                       \
+                                                                  \
+	if (!arr || arr->type == STRAP_TYPE_STRING)                     \
+		return 0;                                                     \
+	iarr = (data_type*) arr->data;                                  \
+	count = arr->count;                                             \
+	sum = 0;                                                        \
+	for (i = 0; i < count; i++)                                     \
+			sum += (sum_type) iarr[i];                                  \
+	return sum;                                                     \
+} while (0)
+
+extern int num_resize_capacity(StrapArray *arr, size_t capacity);
+
+extern int num_char_as_int(const StrapArray *arr, size_t idx);
+extern int num_short_as_int(const StrapArray *arr, size_t idx);
+extern int num_int_as_int(const StrapArray *arr, size_t idx);
+extern int num_long_as_int(const StrapArray *arr, size_t idx);
+
+extern long num_char_as_long(const StrapArray *arr, size_t idx);
+extern long num_short_as_long(const StrapArray *arr, size_t idx);
+extern long num_int_as_long(const StrapArray *arr, size_t idx);
+extern long num_long_as_long(const StrapArray *arr, size_t idx);
+
+extern unsigned int num_char_as_uint(const StrapArray *arr, size_t idx);
+extern unsigned int num_short_as_uint(const StrapArray *arr, size_t idx);
+extern unsigned int num_int_as_uint(const StrapArray *arr, size_t idx);
+extern unsigned int num_long_as_uint(const StrapArray *arr, size_t idx);
+
+extern unsigned long num_char_as_ulong(const StrapArray *arr, size_t idx);
+extern unsigned long num_short_as_ulong(const StrapArray *arr, size_t idx);
+extern unsigned long num_int_as_ulong(const StrapArray *arr, size_t idx);
+extern unsigned long num_long_as_ulong(const StrapArray *arr, size_t idx);
+
+extern double num_float_as_double(const StrapArray *arr, size_t idx);
+extern double num_double_as_double(const StrapArray *arr, size_t idx);
+extern double num_longdouble_as_double(const StrapArray *arr, size_t idx);
+
+extern long double num_float_as_longdouble(const StrapArray *arr, size_t idx);
+extern long double num_double_as_longdouble(const StrapArray *arr, size_t idx);
+extern long double num_longdouble_as_longdouble(const StrapArray *arr, size_t idx);

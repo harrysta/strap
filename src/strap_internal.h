@@ -31,5 +31,3 @@ extern StrapArray *strap_array_create_subarray_str(const StrapArray *arr, size_t
 extern StrapArray *strap_array_reverse_str(StrapArray *arr);
 extern StrapArray *strap_array_shrink_str(StrapArray *arr);
 extern StrapArray *strap_array_sort_str(StrapArray *arr, int ascending);
-
-extern int num_resize_capacity(StrapArray *arr, size_t capacity);

@@ -21,6 +21,7 @@
 #define TEST_BEFORE_EACH(a) test_before_each = a
 #define TEST_AFTER_EACH(a) test_after_each = a
 #define FLOAT_EQUALS(a,b) fabs(a - b) < EPSILON
+#define DOUBLE_EQUALS(a,b) fabsl(a - b) < EPSILON
 #define puts_h(s) puts(ANSI_COLOR_MAGENTA s ANSI_COLOR_RESET)
 
 #define TEST_RUN(a)                                                      \
@@ -1922,6 +1923,149 @@ test_t test_array_nfind_float_no_match()
 }
 
 
+// --------------------------------------------------------------
+
+test_t test_array_sum_int_null()
+{
+	TEST_ASSERT_FALSE(strap_array_sum_int(NULL));
+	return 1;
+}
+
+test_t test_array_sum_long_null()
+{
+	TEST_ASSERT_FALSE(strap_array_sum_long(NULL));
+	return 1;
+}
+
+test_t test_array_sum_uint_null()
+{
+	TEST_ASSERT_FALSE(strap_array_sum_uint(NULL));
+	return 1;
+}
+
+test_t test_array_sum_ulong_null()
+{
+	TEST_ASSERT_FALSE(strap_array_sum_ulong(NULL));
+	return 1;
+}
+
+test_t test_array_sum_double_null()
+{
+	TEST_ASSERT_FALSE(strap_array_sum_double(NULL));
+	return 1;
+}
+
+test_t test_array_sum_longdouble_null()
+{
+	TEST_ASSERT_FALSE(strap_array_sum_longdouble(NULL));
+	return 1;
+}
+
+test_t test_array_sum_int_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_FALSE(strap_array_sum_int(arr));
+	return 1;
+}
+
+test_t test_array_sum_long_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_FALSE(strap_array_sum_long(arr));
+	return 1;
+}
+
+test_t test_array_sum_uint_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_FALSE(strap_array_sum_uint(arr));
+	return 1;
+}
+
+test_t test_array_sum_ulong_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_FALSE(strap_array_sum_ulong(arr));
+	return 1;
+}
+
+test_t test_array_sum_double_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_FALSE(strap_array_sum_double(arr));
+	return 1;
+}
+
+test_t test_array_sum_longdouble_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_FALSE(strap_array_sum_longdouble(arr));
+	return 1;
+}
+
+test_t test_array_sum_int_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	strap_array_append_int(arr, 125);
+	strap_array_append_int(arr, -28);
+	strap_array_append_int(arr, 1983);
+	TEST_ASSERT_TRUE(strap_array_sum_int(arr) == 2080);
+	return 1;
+}
+
+test_t test_array_sum_long_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	strap_array_append_int(arr, 125);
+	strap_array_append_int(arr, -28);
+	strap_array_append_int(arr, 1983);
+	TEST_ASSERT_TRUE(strap_array_sum_long(arr) == 2080);
+	return 1;
+}
+
+test_t test_array_sum_uint_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	strap_array_append_int(arr, 125);
+	strap_array_append_int(arr, -28);
+	strap_array_append_int(arr, 1983);
+	TEST_ASSERT_TRUE(strap_array_sum_uint(arr) == 2080);
+	return 1;
+}
+
+test_t test_array_sum_ulong_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	strap_array_append_int(arr, 125);
+	strap_array_append_int(arr, -28);
+	strap_array_append_int(arr, 1983);
+	TEST_ASSERT_TRUE(strap_array_sum_ulong(arr) == 2080);
+	return 1;
+}
+
+test_t test_array_sum_double_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	strap_array_append_float(arr, 0.03);
+	strap_array_append_float(arr, 28);
+	strap_array_append_float(arr, 0.1008);
+	TEST_ASSERT_TRUE(FLOAT_EQUALS(strap_array_sum_double(arr), 28.1308));
+	return 1;
+}
+
+test_t test_array_sum_longdouble_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	strap_array_append_float(arr, 0.03);
+	strap_array_append_float(arr, 28);
+	strap_array_append_float(arr, 0.1008);
+	TEST_ASSERT_TRUE(DOUBLE_EQUALS(strap_array_sum_longdouble(arr), 28.1308));
+	return 1;
+}
+
+
+
+
 
 
 
@@ -2188,6 +2332,27 @@ int main ()
 
 	/* ARRAY general */
 	puts_h("\n-- TEST StrapArray (general) --");
+
+	TEST_RUN(test_array_sum_int_null);
+	TEST_RUN(test_array_sum_long_null);
+	TEST_RUN(test_array_sum_uint_null);
+	TEST_RUN(test_array_sum_ulong_null);
+	TEST_RUN(test_array_sum_double_null);
+	TEST_RUN(test_array_sum_longdouble_null);
+
+	TEST_RUN(test_array_sum_int_empty);
+	TEST_RUN(test_array_sum_long_empty);
+	TEST_RUN(test_array_sum_uint_empty);
+	TEST_RUN(test_array_sum_ulong_empty);
+	TEST_RUN(test_array_sum_double_empty);
+	TEST_RUN(test_array_sum_longdouble_empty);
+
+	TEST_RUN(test_array_sum_int_valid);
+	TEST_RUN(test_array_sum_long_valid);
+	TEST_RUN(test_array_sum_uint_valid);
+	TEST_RUN(test_array_sum_ulong_valid);
+	TEST_RUN(test_array_sum_double_valid);
+	TEST_RUN(test_array_sum_longdouble_valid);
 
 	// TEST_RUN(test_array_clear_null);
 	// TEST_RUN(test_array_clear_str_valid);

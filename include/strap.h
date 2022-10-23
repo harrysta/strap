@@ -167,19 +167,12 @@ extern size_t strap_array_nfind_longdouble(const StrapArray *arr, long double nu
 
 // sum
 
-extern char  strap_array_sum_char(const StrapArray *arr);
-extern short strap_array_sum_short(const StrapArray *arr);
-extern int   strap_array_sum_int(const StrapArray *arr);
-extern long  strap_array_sum_long(const StrapArray *arr);
-
-extern unsigned char  strap_array_sum_uchar(const StrapArray *arr);
-extern unsigned short strap_array_sum_ushort(const StrapArray *arr);
-extern unsigned int   strap_array_sum_uint(const StrapArray *arr);
-extern unsigned long  strap_array_sum_ulong(const StrapArray *arr);
-
-extern float       strap_array_sum_float(const StrapArray *arr);
-extern double      strap_array_sum_double(const StrapArray *arr);
-extern long double strap_array_sum_longdouble(const StrapArray *arr);
+extern int           strap_array_sum_int(const StrapArray *arr);
+extern long          strap_array_sum_long(const StrapArray *arr);
+extern unsigned int  strap_array_sum_uint(const StrapArray *arr);
+extern unsigned long strap_array_sum_ulong(const StrapArray *arr);
+extern double        strap_array_sum_double(const StrapArray *arr);
+extern long double   strap_array_sum_longdouble(const StrapArray *arr);
 
 // other
 

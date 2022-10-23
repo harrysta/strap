@@ -2,8 +2,6 @@
 #include "strap_array_num.h"
 #include <string.h>
 
-#define CHAR_MACRO(MACRO, ...) MACRO(__VA_ARGS__, STRAP_TYPE_CHAR, char)
-
 char strap_array_get_char(const StrapArray *arr, size_t idx)
 {
 	CHAR_MACRO(strap_array_get_num, arr, idx);
