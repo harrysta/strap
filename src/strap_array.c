@@ -216,6 +216,7 @@ StrapArray *strap_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 	size_t pos;
 	size_t mvpos;
 	size_t mvlen;
+	size_t len;
 	char *buf;
 	ushort *nulls;
 
@@ -237,6 +238,19 @@ StrapArray *strap_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 			nulls = str_sarr(arr)->nulls;
 			for (i = idx; i < count - 1; i++)
 				nulls[i] = nulls[i + 1];
+			break;
+		case STRAP_TYPE_CHAR:
+		case STRAP_TYPE_SHORT:
+		case STRAP_TYPE_INT:
+		case STRAP_TYPE_LONG_INT:
+		case STRAP_TYPE_FLOAT:
+		case STRAP_TYPE_DOUBLE:
+		case STRAP_TYPE_LONG_DOUBLE:
+			if (idx + n < count) {
+				buf = arr->data;
+				len = strap_sizeof(arr->type);
+				memcpy(buf + idx*len, buf + (idx + n)*len, (count - (idx + n))*len);
+			}
 			break;
 		default:
 			return arr;

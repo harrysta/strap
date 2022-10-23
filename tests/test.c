@@ -1040,45 +1040,6 @@ test_t test_array_clear_str_valid()
 	return 1;
 }
 
-test_t test_array_erase_str_null()
-{
-	TEST_ASSERT_TRUE(!strap_array_erase(NULL, 0));
-	return 1;
-}
-
-test_t test_array_erase_str_empty()
-{
-	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	TEST_ASSERT_TRUE(!strap_array_erase(NULL, 0));
-	TEST_ASSERT_TRUE(strap_array_count(arr) == 0);
-	return 1;
-}
-
-test_t test_array_erase_str_invalid()
-{
-	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
-	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
-	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
-	TEST_ASSERT_TRUE(strap_array_erase(arr, -1));
-	TEST_ASSERT_TRUE(strap_array_erase(arr, 5));
-	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
-	return 1;
-}
-
-test_t test_array_erase_str_valid()
-{
-	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
-	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
-	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
-	TEST_ASSERT_TRUE(strap_array_erase(arr, 1));
-	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "first"));
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "third"));
-	return 1;
-}
-
 test_t test_array_erase_range_str_first_element()
 {
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
@@ -1092,16 +1053,19 @@ test_t test_array_erase_range_str_first_element()
 	return 1;
 }
 
-test_t test_array_erase_range_str_large_range()
+test_t test_array_erase_range_str_last_element()
 {
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
 	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
-	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 2, 10));
+	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 2, 5));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "first"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "second"));
 	return 1;
 }
+
 
 test_t test_array_erase_range_str_valid()
 {
@@ -1119,6 +1083,95 @@ test_t test_array_erase_range_str_valid()
 	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "six"));
 	return 1;
 }
+
+
+test_t test_array_erase_range_int_first_element()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 24));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 55));
+	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 0, 1));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 0) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 1) == 55);
+	return 1;
+}
+
+test_t test_array_erase_range_int_last_element()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 24));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 55));
+	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 2, 5));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 0) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 1) == 24);
+	return 1;
+}
+
+test_t test_array_erase_range_int_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 24));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 55));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 9));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 73));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 6));
+	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 2, 3));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 0) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 1) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 2) == 6);
+	return 1;
+}
+
+test_t test_array_erase_range_float_first_element()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 24));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 55));
+	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 0, 1));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 0) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 1) == 55);
+	return 1;
+}
+
+test_t test_array_erase_range_float_last_element()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 24));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 55));
+	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 2, 5));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 0) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 1) == 24);
+	return 1;
+}
+
+test_t test_array_erase_range_float_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 24));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 55));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 9));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 73));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 6));
+	TEST_ASSERT_TRUE(strap_array_erase_range(arr, 2, 3));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 0) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 1) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 2) == 6);
+	return 1;
+}
+
+
 
 test_t test_array_create_subarray_null()
 {
@@ -2064,6 +2117,109 @@ test_t test_array_sum_longdouble_valid()
 }
 
 
+test_t test_array_erase_null()
+{
+	TEST_ASSERT_FALSE(strap_array_erase(NULL, 0));
+	return 1;
+}
+
+test_t test_array_erase_str_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 0));
+	return 1;
+}
+
+test_t test_array_erase_str_invalid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, -1));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	return 1;
+}
+
+test_t test_array_erase_str_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(strap_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 1));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "first"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "third"));
+	return 1;
+}
+
+test_t test_array_erase_int_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 0));
+	return 1;
+}
+
+test_t test_array_erase_int_invalid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, -1));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	return 1;
+}
+
+test_t test_array_erase_int_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 10));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_int(arr, 24));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 1));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 0) == 10);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 1) == 24);
+	return 1;
+}
+
+test_t test_array_erase_float_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 0));
+	return 1;
+}
+
+test_t test_array_erase_float_invalid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, -1));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 5));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 3);
+	return 1;
+}
+
+test_t test_array_erase_float_valid()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 10));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 13));
+	TEST_ASSERT_TRUE(strap_array_append_float(arr, 24));
+	TEST_ASSERT_TRUE(strap_array_erase(arr, 1));
+	TEST_ASSERT_TRUE(strap_array_count(arr) == 2);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 0) == 10);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 1) == 24);
+	return 1;
+}
+
+
 
 
 
@@ -2354,14 +2510,37 @@ int main ()
 	TEST_RUN(test_array_sum_double_valid);
 	TEST_RUN(test_array_sum_longdouble_valid);
 
+
+	TEST_RUN(test_array_erase_null);
+	TEST_RUN(test_array_erase_str_empty);
+	TEST_RUN(test_array_erase_str_invalid);
+	TEST_RUN(test_array_erase_str_valid);
+
+	TEST_RUN(test_array_erase_int_empty);
+	TEST_RUN(test_array_erase_int_invalid);
+	TEST_RUN(test_array_erase_int_valid);
+
+	TEST_RUN(test_array_erase_float_empty);
+	TEST_RUN(test_array_erase_float_invalid);
+	TEST_RUN(test_array_erase_float_valid);
+
+
+	TEST_RUN(test_array_erase_range_str_first_element);
+	TEST_RUN(test_array_erase_range_str_last_element);
+	TEST_RUN(test_array_erase_range_str_valid);
+
+	TEST_RUN(test_array_erase_range_int_first_element);
+	TEST_RUN(test_array_erase_range_int_last_element);
+	TEST_RUN(test_array_erase_range_int_valid);
+
+	TEST_RUN(test_array_erase_range_float_first_element);
+	TEST_RUN(test_array_erase_range_float_last_element);
+	TEST_RUN(test_array_erase_range_float_valid);
+
 	// TEST_RUN(test_array_clear_null);
 	// TEST_RUN(test_array_clear_str_valid);
 	//
-	// TEST_RUN(test_array_erase_str_null);
-	// TEST_RUN(test_array_erase_str_empty);
-	// TEST_RUN(test_array_erase_str_invalid);
-	// TEST_RUN(test_array_erase_str_valid);
-	//
+
 	// TEST_RUN(test_array_create_subarray_null);
 	// TEST_RUN(test_array_create_subarray_str_invalid);
 	// TEST_RUN(test_array_create_subarray_str_valid);
@@ -2373,10 +2552,7 @@ int main ()
 	// TEST_RUN(test_array_sort_str_ascending);
 	// TEST_RUN(test_array_sort_str_descending);
 	//
-	// TEST_RUN(test_array_erase_range_str_first_element);
-	// TEST_RUN(test_array_erase_range_str_large_range);
-	// TEST_RUN(test_array_erase_range_str_valid);
-	//
+
 	// TEST_RUN(test_array_reverse_null);
 	// TEST_RUN(test_array_reverse_str_empty);
 	// TEST_RUN(test_array_reverse_str_valid_odd);
