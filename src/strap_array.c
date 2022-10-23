@@ -1,4 +1,5 @@
 #include "strap_array_str.h"
+#include "strap_array_num.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -17,71 +18,45 @@ do {                                                       \
 	return n;                                                \
 } while (0)
 
-int strap_array_sprintf_element_i8(const StrapArray *arr, char *buf, size_t idx)
-{
-	char *iarr = (char*) arr->data;
-	return sprintf(buf, "%d", iarr[idx]);
-}
+#define strap_array_sfprintf(arr, s, prtf, pf, is_sprintf)                       \
+do {                                                                             \
+	const char *prefix = "";                                                       \
+	union num_array_t numarr;                                                      \
+	StrapType type;                                                                \
+	size_t count;                                                                  \
+	char *buf;                                                                     \
+	size_t i;                                                                      \
+	int pos;                                                                       \
+                                                                                 \
+	if (!arr || !s)                                                                \
+		return -1;                                                                   \
+	count = arr->count;                                                            \
+	type = arr->type;                                                              \
+	buf = str_buf(arr);                                                            \
+	numarr.i8 = arr->data;                                                         \
+	if (!count)                                                                    \
+		return prtf(s, "[]");                                                        \
+	pos = prtf(s, "[");                                                            \
+	for (i = 0; i < count; i++) {                                                  \
+		switch (type) {                                                              \
+			case STRAP_TYPE_CHAR:        pf("%s%d", numarr.i8[i]);   break;            \
+			case STRAP_TYPE_SHORT:       pf("%s%d", numarr.i16[i]);  break;            \
+			case STRAP_TYPE_INT:         pf("%s%d", numarr.i32[i]);  break;            \
+			case STRAP_TYPE_LONG:        pf("%s%ld",numarr.i64[i]);  break;            \
+			case STRAP_TYPE_FLOAT:       pf("%s%g", numarr.f32[i]);  break;            \
+			case STRAP_TYPE_DOUBLE:      pf("%s%g", numarr.f64[i]);  break;            \
+			case STRAP_TYPE_LONG_DOUBLE: pf("%s%Lg",numarr.f128[i]); break;            \
+			case STRAP_TYPE_STRING:      pf("%s\"%s\"", buf + str_pos(arr, i)); break; \
+			default: return -1;                                                        \
+		}                                                                            \
+		prefix = ", ";                                                               \
+	}                                                                              \
+	pos += prtf(s + (is_sprintf ? pos : 0) , "]");                                 \
+	return pos;                                                                    \
+} while (0)
 
-int strap_array_sprintf_element_i16(const StrapArray *arr, char *buf, size_t idx)
-{
-	short *iarr = (short*) arr->data;
-	return sprintf(buf, "%d", iarr[idx]);
-}
-
-int strap_array_sprintf_element_i32(const StrapArray *arr, char *buf, size_t idx)
-{
-	int *iarr = (int*) arr->data;
-	return sprintf(buf, "%d", iarr[idx]);
-}
-
-int strap_array_sprintf_element_i64(const StrapArray *arr, char *buf, size_t idx)
-{
-	long *iarr = (long*) arr->data;
-	return sprintf(buf, "%ld", iarr[idx]);
-}
-
-int strap_array_sprintf_element_u8(const StrapArray *arr, char *buf, size_t idx)
-{
-	char *iarr = (char*) arr->data;
-	return sprintf(buf, "%u", iarr[idx]);
-}
-
-int strap_array_sprintf_element_u16(const StrapArray *arr, char *buf, size_t idx)
-{
-	short *iarr = (short*) arr->data;
-	return sprintf(buf, "%u", iarr[idx]);
-}
-
-int strap_array_sprintf_element_u32(const StrapArray *arr, char *buf, size_t idx)
-{
-	int *iarr = (int*) arr->data;
-	return sprintf(buf, "%u", iarr[idx]);
-}
-
-int strap_array_sprintf_element_u64(const StrapArray *arr, char *buf, size_t idx)
-{
-	long *iarr = (long*) arr->data;
-	return sprintf(buf, "%lu", iarr[idx]);
-}
-
-int strap_array_sprintf_element_f32(const StrapArray *arr, char *buf, size_t idx)
-{
-	float *iarr = (float*) arr->data;
-	return sprintf(buf, "%g", iarr[idx]);
-}
-
-int strap_array_sprintf_element_f64(const StrapArray *arr, char *buf, size_t idx)
-{
-	double *iarr = (double*) arr->data;
-	return sprintf(buf, "%g", iarr[idx]);
-}
-
-int strap_array_sprintf_element_str(const StrapArray *arr, char *buf, size_t idx)
-{
-	struct str_array *sarr = arr->data;
-	return sprintf(buf, "\"%s\"", str_buf(arr) + str_pos(arr, idx));
-}
+#define SPRINTF(fmt, arg) pos += sprintf(s + pos, fmt, prefix, arg)
+#define FPRINTF(fmt, arg) pos += fprintf(s, fmt, prefix, arg)
 
 StrapArray *strap_array_nalloc_internal(StrapType type, size_t capacity, size_t buflen)
 {
@@ -96,6 +71,7 @@ StrapArray *strap_array_nalloc_internal(StrapType type, size_t capacity, size_t 
 		case STRAP_TYPE_LONG:
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_DOUBLE:
+		case STRAP_TYPE_LONG_DOUBLE:
 			data = malloc(capacity*strap_sizeof(type));
 			if (!data)
 				return NULL;
@@ -353,7 +329,6 @@ StrapArray *strap_array_shrink(StrapArray *arr)
 	size_t new_capacity;
 	size_t new_buflen;
 	size_t count;
-	void *ndata;
 
 	if (!arr)
 		return NULL;
@@ -400,76 +375,12 @@ StrapArray *strap_array_sort(StrapArray *arr, int ascending)
 	return NULL;
 }
 
-int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
-	int (*printfunc)(void*, const char*, ...), int is_string)
+int strap_array_sprintf(const StrapArray *arr, char *s)
 {
-	size_t count;
-	size_t bytes;
-	char *buf;
-	int (*func)(const StrapArray*, char*, size_t) = NULL;
-	size_t len;
-	struct str_array *sarr;
-	int n_total;
-	size_t i;
-	int n;
-	const char *prefix = "";
-
-	if (!arr || !ptr)
-		return -1;
-	count =  arr->count;
-	bytes = BUF_SIZE;
-	if (!count)
-		return printfunc(ptr, "[]");
-	switch (arr->type) {
-		case STRAP_TYPE_STRING:
-			func = strap_array_sprintf_element_str;
-			sarr = arr->data;
-			for (i = 0; i < count; i++) {
-				len = sarr->nulls[i] - (i ? sarr->nulls[i - 1] : 0);
-				if (len > bytes)
-					bytes = len;
-			}
-			break;
-		case STRAP_TYPE_CHAR: func = strap_array_sprintf_element_i8; break;
-		case STRAP_TYPE_SHORT: func = strap_array_sprintf_element_i16; break;
-		case STRAP_TYPE_INT: func = strap_array_sprintf_element_i32; break;
-		case STRAP_TYPE_LONG: func = strap_array_sprintf_element_i64; break;
-		case STRAP_TYPE_FLOAT: func = strap_array_sprintf_element_f32; break;
-		case STRAP_TYPE_DOUBLE: func = strap_array_sprintf_element_f64; break;
-		// case STRAP_TYPE_LONG_DOUBLE: func = strap_array_sprintf_element_f128; break;
-		default:
-			return -1;
-	}
-	buf = malloc(bytes);
-	if (!buf)
-		return 0;
-	n_total = printfunc(ptr, "[");
-	for (i = 0; i < count; i++) {
-		n = func(arr, buf, i);
-		n_total += printfunc(ptr + is_string*n_total, "%s%.*s", prefix, n, buf);
-		prefix = ", ";
-	}
-	n_total += printfunc(ptr + is_string*n_total, "]");
-	free(buf);
-	return n_total;
+	strap_array_sfprintf(arr, s, sprintf, SPRINTF, 1);
 }
 
-int strap_array_sprintf_func(void *ptr, const char *format, ...)
+int strap_array_fprintf(const StrapArray *arr, FILE *s)
 {
-	STRAP_ARRAY_SFPRINTF_FUNC(ptr, format, vsprintf, char);
-}
-
-int strap_array_fprintf_func(void *ptr, const char *format, ...)
-{
-	STRAP_ARRAY_SFPRINTF_FUNC(ptr, format, vfprintf, FILE);
-}
-
-int strap_array_sprintf(const StrapArray *arr, char *cstr)
-{
-	return strap_array_sfprintf_internal(arr, cstr, strap_array_sprintf_func, 1);
-}
-
-int strap_array_fprintf(const StrapArray *arr, FILE *stream)
-{
-	return strap_array_sfprintf_internal(arr, stream, strap_array_fprintf_func, 0);
+	strap_array_sfprintf(arr, s, fprintf, FPRINTF, 0);
 }

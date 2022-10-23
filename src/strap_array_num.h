@@ -116,4 +116,15 @@ do {                                                              \
 	return sum;                                                     \
 } while (0)
 
+union num_array_t
+{
+	char        *i8;
+	short       *i16;
+	int         *i32;
+	long        *i64;
+	float       *f32;
+	double      *f64;
+	long double *f128;
+};
+
 extern int num_resize_capacity(StrapArray *arr, size_t capacity);

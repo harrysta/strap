@@ -186,6 +186,7 @@ extern StrapArray *strap_array_shrink(StrapArray *arr);
 
 /* Miscellaneous functions */
 
-extern int strap_array_sprintf(const StrapArray *arr, char *cstr);
+extern int strap_array_sprintf(const StrapArray *arr, char *s);
+extern int strap_array_snprintf(const StrapArray *arr, char *s, size_t n);
 extern int strap_array_fprintf(const StrapArray *arr, FILE *stream);
 extern size_t strap_sizeof(StrapType type);

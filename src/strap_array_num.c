@@ -37,17 +37,6 @@ switch (type) {                                            \
 	default: break;                                          \
 }
 
-union num_array_t
-{
-	char        *i8;
-	short       *i16;
-	int         *i32;
-	long        *i64;
-	float       *f32;
-	double      *f64;
-	long double *f128;
-};
-
 int num_resize_capacity(StrapArray *arr, size_t capacity)
 {
 	void *ndata = realloc(arr->data, capacity*strap_sizeof(arr->type));

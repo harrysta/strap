@@ -1772,7 +1772,7 @@ test_t test_array_append_long_valid()
 {
 	int i;
 	long buf[5] = { 1, 3, 0, 5, 13 };
-	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	arr = strap_array_alloc(STRAP_TYPE_LONG);
 	for (i = 0; i < 5; i++)
 		TEST_ASSERT_TRUE(strap_array_append_long(arr, buf[i]));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 5);
@@ -1789,7 +1789,7 @@ test_t test_array_insert_long_null()
 
 test_t test_array_insert_long_valid()
 {
-	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	arr = strap_array_alloc(STRAP_TYPE_LONG);
 	TEST_ASSERT_TRUE(strap_array_insert_long(arr, 0, 1));
 	TEST_ASSERT_TRUE(strap_array_insert_long(arr, 0, 2));
 	TEST_ASSERT_TRUE(strap_array_insert_long(arr, 0, 3));
@@ -1812,7 +1812,7 @@ test_t test_array_replace_long_null()
 
 test_t test_array_replace_long_invalid_index()
 {
-	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	arr = strap_array_alloc(STRAP_TYPE_LONG);
 	TEST_ASSERT_TRUE(strap_array_replace_long(arr, 0, 23));
 	TEST_ASSERT_TRUE(strap_array_replace_long(arr, 1, 35));
 	TEST_ASSERT_TRUE(strap_array_count(arr) == 0);
@@ -1821,7 +1821,7 @@ test_t test_array_replace_long_invalid_index()
 
 test_t test_array_replace_long_valid()
 {
-	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	arr = strap_array_alloc(STRAP_TYPE_LONG);
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 5));
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 5));
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 5));
@@ -1843,14 +1843,14 @@ test_t test_array_find_long_null()
 
 test_t test_array_find_long_empty()
 {
-	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	arr = strap_array_alloc(STRAP_TYPE_LONG);
 	TEST_ASSERT_TRUE(strap_array_find_long(arr, 5) == STRAP_NO_MATCH);
 	return 1;
 }
 
 test_t test_array_find_long_valid()
 {
-	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	arr = strap_array_alloc(STRAP_TYPE_LONG);
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 5));
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 23));
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 15));
@@ -1862,7 +1862,7 @@ test_t test_array_find_long_valid()
 
 test_t test_array_nfind_long_valid()
 {
-	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	arr = strap_array_alloc(STRAP_TYPE_LONG);
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 1));
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 13));
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 3));
@@ -1879,7 +1879,7 @@ test_t test_array_nfind_long_valid()
 
 test_t test_array_nfind_long_no_match()
 {
-	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	arr = strap_array_alloc(STRAP_TYPE_LONG);
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 1));
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 2));
 	TEST_ASSERT_TRUE(strap_array_append_long(arr, 3));
@@ -1894,7 +1894,7 @@ test_t test_array_nfind_long_no_match()
 test_t test_array_shrink_long_valid()
 {
 	long i;
-	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	arr = strap_array_alloc(STRAP_TYPE_LONG);
 	for (i = 0; i < 127; i++)
 		strap_array_append_long(arr, i);
 	strap_array_clear(arr);
@@ -2302,7 +2302,7 @@ test_t test_array_sprintf_long()
 	char buf[32];
 	const char *expected_str =  "[13, 24, 137]";
 
-	arr = strap_array_alloc(STRAP_TYPE_LONG_INT);
+	arr = strap_array_alloc(STRAP_TYPE_LONG);
 	strap_array_append_long(arr, 13);
 	strap_array_append_long(arr, 24);
 	strap_array_append_long(arr, 137);
@@ -2342,7 +2342,7 @@ test_t test_array_sprintf_double()
 test_t test_array_sprintf_longdouble()
 {
 	char buf[32];
-	const char *expected_str =  "[0.005, 1.3, 137]";
+	const char *expected_str = "[0.005, 1.3, 137]";
 
 	arr = strap_array_alloc(STRAP_TYPE_LONG_DOUBLE);
 	strap_array_append_longdouble(arr, 0.005);
