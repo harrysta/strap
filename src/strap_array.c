@@ -93,7 +93,7 @@ StrapArray *strap_array_nalloc_internal(StrapType type, size_t capacity, size_t 
 		case STRAP_TYPE_CHAR:
 		case STRAP_TYPE_SHORT:
 		case STRAP_TYPE_INT:
-		case STRAP_TYPE_LONG_INT:
+		case STRAP_TYPE_LONG:
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_DOUBLE:
 			data = malloc(capacity*strap_sizeof(type));
@@ -242,7 +242,7 @@ StrapArray *strap_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 		case STRAP_TYPE_CHAR:
 		case STRAP_TYPE_SHORT:
 		case STRAP_TYPE_INT:
-		case STRAP_TYPE_LONG_INT:
+		case STRAP_TYPE_LONG:
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_DOUBLE:
 		case STRAP_TYPE_LONG_DOUBLE:
@@ -373,7 +373,7 @@ StrapArray *strap_array_shrink(StrapArray *arr)
 		case STRAP_TYPE_CHAR:
 		case STRAP_TYPE_SHORT:
 		case STRAP_TYPE_INT:
-		case STRAP_TYPE_LONG_INT:
+		case STRAP_TYPE_LONG:
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_DOUBLE:
 		case STRAP_TYPE_LONG_DOUBLE:
@@ -433,7 +433,7 @@ int strap_array_sfprintf_internal(const StrapArray *arr, void *ptr,
 		case STRAP_TYPE_CHAR: func = strap_array_sprintf_element_i8; break;
 		case STRAP_TYPE_SHORT: func = strap_array_sprintf_element_i16; break;
 		case STRAP_TYPE_INT: func = strap_array_sprintf_element_i32; break;
-		case STRAP_TYPE_LONG_INT: func = strap_array_sprintf_element_i64; break;
+		case STRAP_TYPE_LONG: func = strap_array_sprintf_element_i64; break;
 		case STRAP_TYPE_FLOAT: func = strap_array_sprintf_element_f32; break;
 		case STRAP_TYPE_DOUBLE: func = strap_array_sprintf_element_f64; break;
 		// case STRAP_TYPE_LONG_DOUBLE: func = strap_array_sprintf_element_f128; break;

@@ -2,9 +2,10 @@
 
 size_t strap_next_pow2(size_t n, size_t min)
 {
+	size_t p;
+
 	if (n < min)
 		return min;
-	size_t p;
 	if (n && !(n & (n - 1)))
 		return n;
 	p = 1;
@@ -22,15 +23,16 @@ size_t strap_sizeof(StrapType type)
 			return sizeof(short);
 		case STRAP_TYPE_INT:
 			return sizeof(int);
-		case STRAP_TYPE_LONG_INT:
+		case STRAP_TYPE_LONG:
 			return sizeof(long);
 		case STRAP_TYPE_FLOAT:
 			return sizeof(float);
 		case STRAP_TYPE_DOUBLE:
 			return sizeof(double);
-		case STRAP_TYPE_STRING:
-		case STRAP_TYPE_COUNT:
-		break;
+		case STRAP_TYPE_LONG_DOUBLE:
+			return sizeof(long double);
+		default:
+			return 0;
 	}
 	return 0;
 }
