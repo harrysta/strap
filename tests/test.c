@@ -1172,6 +1172,187 @@ test_t test_array_erase_range_float_valid()
 }
 
 
+test_t test_array_reverse_null()
+{
+	TEST_ASSERT_FALSE(strap_array_reverse(NULL));
+	return 1;
+}
+
+test_t test_array_reverse_str_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	return 1;
+}
+
+test_t test_array_reverse_str_valid_odd()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	strap_array_append_cstr(arr, "reversed");
+	strap_array_append_cstr(arr, "was");
+	strap_array_append_cstr(arr, "this");
+	TEST_ASSERT_TRUE(strap_array_reverse(arr) == arr);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "this"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "was"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "reversed"));
+	return 1;
+}
+
+test_t test_array_reverse_str_valid_even()
+{
+	arr = strap_array_alloc(STRAP_TYPE_STRING);
+	strap_array_append_cstr(arr, "reversed");
+	strap_array_append_cstr(arr, "also");
+	strap_array_append_cstr(arr, "was");
+	strap_array_append_cstr(arr, "this");
+	TEST_ASSERT_TRUE(strap_array_reverse(arr) == arr);
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "this"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "was"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "also"));
+	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 3), "reversed"));
+	return 1;
+}
+
+test_t test_array_reverse_short_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_SHORT);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	return 1;
+}
+
+test_t test_array_reverse_short_valid_odd()
+{
+	arr = strap_array_alloc(STRAP_TYPE_SHORT);
+	strap_array_append_short(arr, 5);
+	strap_array_append_short(arr, 13);
+	strap_array_append_short(arr, 24);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	TEST_ASSERT_TRUE(strap_array_get_short(arr, 0) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_short(arr, 1) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_short(arr, 2) == 5);
+	return 1;
+}
+
+test_t test_array_reverse_short_valid_even()
+{
+	arr = strap_array_alloc(STRAP_TYPE_SHORT);
+	strap_array_append_short(arr, 5);
+	strap_array_append_short(arr, 13);
+	strap_array_append_short(arr, 24);
+	strap_array_append_short(arr, 7);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	TEST_ASSERT_TRUE(strap_array_get_short(arr, 0) == 7);
+	TEST_ASSERT_TRUE(strap_array_get_short(arr, 1) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_short(arr, 2) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_short(arr, 3) == 5);
+	return 1;
+}
+
+test_t test_array_reverse_int_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	return 1;
+}
+
+test_t test_array_reverse_int_valid_odd()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	strap_array_append_int(arr, 5);
+	strap_array_append_int(arr, 13);
+	strap_array_append_int(arr, 24);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 0) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 1) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 2) == 5);
+	return 1;
+}
+
+test_t test_array_reverse_int_valid_even()
+{
+	arr = strap_array_alloc(STRAP_TYPE_INT);
+	strap_array_append_int(arr, 5);
+	strap_array_append_int(arr, 13);
+	strap_array_append_int(arr, 24);
+	strap_array_append_int(arr, 7);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 0) == 7);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 1) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 2) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_int(arr, 3) == 5);
+	return 1;
+}
+
+test_t test_array_reverse_float_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	return 1;
+}
+
+test_t test_array_reverse_float_valid_odd()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	strap_array_append_float(arr, 0.03);
+	strap_array_append_float(arr, 13);
+	strap_array_append_float(arr, 24);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 0) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 1) == 13);
+	TEST_ASSERT_TRUE(FLOAT_EQUALS(strap_array_get_float(arr, 2), 0.03));
+	return 1;
+}
+
+test_t test_array_reverse_float_valid_even()
+{
+	arr = strap_array_alloc(STRAP_TYPE_FLOAT);
+	strap_array_append_float(arr, 5);
+	strap_array_append_float(arr, 13);
+	strap_array_append_float(arr, 24);
+	strap_array_append_float(arr, 0.07);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	TEST_ASSERT_TRUE(FLOAT_EQUALS(strap_array_get_float(arr, 0), 0.07));
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 1) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 2) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_float(arr, 3) == 5);
+	return 1;
+}
+
+test_t test_array_reverse_longdouble_empty()
+{
+	arr = strap_array_alloc(STRAP_TYPE_LONG_DOUBLE);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	return 1;
+}
+
+test_t test_array_reverse_longdouble_valid_odd()
+{
+	arr = strap_array_alloc(STRAP_TYPE_LONG_DOUBLE);
+	strap_array_append_longdouble(arr, 0.03);
+	strap_array_append_longdouble(arr, 13);
+	strap_array_append_longdouble(arr, 24);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	TEST_ASSERT_TRUE(strap_array_get_longdouble(arr, 0) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_longdouble(arr, 1) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_longdouble(arr, 2) == 0.03);
+	return 1;
+}
+
+test_t test_array_reverse_longdouble_valid_even()
+{
+	arr = strap_array_alloc(STRAP_TYPE_LONG_DOUBLE);
+	strap_array_append_longdouble(arr, 5);
+	strap_array_append_longdouble(arr, 13);
+	strap_array_append_longdouble(arr, 24);
+	strap_array_append_longdouble(arr, 0.07);
+	TEST_ASSERT_TRUE(strap_array_reverse(arr));
+	TEST_ASSERT_TRUE(strap_array_get_longdouble(arr, 0) == 0.07);
+	TEST_ASSERT_TRUE(strap_array_get_longdouble(arr, 1) == 24);
+	TEST_ASSERT_TRUE(strap_array_get_longdouble(arr, 2) == 13);
+	TEST_ASSERT_TRUE(strap_array_get_longdouble(arr, 3) == 5);
+	return 1;
+}
+
 
 test_t test_array_create_subarray_null()
 {
@@ -1235,47 +1416,6 @@ test_t test_array_create_subarray_str_large_n()
 	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 0), "number"));
 	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 1), "one"));
 	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr2, 2), "three"));
-	return 1;
-}
-
-test_t test_array_reverse_null()
-{
-	TEST_ASSERT_FALSE(strap_array_reverse(NULL));
-	return 1;
-}
-
-test_t test_array_reverse_str_empty()
-{
-	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	TEST_ASSERT_TRUE(strap_array_reverse(arr) == arr);
-	return 1;
-}
-
-test_t test_array_reverse_str_valid_odd()
-{
-	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	strap_array_append_cstr(arr, "reversed");
-	strap_array_append_cstr(arr, "was");
-	strap_array_append_cstr(arr, "this");
-	TEST_ASSERT_TRUE(strap_array_reverse(arr) == arr);
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "this"));
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "was"));
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "reversed"));
-	return 1;
-}
-
-test_t test_array_reverse_str_valid_even()
-{
-	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	strap_array_append_cstr(arr, "reversed");
-	strap_array_append_cstr(arr, "also");
-	strap_array_append_cstr(arr, "was");
-	strap_array_append_cstr(arr, "this");
-	TEST_ASSERT_TRUE(strap_array_reverse(arr) == arr);
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 0), "this"));
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 1), "was"));
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 2), "also"));
-	TEST_ASSERT_TRUE(!strcmp(strap_array_get_cstr(arr, 3), "reversed"));
 	return 1;
 }
 
@@ -2671,6 +2811,28 @@ int main ()
 	TEST_RUN(test_array_erase_range_float_last_element);
 	TEST_RUN(test_array_erase_range_float_valid);
 
+
+	TEST_RUN(test_array_reverse_null);
+	TEST_RUN(test_array_reverse_str_empty);
+	TEST_RUN(test_array_reverse_str_valid_odd);
+	TEST_RUN(test_array_reverse_str_valid_even);
+
+	TEST_RUN(test_array_reverse_short_empty);
+	TEST_RUN(test_array_reverse_short_valid_odd);
+	TEST_RUN(test_array_reverse_short_valid_even);
+
+	TEST_RUN(test_array_reverse_int_empty);
+	TEST_RUN(test_array_reverse_int_valid_odd);
+	TEST_RUN(test_array_reverse_int_valid_even);
+
+	TEST_RUN(test_array_reverse_float_empty);
+	TEST_RUN(test_array_reverse_float_valid_odd);
+	TEST_RUN(test_array_reverse_float_valid_even);
+
+	TEST_RUN(test_array_reverse_longdouble_empty);
+	TEST_RUN(test_array_reverse_longdouble_valid_odd);
+	TEST_RUN(test_array_reverse_longdouble_valid_even);
+
 	// TEST_RUN(test_array_clear_null);
 	// TEST_RUN(test_array_clear_str_valid);
 	//
@@ -2687,11 +2849,7 @@ int main ()
 	// TEST_RUN(test_array_sort_str_descending);
 	//
 
-	// TEST_RUN(test_array_reverse_null);
-	// TEST_RUN(test_array_reverse_str_empty);
-	// TEST_RUN(test_array_reverse_str_valid_odd);
-	// TEST_RUN(test_array_reverse_str_valid_even);
-	//
+
 	// TEST_RUN(test_array_shrink_null);
 	// TEST_RUN(test_array_shrink_str_empty);
 	// TEST_RUN(test_array_shrink_str_valid);

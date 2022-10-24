@@ -116,6 +116,19 @@ do {                                                              \
 	return sum;                                                     \
 } while (0)
 
+#define NUM_REVERSE(arr, start, end, data_type)  \
+do {                                             \
+	data_type tmp;                                 \
+	data_type *numarr;                             \
+                                                 \
+	numarr = arr->data;                            \
+	while (start < end) {                          \
+		tmp = numarr[start];                         \
+		numarr[start++] = numarr[end];               \
+		numarr[end--] = tmp;                         \
+	}                                              \
+} while (0)
+
 union num_array_t
 {
 	char        *i8;

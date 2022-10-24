@@ -5,19 +5,6 @@
 #include <string.h>
 #include <stdarg.h>
 
-#define BUF_SIZE 32
-
-#define STRAP_ARRAY_SFPRINTF_FUNC(ptr, format, func, type) \
-do {                                                       \
-	int n;                                                   \
-	va_list args;                                            \
-                                                           \
-	va_start(args, format);                                  \
-	n = func((type*) ptr, format, args);                     \
-	va_end(args);                                            \
-	return n;                                                \
-} while (0)
-
 #define strap_array_sfprintf(arr, s, prtf, pf, is_sprintf)                       \
 do {                                                                             \
 	const char *prefix = "";                                                       \
@@ -286,10 +273,14 @@ StrapArray *strap_array_reverse(StrapArray *arr)
 	char *tmpbuf;
 	ushort *nulls;
 	ushort *tmpnulls;
+	size_t start;
+	size_t end;
 
 	if (!arr)
 		return NULL;
 	count = arr->count;
+	start = 0;
+	end = count - 1;
 	if (!count)
 		return arr;
 	switch (arr->type) {
@@ -312,14 +303,20 @@ StrapArray *strap_array_reverse(StrapArray *arr)
 			}
 			memcpy(buf, tmpbuf, sumlen);
 			memcpy(nulls, tmpnulls, sizeof *nulls*count);
-			break;
-		default:
-			return NULL;
-	}
 out_free_tmpnulls:
-	free(tmpnulls);
+			free(tmpnulls);
 out_free_tmpbuf:
-	free(tmpbuf);
+			free(tmpbuf);
+			break;
+		case STRAP_TYPE_CHAR:         NUM_REVERSE(arr, start, end, char);        break;
+		case STRAP_TYPE_SHORT:        NUM_REVERSE(arr, start, end, short);       break;
+		case STRAP_TYPE_INT:          NUM_REVERSE(arr, start, end, int);         break;
+		case STRAP_TYPE_LONG:         NUM_REVERSE(arr, start, end, long);        break;
+		case STRAP_TYPE_FLOAT:        NUM_REVERSE(arr, start, end, float);       break;
+		case STRAP_TYPE_DOUBLE:       NUM_REVERSE(arr, start, end, double);      break;
+		case STRAP_TYPE_LONG_DOUBLE:  NUM_REVERSE(arr, start, end, long double); break;
+		default: return NULL;
+	}
 	return arr;
 }
 

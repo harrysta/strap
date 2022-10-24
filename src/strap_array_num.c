@@ -25,7 +25,7 @@ switch (type) {                                        \
 	case STRAP_TYPE_CHAR:     sum += narr.i8[i];  break; \
 	case STRAP_TYPE_SHORT:    sum += narr.i16[i]; break; \
 	case STRAP_TYPE_INT:      sum += narr.i32[i]; break; \
-	case STRAP_TYPE_LONG: sum += narr.i64[i]; break; \
+	case STRAP_TYPE_LONG: sum += narr.i64[i]; break;     \
 	default: break;                                      \
 }
 
