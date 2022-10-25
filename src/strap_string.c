@@ -5,19 +5,25 @@
 
 #include "strap_internal.h"
 
-#define str_null(a) (a) ? strlen((a)) : 0
+#define STRLEN(a) (a) ? strlen((a)) : 0
 
-static StrapString *strap_resize(StrapString *str, size_t size)
+#define str_check_size(s, len, ret)        \
+do {                                       \
+	if (len > s->size && str_resize(s, len)) \
+		return ret;                            \
+} while (0)
+
+static int str_resize(StrapString *str, size_t size)
 {
 	char *data = realloc(str->data, size);
 	if (!data)
-		return NULL;
+		return 1;
 	str->data = data;
 	str->size = size;
-	return str;
+	return 0;
 }
 
-StrapString *strap_string_nalloc_internal(const char *str, size_t size, size_t len)
+static StrapString *strap_string_nalloc_internal(const char *str, size_t size, size_t len)
 {
 	StrapString *newstr;
 
@@ -38,14 +44,14 @@ StrapString *strap_string_nalloc_internal(const char *str, size_t size, size_t l
 
 StrapString *strap_string_alloc(const char *str)
 {
-	size_t len = str_null(str);
+	size_t len = STRLEN(str);
 	size_t size = strap_next_pow2(len, STRAP_INIT_STR_SIZE);
 	return strap_string_nalloc_internal(str, size, len);
 }
 
 StrapString *strap_string_nalloc(const char *str, size_t size)
 {
-	return strap_string_nalloc_internal(str, size, str_null(str));
+	return strap_string_nalloc_internal(str, size, STRLEN(str));
 }
 
 void strap_string_free(StrapString *str)
@@ -90,7 +96,7 @@ StrapString *strap_string_concat(StrapString *str1, const StrapString *str2)
 
 StrapString *strap_string_copy_from(StrapString *str, const char *cstr)
 {
-	return strap_string_ncopy_from(str, cstr, str_null(cstr));
+	return strap_string_ncopy_from(str, cstr, STRLEN(cstr));
 }
 
 char *strap_string_copy_to(const StrapString *str, char *cstr)
@@ -100,7 +106,7 @@ char *strap_string_copy_to(const StrapString *str, char *cstr)
 
 StrapString *strap_string_strcat(StrapString *str, const char *cstr)
 {
-	return strap_string_nstrcat(str, cstr, str_null(cstr));
+	return strap_string_nstrcat(str, cstr, STRLEN(cstr));
 }
 
 StrapString *strap_string_ncopy(StrapString *str1, const StrapString *str2, size_t n)
@@ -115,6 +121,8 @@ StrapString *strap_string_nconcat(StrapString *str1, const StrapString *str2, si
 
 StrapString *strap_string_ncopy_from(StrapString *str, const char *cstr, size_t n)
 {
+	size_t size;
+
 	if (!str)
 		return NULL;
 	if (!cstr){
@@ -122,12 +130,8 @@ StrapString *strap_string_ncopy_from(StrapString *str, const char *cstr, size_t 
 		str->data[0] = '\0';
 		return str;
 	}
-	if (n > str->size) {
-		StrapString *s = strap_resize(str, strap_next_pow2(n, STRAP_INIT_STR_SIZE));
-		if (!s)
-			return str;
-		str = s;
-	}
+	size = strap_next_pow2(n, STRAP_INIT_STR_SIZE);
+	str_check_size(str, size, str);
 	memcpy(str->data, cstr, n);
 	str->length = n;
 	str->data[n] = '\0';
@@ -152,18 +156,13 @@ char *strap_string_ncopy_to(const StrapString *str, char *cstr, size_t n)
 StrapString *strap_string_nstrcat(StrapString *str, const char *cstr, size_t n)
 {
 	size_t newlen;
+	size_t size;
 
-	if (!str)
-		return NULL;
-	if (!cstr)
+	if (!str || !cstr)
 		return str;
 	newlen = str->length + n;
-	if (newlen > str->size) {
-		StrapString *s = strap_resize(str, strap_next_pow2(newlen, STRAP_INIT_STR_SIZE));
-		if (!s)
-			return str;
-		str = s;
-	}
+	size = strap_next_pow2(newlen, STRAP_INIT_STR_SIZE);
+	str_check_size(str, size, str);
 	memcpy(str->data + str->length, cstr, n);
 	str->length = newlen;
 	return str;
@@ -183,13 +182,15 @@ StrapString *strap_string_create_substring(const StrapString *str, size_t start,
 
 StrapString *strap_string_erase(StrapString *str, size_t start, size_t n)
 {
+	size_t len;
+
 	if (!str || start >= str->length || !n)
 		return str;
-	if (start + n > str->length)
-		n = str->length - start;
-	memcpy(str->data + start, str->data + start + n, str->length - n);
-	str->length -= n;
-	str->data[str->length] = '\0';
+	len = str->length;
+	if (start + n > len)
+		n = len - start;
+	memcpy(str->data + start, str->data + start + n, len - n);
+	str->data[str->length -=n] = '\0';
 	return str;
 }
 
@@ -228,15 +229,21 @@ int strap_string_compare(const StrapString *str1, const StrapString *str2)
 size_t strap_string_find(const StrapString *str1, const StrapString *str2)
 {
 	size_t i, j;
+	size_t len1, len2;
+	char *buf1, *buf2;
 
 	if (!(str1 && str2))
 		return -1;
 	i = 0;
-	while (i < str1->length) {
+	len1 = str1->length;
+	len2 = str2->length;
+	buf1 = str1->data;
+	buf2 = str2->data;
+	while (i < len1) {
 		j = 0;
-		if (str1->data[i++] == str2->data[j++]) {
-			while (j < str2->length && str1->data[i++] == str2->data[j++]);
-			if (j == str2->length) {
+		if (buf1[i++] == buf2[j++]) {
+			while (j < len2 && buf1[i++] == buf2[j++]);
+			if (j == len2) {
 				return i - j;
 			}
 		}
@@ -298,7 +305,7 @@ StrapString *strap_string_reverse(StrapString *str)
 
 StrapString *strap_string_shrink(StrapString *str)
 {
-	if (!str)
-		return NULL;
-	return strap_resize(str, strap_next_pow2(str->length, STRAP_INIT_STR_SIZE));
+	if (str)
+		str_resize(str, strap_next_pow2(str->length, STRAP_INIT_STR_SIZE));
+	return str;
 }
