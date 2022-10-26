@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-#define strap_array_sfprintf(arr, s, prtf, pf, is_sprintf)                       \
+#define s_array_sfprintf(arr, s, prtf, pf, is_sprintf)                       \
 do {                                                                             \
 	const char *prefix = "";                                                       \
 	union num_array_t numarr;                                                      \
@@ -45,7 +45,7 @@ do {                                                                            
 #define SPRINTF(fmt, arg) pos += sprintf(s + pos, fmt, prefix, arg)
 #define FPRINTF(fmt, arg) pos += fprintf(s, fmt, prefix, arg)
 
-StrapArray *strap_array_nalloc_internal(StrapType type, size_t capacity, size_t buflen)
+StrapArray *s_array_nalloc_internal(StrapType type, size_t capacity, size_t buflen)
 {
 	StrapArray *array;
 	struct str_array *sarr;
@@ -59,7 +59,7 @@ StrapArray *strap_array_nalloc_internal(StrapType type, size_t capacity, size_t 
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_DOUBLE:
 		case STRAP_TYPE_LONG_DOUBLE:
-			data = malloc(capacity*strap_sizeof(type));
+			data = malloc(capacity*s_sizeof(type));
 			if (!data)
 				return NULL;
 			break;
@@ -86,17 +86,17 @@ StrapArray *strap_array_nalloc_internal(StrapType type, size_t capacity, size_t 
 	return array;
 }
 
-StrapArray *strap_array_nalloc(StrapType type, size_t capacity)
+StrapArray *s_array_nalloc(StrapType type, size_t capacity)
 {
-	return strap_array_nalloc_internal(type, capacity, STRAP_INIT_STR_SIZE);
+	return s_array_nalloc_internal(type, capacity, STRAP_INIT_STR_SIZE);
 }
 
-StrapArray *strap_array_alloc(StrapType type)
+StrapArray *s_array_alloc(StrapType type)
 {
-	return strap_array_nalloc(type, STRAP_INIT_CAPACITY);
+	return s_array_nalloc(type, STRAP_INIT_CAPACITY);
 }
 
-StrapArray *strap_array_memcpy(StrapArray *arr, const void *src, size_t num)
+StrapArray *s_array_memcpy(StrapArray *arr, const void *src, size_t num)
 {
 	const int C = STRAP_INIT_CAPACITY;
 	const char *buf;
@@ -122,7 +122,7 @@ StrapArray *strap_array_memcpy(StrapArray *arr, const void *src, size_t num)
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_DOUBLE:
 		case STRAP_TYPE_LONG_DOUBLE:
-			memcpy(arr->data, src, num*strap_sizeof(type));
+			memcpy(arr->data, src, num*s_sizeof(type));
 			break;
 		case STRAP_TYPE_STRING:
 			buf = s = (const char*) src;
@@ -132,7 +132,7 @@ StrapArray *strap_array_memcpy(StrapArray *arr, const void *src, size_t num)
 				nulls[i] = buf - s;
 			}
 			len = buf - s + 1;
-			nlen = strap_next_pow2(len, STRAP_INIT_STR_SIZE);
+			nlen = s_next_pow2(len, STRAP_INIT_STR_SIZE);
 			if (len > str_sarr(arr)->buflen && str_resize_buf(arr, nlen)) {
 				free(nulls);
 				return arr;
@@ -148,7 +148,7 @@ StrapArray *strap_array_memcpy(StrapArray *arr, const void *src, size_t num)
 	return arr;
 }
 
-StrapArray *strap_array_strcpy(StrapArray *arr, const char **src, size_t num)
+StrapArray *s_array_strcpy(StrapArray *arr, const char **src, size_t num)
 {
 	const int C = STRAP_INIT_CAPACITY;
 	size_t ncapacity;
@@ -170,7 +170,7 @@ StrapArray *strap_array_strcpy(StrapArray *arr, const char **src, size_t num)
 		nulls[i] = strlen(src[i]) + prev;
 	}
 	len = nulls[num - 1] + 1;
-	nlen = strap_next_pow2(len, STRAP_INIT_STR_SIZE);
+	nlen = s_next_pow2(len, STRAP_INIT_STR_SIZE);
 	if (len > str_sarr(arr)->buflen && str_resize_buf(arr, nlen)) {
 		free(nulls);
 		return arr;
@@ -184,7 +184,7 @@ StrapArray *strap_array_strcpy(StrapArray *arr, const char **src, size_t num)
 	return arr;
 }
 
-void strap_array_free(StrapArray *arr)
+void s_array_free(StrapArray *arr)
 {
 	if (!arr)
 		return;
@@ -194,7 +194,7 @@ void strap_array_free(StrapArray *arr)
 	free(arr);
 }
 
-StrapArray *strap_array_clone(const StrapArray *arr)
+StrapArray *s_array_clone(const StrapArray *arr)
 {
 	const int C = STRAP_INIT_CAPACITY;
 	StrapArray *newarr;
@@ -207,23 +207,23 @@ StrapArray *strap_array_clone(const StrapArray *arr)
 	if (!arr)
 		return NULL;
 	if (!arr->count)
-		return strap_array_alloc(arr->type);
+		return s_array_alloc(arr->type);
 	type = arr->type;
 	count = arr->count;
 	buflen = str_sarr(arr)->buflen;
 	new_capacity = ((count + C) / C) * C;
 	if (type == STRAP_TYPE_STRING) {
 		new_buflen = count ? str_null(arr, count - 1) : 0;
-		new_buflen = strap_next_pow2(new_buflen + 1, STRAP_INIT_STR_SIZE);
+		new_buflen = s_next_pow2(new_buflen + 1, STRAP_INIT_STR_SIZE);
 	}
-	newarr = strap_array_nalloc_internal(type, new_capacity, new_buflen);
+	newarr = s_array_nalloc_internal(type, new_capacity, new_buflen);
 	switch (type) {
 		case STRAP_TYPE_STRING:
 			memcpy(str_buf(newarr), str_buf(arr), str_null(arr, count - 1) + 1);
 			memcpy(str_sarr(newarr)->nulls, str_sarr(arr)->nulls, sizeof(ushort)*count);
 			break;
 		case STRAP_TYPE_INT:
-			memcpy(newarr->data, arr->data, count*strap_sizeof(type));
+			memcpy(newarr->data, arr->data, count*s_sizeof(type));
 			break;
 		default:
 			return NULL;
@@ -232,22 +232,22 @@ StrapArray *strap_array_clone(const StrapArray *arr)
 	return newarr;
 }
 
-size_t strap_array_count(const StrapArray *arr)
+size_t s_array_count(const StrapArray *arr)
 {
 	return arr ? arr->count : 0;
 }
 
-size_t strap_array_capacity(const StrapArray *arr)
+size_t s_array_capacity(const StrapArray *arr)
 {
 	return arr ? arr->capacity : 0;
 }
 
-StrapType strap_array_type(const StrapArray *arr)
+StrapType s_array_type(const StrapArray *arr)
 {
 	return arr ? arr->type : STRAP_TYPE_NONE;
 }
 
-StrapArray *strap_array_clear(StrapArray *arr)
+StrapArray *s_array_clear(StrapArray *arr)
 {
 	if (!arr)
 		return NULL;
@@ -255,12 +255,12 @@ StrapArray *strap_array_clear(StrapArray *arr)
 	return arr;
 }
 
-StrapArray *strap_array_erase(StrapArray *arr, size_t i)
+StrapArray *s_array_erase(StrapArray *arr, size_t i)
 {
-	return strap_array_erase_range(arr, i, 1);
+	return s_array_erase_range(arr, i, 1);
 }
 
-StrapArray *strap_array_erase_range(StrapArray *arr, size_t idx, size_t n)
+StrapArray *s_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 {
 	size_t i;
 	size_t count;
@@ -299,7 +299,7 @@ StrapArray *strap_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 		case STRAP_TYPE_LONG_DOUBLE:
 			if (idx + n < count) {
 				buf = arr->data;
-				len = strap_sizeof(arr->type);
+				len = s_sizeof(arr->type);
 				memcpy(buf + idx*len, buf + (idx + n)*len, (count - (idx + n))*len);
 			}
 			break;
@@ -310,7 +310,7 @@ StrapArray *strap_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 	return arr;
 }
 
-StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t idx, size_t n)
+StrapArray *s_array_create_subarray(const StrapArray *arr, size_t idx, size_t n)
 {
 	size_t i;
 	size_t count;
@@ -330,7 +330,7 @@ StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t idx, size_
 	if (idx >= count)
 		return NULL;
 	n = idx + n > count ? count - idx : n;
-	newarr = strap_array_nalloc(arr->type, n);
+	newarr = s_array_nalloc(arr->type, n);
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
 			pos = str_pos(arr, idx);
@@ -350,7 +350,7 @@ StrapArray *strap_array_create_subarray(const StrapArray *arr, size_t idx, size_
 	return newarr;
 }
 
-StrapArray *strap_array_reverse(StrapArray *arr)
+StrapArray *s_array_reverse(StrapArray *arr)
 {
 	size_t i;
 	size_t count;
@@ -408,7 +408,7 @@ out_free_tmpbuf:
 	return arr;
 }
 
-StrapArray *strap_array_shrink(StrapArray *arr)
+StrapArray *s_array_shrink(StrapArray *arr)
 {
 	const int C = STRAP_INIT_CAPACITY;
 	size_t new_capacity;
@@ -421,7 +421,7 @@ StrapArray *strap_array_shrink(StrapArray *arr)
 	new_capacity = ((count + C) / C) * C;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
-			new_buflen = strap_next_pow2(str_null(arr, count - 1), STRAP_INIT_STR_SIZE);
+			new_buflen = s_next_pow2(str_null(arr, count - 1), STRAP_INIT_STR_SIZE);
 			if (new_capacity != arr->capacity) {
 				if (str_resize_capacity(arr, new_capacity)) /* Non-zero value indicates resize failure */
 					return arr;
@@ -447,25 +447,25 @@ StrapArray *strap_array_shrink(StrapArray *arr)
 }
 
 
-StrapArray *strap_array_sort(StrapArray *arr, int ascending)
+StrapArray *s_array_sort(StrapArray *arr, int ascending)
 {
 	if (!arr)
 		return NULL;
 	switch (arr->type) {
 		case STRAP_TYPE_STRING:
-			return strap_array_sort_str(arr, ascending);
+			return s_array_sort_str(arr, ascending);
 		default:
 			return NULL;
 	}
 	return NULL;
 }
 
-int strap_array_sprintf(const StrapArray *arr, char *s)
+int s_array_sprintf(const StrapArray *arr, char *s)
 {
-	strap_array_sfprintf(arr, s, sprintf, SPRINTF, 1);
+	s_array_sfprintf(arr, s, sprintf, SPRINTF, 1);
 }
 
-int strap_array_fprintf(const StrapArray *arr, FILE *s)
+int s_array_fprintf(const StrapArray *arr, FILE *s)
 {
-	strap_array_sfprintf(arr, s, fprintf, FPRINTF, 0);
+	s_array_sfprintf(arr, s, fprintf, FPRINTF, 0);
 }

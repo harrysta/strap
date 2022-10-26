@@ -23,11 +23,11 @@ struct StrapArray {
 	void *data;
 };
 
-extern size_t strap_next_pow2(size_t n, size_t min);
+extern size_t s_next_pow2(size_t n, size_t min);
 
-extern StrapArray *strap_array_erase_range_str(StrapArray *arr, size_t i, size_t n);
-extern StrapArray *strap_array_clear_str(StrapArray *arr);
-extern StrapArray *strap_array_create_subarray_str(const StrapArray *arr, size_t i, size_t n);
-extern StrapArray *strap_array_reverse_str(StrapArray *arr);
-extern StrapArray *strap_array_shrink_str(StrapArray *arr);
-extern StrapArray *strap_array_sort_str(StrapArray *arr, int ascending);
+extern StrapArray *s_array_erase_range_str(StrapArray *arr, size_t i, size_t n);
+extern StrapArray *s_array_clear_str(StrapArray *arr);
+extern StrapArray *s_array_create_subarray_str(const StrapArray *arr, size_t i, size_t n);
+extern StrapArray *s_array_reverse_str(StrapArray *arr);
+extern StrapArray *s_array_shrink_str(StrapArray *arr);
+extern StrapArray *s_array_sort_str(StrapArray *arr, int ascending);

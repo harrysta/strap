@@ -1,6 +1,6 @@
 #include "strap_internal.h"
 
-size_t strap_next_pow2(size_t n, size_t min)
+size_t s_next_pow2(size_t n, size_t min)
 {
 	size_t p;
 
@@ -14,7 +14,7 @@ size_t strap_next_pow2(size_t n, size_t min)
 	return p;
 }
 
-size_t strap_sizeof(StrapType type)
+size_t s_sizeof(StrapType type)
 {
 	switch (type) {
 		case STRAP_TYPE_CHAR:

@@ -13,7 +13,7 @@ do {                                                                            
 	struct str_array *sarr = arr->data;                                                 \
 	ushort nullpos = str_null(arr, arr->count - 1);                                     \
 	if (nullpos + len > sarr->buflen) {                                                 \
-		if (str_resize_buf(arr, strap_next_pow2(nullpos + len + 1, STRAP_INIT_STR_SIZE))) \
+		if (str_resize_buf(arr, s_next_pow2(nullpos + len + 1, STRAP_INIT_STR_SIZE))) \
 			return ret;                                                                     \
 	}                                                                                   \
 	if (arr->count == arr->capacity) {                                                  \
