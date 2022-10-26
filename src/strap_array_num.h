@@ -18,7 +18,7 @@ do {                                               \
 	iarr = (data_type*) arr->data;                   \
 } while (0)
 
-#define num_check_size(arr, capacity, ret)                             \
+#define num_check_size(arr, ret)                                       \
 do {                                                                   \
 	if (arr->count == arr->capacity) {                                   \
 		if (num_resize_capacity(arr, arr->capacity + STRAP_INIT_CAPACITY)) \
@@ -41,7 +41,7 @@ do {                                                                   \
 	data_type *iarr;                                                     \
                                                                        \
 	narr_init(arr, arr, strap_type, data_type);                          \
-	num_check_size(arr, capacity, arr);                                  \
+	num_check_size(arr, arr);                                            \
 	iarr[arr->count++] = num;                                            \
 	return arr;                                                          \
 } while (0)

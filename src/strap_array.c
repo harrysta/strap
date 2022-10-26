@@ -96,6 +96,58 @@ StrapArray *strap_array_alloc(StrapType type)
 	return strap_array_nalloc(type, STRAP_INIT_CAPACITY);
 }
 
+StrapArray *strap_array_memcpy(StrapArray *arr, const void *src, size_t num)
+{
+	const int C = STRAP_INIT_CAPACITY;
+	const char *buf;
+	const char *s;
+	size_t ncapacity;
+	StrapType type;
+	size_t size;
+	ushort len;
+	ushort *nulls;
+	size_t i;
+
+	if (!arr)
+		return NULL;
+	type = arr->type;
+	size = strap_sizeof(arr->type);
+	ncapacity = ((num + C) / C) * C;
+	if (ncapacity > arr->capacity && num_resize_capacity(arr, ncapacity))
+		return arr;
+	switch (type) {
+		case STRAP_TYPE_CHAR:
+		case STRAP_TYPE_SHORT:
+		case STRAP_TYPE_INT:
+		case STRAP_TYPE_LONG:
+		case STRAP_TYPE_FLOAT:
+		case STRAP_TYPE_DOUBLE:
+		case STRAP_TYPE_LONG_DOUBLE:
+			memcpy(arr->data, src, num*size);
+			break;
+		case STRAP_TYPE_STRING:
+			buf = s = (const char*) src;
+			nulls = malloc(num*sizeof *nulls);
+			for (i = 0; i < num; i++) {
+				buf = strchr(buf + 1, 0);
+				nulls[i] = buf - s;
+			}
+			len = buf - s + 1;
+			if (len > str_sarr(arr)->buflen && str_resize_buf(arr, len)) {
+				free(nulls);
+				return arr;
+			}
+			memcpy(&str_null(arr, 0), nulls, num*sizeof *nulls);
+			memcpy(str_buf(arr), s, buf - s + 1);
+			free(nulls);
+			break;
+		default:
+			return NULL;
+	}
+	arr->count = num;
+	return arr;
+}
+
 void strap_array_free(StrapArray *arr)
 {
 	if (!arr)

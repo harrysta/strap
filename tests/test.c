@@ -2387,9 +2387,7 @@ test_t test_array_sprintf_str()
 	const char *expected_str =  "[\"sprintf\", \"testing\", \"str\"]";
 
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	strap_array_append_cstr(arr, "sprintf");
-	strap_array_append_cstr(arr, "testing");
-	strap_array_append_cstr(arr, "str");
+	strap_array_memcpy(arr, "sprintf\0testing\0str", 3);
 	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
 	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
 	return 1;
@@ -2485,9 +2483,10 @@ test_t test_array_sprintf_longdouble()
 	const char *expected_str = "[0.005, 1.3, 137]";
 
 	arr = strap_array_alloc(STRAP_TYPE_LONG_DOUBLE);
-	strap_array_append_longdouble(arr, 0.005);
-	strap_array_append_longdouble(arr, 1.3);
-	strap_array_append_longdouble(arr, 137);
+	strap_array_memcpy(arr, (long double[]){0.005, 1.3, 137}, 3);
+	// strap_array_append_longdouble(arr, 0.005);
+	// strap_array_append_longdouble(arr, 1.3);
+	// strap_array_append_longdouble(arr, 137);
 	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
 	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
 	return 1;
@@ -2865,6 +2864,8 @@ int main ()
 	TEST_RUN(test_array_sprintf_float);
 	TEST_RUN(test_array_sprintf_double);
 	TEST_RUN(test_array_sprintf_longdouble);
+
+
 
 	puts("---------------------------------");
 	printf("%d Tests, %d Passed, %d Failed\n", test_count, pass_count,

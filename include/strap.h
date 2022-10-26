@@ -70,6 +70,8 @@ extern StrapString *strap_string_shrink(StrapString *str);
 
 extern StrapArray *strap_array_alloc(StrapType type);
 extern StrapArray *strap_array_nalloc(StrapType type, size_t size);
+extern StrapArray *strap_array_memcpy(StrapArray *arr, const void *src, size_t num);
+extern StrapArray *strap_array_strcpy(StrapArray *arr, const char **src, size_t num);
 extern void        strap_array_free(StrapArray *arr);
 
 extern size_t    strap_array_count(const StrapArray *arr);
