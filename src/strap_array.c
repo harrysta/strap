@@ -103,15 +103,14 @@ StrapArray *strap_array_memcpy(StrapArray *arr, const void *src, size_t num)
 	const char *s;
 	size_t ncapacity;
 	StrapType type;
-	size_t size;
-	ushort len;
 	ushort *nulls;
+	ushort len;
+	ushort nlen;
 	size_t i;
 
 	if (!arr)
 		return NULL;
 	type = arr->type;
-	size = strap_sizeof(arr->type);
 	ncapacity = ((num + C) / C) * C;
 	if (ncapacity > arr->capacity && num_resize_capacity(arr, ncapacity))
 		return arr;
@@ -123,7 +122,7 @@ StrapArray *strap_array_memcpy(StrapArray *arr, const void *src, size_t num)
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_DOUBLE:
 		case STRAP_TYPE_LONG_DOUBLE:
-			memcpy(arr->data, src, num*size);
+			memcpy(arr->data, src, num*strap_sizeof(type));
 			break;
 		case STRAP_TYPE_STRING:
 			buf = s = (const char*) src;
@@ -133,7 +132,8 @@ StrapArray *strap_array_memcpy(StrapArray *arr, const void *src, size_t num)
 				nulls[i] = buf - s;
 			}
 			len = buf - s + 1;
-			if (len > str_sarr(arr)->buflen && str_resize_buf(arr, len)) {
+			nlen = strap_next_pow2(len, STRAP_INIT_STR_SIZE);
+			if (len > str_sarr(arr)->buflen && str_resize_buf(arr, nlen)) {
 				free(nulls);
 				return arr;
 			}
@@ -145,6 +145,42 @@ StrapArray *strap_array_memcpy(StrapArray *arr, const void *src, size_t num)
 			return NULL;
 	}
 	arr->count = num;
+	return arr;
+}
+
+StrapArray *strap_array_strcpy(StrapArray *arr, const char **src, size_t num)
+{
+	const int C = STRAP_INIT_CAPACITY;
+	size_t ncapacity;
+	ushort *nulls;
+	ushort prev;
+	ushort nlen;
+	ushort len;
+	char *buf;
+	size_t i;
+
+	if (!arr || arr->type != STRAP_TYPE_STRING)
+		return arr;
+	ncapacity = ((num + C) / C) * C;
+	if (ncapacity > arr->capacity && num_resize_capacity(arr, ncapacity))
+		return arr;
+	nulls = malloc(num*sizeof *nulls);
+	for (i = 0; i < num; i++) {
+		prev = i ? nulls[i - 1] + 1 : 0;
+		nulls[i] = strlen(src[i]) + prev;
+	}
+	len = nulls[num - 1] + 1;
+	nlen = strap_next_pow2(len, STRAP_INIT_STR_SIZE);
+	if (len > str_sarr(arr)->buflen && str_resize_buf(arr, nlen)) {
+		free(nulls);
+		return arr;
+	}
+	buf = str_buf(arr);
+	for (i = 0; i < num; i++)
+		buf += sprintf(buf, "%s", src[i]) + 1;
+	memcpy(&str_null(arr, 0), nulls, num*sizeof *nulls);
+	arr->count = num;
+	free(nulls);
 	return arr;
 }
 

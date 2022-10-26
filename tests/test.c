@@ -2385,9 +2385,11 @@ test_t test_array_sprintf_str()
 {
 	char buf[32];
 	const char *expected_str =  "[\"sprintf\", \"testing\", \"str\"]";
+	const char *s[3] = { "sprintf", "testing", "str" };
 
 	arr = strap_array_alloc(STRAP_TYPE_STRING);
-	strap_array_memcpy(arr, "sprintf\0testing\0str", 3);
+	strap_array_strcpy(arr, s, 3);
+	strap_array_printf(arr);
 	TEST_ASSERT_TRUE(strap_array_sprintf(arr, buf) == (int) strlen(expected_str));
 	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
 	return 1;
