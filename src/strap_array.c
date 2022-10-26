@@ -460,6 +460,12 @@ StrapArray *s_array_sort(StrapArray *arr, int ascending)
 	return NULL;
 }
 
+int s_array_compare(const StrapArray *arr1, const StrapArray *arr2)
+{
+	return 0;
+}
+
+
 int s_array_sprintf(const StrapArray *arr, char *s)
 {
 	s_array_sfprintf(arr, s, sprintf, SPRINTF, 1);

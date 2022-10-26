@@ -1354,6 +1354,107 @@ test_t test_array_reverse_longdouble_valid_even()
 }
 
 
+test_t test_array_sort_null()
+{
+	TEST_ASSERT_FALSE(s_array_sort(NULL, 0));
+	return 1;
+}
+
+test_t test_array_sort_str_empty()
+{
+	return 2;
+}
+
+test_t test_array_sort_str_ascending()
+{
+	return 2;
+}
+
+test_t test_array_sort_str_descending()
+{
+	return 2;
+}
+
+test_t test_array_sort_char_empty()
+{
+	arr = s_array_alloc(STRAP_TYPE_CHAR);
+	TEST_ASSERT_TRUE(s_array_sort(arr, 1));
+	return 1;
+}
+
+test_t test_array_sort_char_ascending()
+{
+	char original[5] = { 14, 19, 3, 13, 12 };
+	char expected[5] = { 3, 12, 13, 14, 19 };
+
+	arr = s_array_alloc(STRAP_TYPE_CHAR);
+	arr2 = s_array_alloc(STRAP_TYPE_CHAR);
+
+	s_array_memcpy(arr, original, 5);
+	s_array_memcpy(arr2, expected, 5);
+
+	TEST_ASSERT_TRUE(s_array_sort(arr, 1));
+	TEST_ASSERT_TRUE(!s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_sort_char_descending()
+{
+	char original[5] = { 8, 33, -13, 37, 47 };
+	char expected[5] = { 47, 37, 33, 8, -13 };
+
+	arr = s_array_alloc(STRAP_TYPE_CHAR);
+	arr2 = s_array_alloc(STRAP_TYPE_CHAR);
+
+	s_array_memcpy(arr, original, 5);
+	s_array_memcpy(arr2, expected, 5);
+
+	TEST_ASSERT_TRUE(s_array_sort(arr, 0));
+	TEST_ASSERT_TRUE(!s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_sort_int_empty()
+{
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	TEST_ASSERT_TRUE(s_array_sort(arr, 1));
+	return 1;
+}
+
+test_t test_array_sort_int_ascending()
+{
+	int original[5] = { 14, 19, 3, 13, 12 };
+	int expected[5] = { 3, 12, 13, 14, 19 };
+
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	arr2 = s_array_alloc(STRAP_TYPE_INT);
+
+	s_array_memcpy(arr, original, 5);
+	s_array_memcpy(arr2, expected, 5);
+
+	TEST_ASSERT_TRUE(s_array_sort(arr, 1));
+	TEST_ASSERT_TRUE(!s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_sort_int_descending()
+{
+	int original[5] = { 8, 33, -13, 37, 47 };
+	int expected[5] = { 47, 37, 33, 8, -13 };
+
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	arr2 = s_array_alloc(STRAP_TYPE_INT);
+
+	s_array_memcpy(arr, original, 5);
+	s_array_memcpy(arr2, expected, 5);
+
+	TEST_ASSERT_TRUE(s_array_sort(arr, 0));
+	TEST_ASSERT_TRUE(!s_array_compare(arr, arr2));
+	return 1;
+}
+
+
+
 test_t test_array_create_subarray_null()
 {
 	TEST_ASSERT_FALSE(s_array_create_subarray(NULL, 5, 12));
@@ -1444,26 +1545,6 @@ test_t test_array_shrink_str_valid()
 	TEST_ASSERT_TRUE(s_array_shrink(arr));
 	TEST_ASSERT_TRUE(s_array_capacity(arr) == STRAP_INIT_CAPACITY);
 	return 1;
-}
-
-test_t test_array_sort_null()
-{
-	return 2;
-}
-
-test_t test_array_sort_str_empty()
-{
-	return 2;
-}
-
-test_t test_array_sort_str_ascending()
-{
-	return 2;
-}
-
-test_t test_array_sort_str_descending()
-{
-	return 2;
 }
 
 
@@ -2833,6 +2914,20 @@ int main ()
 	TEST_RUN(test_array_reverse_longdouble_valid_odd);
 	TEST_RUN(test_array_reverse_longdouble_valid_even);
 
+
+	TEST_RUN(test_array_sort_null);
+	TEST_RUN(test_array_sort_str_empty);
+	TEST_RUN(test_array_sort_str_ascending);
+	TEST_RUN(test_array_sort_str_descending);
+
+	TEST_RUN(test_array_sort_char_empty);
+	TEST_RUN(test_array_sort_char_ascending);
+	TEST_RUN(test_array_sort_char_descending);
+
+	TEST_RUN(test_array_sort_int_empty);
+	TEST_RUN(test_array_sort_int_ascending);
+	TEST_RUN(test_array_sort_int_descending);
+
 	// TEST_RUN(test_array_clear_null);
 	// TEST_RUN(test_array_clear_str_valid);
 	//
@@ -2842,11 +2937,6 @@ int main ()
 	// TEST_RUN(test_array_create_subarray_str_valid);
 	// TEST_RUN(test_array_create_subarray_str_first_element);
 	// TEST_RUN(test_array_create_subarray_str_large_n);
-	//
-	// TEST_RUN(test_array_sort_null);
-	// TEST_RUN(test_array_sort_str_empty);
-	// TEST_RUN(test_array_sort_str_ascending);
-	// TEST_RUN(test_array_sort_str_descending);
 	//
 
 
