@@ -47,4 +47,3 @@ struct str_array {
 
 extern int str_resize_capacity(StrapArray *arr, size_t capacity);
 extern int str_resize_buf(StrapArray *arr, size_t buflen);
-extern struct str_array* str_resize(StrapArray *arr, size_t capacity, size_t buflen);

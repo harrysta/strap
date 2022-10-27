@@ -2199,6 +2199,148 @@ test_t test_array_nfind_float_no_match()
 
 // --------------------------------------------------------------
 
+
+test_t test_array_compare_null()
+{
+	TEST_ASSERT_FALSE(s_array_compare(NULL, NULL));
+	return 1;
+}
+
+test_t test_array_compare_type()
+{
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	arr2 = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_compare_str_more_elements()
+{
+	const char *s[3] = { "one", "two", "three" };
+
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	arr2 = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr, s, 3);
+	s_array_strcpy(arr2, s, 2);
+	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) > 0);
+	return 1;
+}
+
+test_t test_array_compare_str_less_elements()
+{
+	const char *s[3] = { "one", "two", "three" };
+
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	arr2 = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr, s, 2);
+	s_array_strcpy(arr2, s, 3);
+	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) < 0);
+	return 1;
+}
+
+test_t test_array_compare_str_larger_element()
+{
+	const char *s1[3] = { "one", "twq", "three" };
+	const char *s2[3] = { "one", "two", "three" };
+
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	arr2 = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr, s1, 3);
+	s_array_strcpy(arr2, s2, 3);
+	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) > 0);
+	return 1;
+}
+
+test_t test_array_compare_str_smaller_element()
+{
+	const char *s1[3] = { "one", "two", "three" };
+	const char *s2[3] = { "onf", "two", "three" };
+
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	arr2 = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr, s1, 3);
+	s_array_strcpy(arr2, s2, 3);
+	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) < 0);
+	return 1;
+}
+
+test_t test_array_compare_str_equal()
+{
+	const char *s[3] = { "one", "two", "three" };
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	arr2 = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr, s, 3);
+	s_array_strcpy(arr2, s, 3);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_compare_int_more_elements()
+{
+	const int d1[3] = { 5, 5, 5 };
+	const int d2[2] = { 5, 13 };
+
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	arr2 = s_array_alloc(STRAP_TYPE_INT);
+	s_array_memcpy(arr, d1, 3);
+	s_array_memcpy(arr2, d2, 2);
+	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) > 0);
+	return 1;
+}
+
+test_t test_array_compare_int_less_elements()
+{
+	const int d1[2] = { 5, 13 };
+	const int d2[3] = { 5, 5, 5 };
+
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	arr2 = s_array_alloc(STRAP_TYPE_INT);
+	s_array_memcpy(arr, d1, 2);
+	s_array_memcpy(arr2, d2, 3);
+	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) < 0);
+	return 1;
+}
+
+test_t test_array_compare_int_larger_element()
+{
+	const int d1[3] = { 1, 5, 1 };
+	const int d2[3] = { 1, 1, 1 };
+
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	arr2 = s_array_alloc(STRAP_TYPE_INT);
+	s_array_memcpy(arr, d1, 3);
+	s_array_memcpy(arr2, d2, 3);
+	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) > 0);
+	return 1;
+}
+
+test_t test_array_compare_int_smaller_element()
+{
+	const int d1[3] = { 1, 1, 1 };
+	const int d2[3] = { 5, 1, 1 };
+
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	arr2 = s_array_alloc(STRAP_TYPE_INT);
+	s_array_memcpy(arr, d1, 3);
+	s_array_memcpy(arr2, d2, 3);
+	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) < 0);
+	return 1;
+}
+
+test_t test_array_compare_int_equal()
+{
+	const int d[5] = { 7, 13, 24, 99, 5 };
+
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	arr2 = s_array_alloc(STRAP_TYPE_INT);
+	s_array_memcpy(arr, d, 5);
+	s_array_memcpy(arr2, d, 5);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+
+
 test_t test_array_sum_int_null()
 {
 	TEST_ASSERT_FALSE(s_array_sum_int(NULL));
@@ -2563,12 +2705,10 @@ test_t test_array_sprintf_longdouble()
 {
 	char buf[32];
 	const char *expected_str = "[0.005, 1.3, 137]";
+	long double l[3] = { 0.005, 1.3, 137 };
 
 	arr = s_array_alloc(STRAP_TYPE_LONG_DOUBLE);
-	s_array_memcpy(arr, (long double[]){0.005, 1.3, 137}, 3);
-	// s_array_append_longdouble(arr, 0.005);
-	// s_array_append_longdouble(arr, 1.3);
-	// s_array_append_longdouble(arr, 137);
+	s_array_memcpy(arr, l, 3);
 	TEST_ASSERT_TRUE(s_array_sprintf(arr, buf) == (int) strlen(expected_str));
 	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
 	return 1;
@@ -2843,6 +2983,22 @@ int main ()
 
 	/* ARRAY general */
 	puts_h("\n-- TEST StrapArray (general) --");
+
+	TEST_RUN(test_array_compare_null);
+	TEST_RUN(test_array_compare_type);
+
+	TEST_RUN(test_array_compare_str_more_elements);
+	TEST_RUN(test_array_compare_str_less_elements);
+	TEST_RUN(test_array_compare_str_larger_element);
+	TEST_RUN(test_array_compare_str_smaller_element);
+	TEST_RUN(test_array_compare_str_equal);
+
+	TEST_RUN(test_array_compare_int_more_elements);
+	TEST_RUN(test_array_compare_int_less_elements);
+	TEST_RUN(test_array_compare_int_larger_element);
+	TEST_RUN(test_array_compare_int_smaller_element);
+	TEST_RUN(test_array_compare_int_equal);
+
 
 	TEST_RUN(test_array_sum_int_null);
 	TEST_RUN(test_array_sum_long_null);

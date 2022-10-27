@@ -462,9 +462,45 @@ StrapArray *s_array_sort(StrapArray *arr, int ascending)
 
 int s_array_compare(const StrapArray *arr1, const StrapArray *arr2)
 {
+	union num_array_t narr1, narr2;
+	size_t count1, count2;
+	char *buf1, *buf2;
+	StrapType type;
+	int diff;
+	size_t i;
+
+	if (!arr1 && !arr2)
+		return 0;
+	if (!arr1 || !arr2 || arr1->type != arr2->type)
+		return -1;
+	count1 = arr1->count;
+	count2 = arr2->count;
+	type = arr1->type;
+	if (count1 != count2)
+		return (int) count1 - (int) count2;
+	narr1.i8 = arr1->data;
+	narr2.i8 = arr2->data;
+	buf1 = str_buf(arr1);
+	buf2 = str_buf(arr2);
+	for (i = 0; i < count1; i++) {
+		switch (type) {
+			case STRAP_TYPE_CHAR:        diff = narr1.i8[i] - narr2.i8[i];     break;
+			case STRAP_TYPE_SHORT:       diff = narr1.i16[i] - narr2.i16[i];   break;
+			case STRAP_TYPE_INT:         diff = narr1.i32[i] - narr2.i32[i];   break;
+			case STRAP_TYPE_LONG:        diff = narr1.i64[i] - narr2.i64[i];   break;
+			case STRAP_TYPE_FLOAT:       diff = narr1.f32[i] - narr2.f32[i];   break;
+			case STRAP_TYPE_DOUBLE:      diff = narr1.f64[i] - narr2.f64[i];   break;
+			case STRAP_TYPE_LONG_DOUBLE: diff = narr1.f128[i] - narr2.f128[i]; break;
+			case STRAP_TYPE_STRING:
+				diff = strcmp(buf1 + str_pos(arr1, i), buf2 + str_pos(arr2, i)); break;
+			default: return -1;
+		}
+		if (diff) {
+			return diff;
+		}
+	}
 	return 0;
 }
-
 
 int s_array_sprintf(const StrapArray *arr, char *s)
 {
