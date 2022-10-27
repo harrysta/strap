@@ -237,8 +237,3 @@ size_t s_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 	}
 	return -1;
 }
-
-StrapArray *s_array_sort_str(StrapArray *arr, int ascending)
-{
-	return arr;
-}

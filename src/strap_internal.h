@@ -30,4 +30,3 @@ extern StrapArray *s_array_clear_str(StrapArray *arr);
 extern StrapArray *s_array_create_subarray_str(const StrapArray *arr, size_t i, size_t n);
 extern StrapArray *s_array_reverse_str(StrapArray *arr);
 extern StrapArray *s_array_shrink_str(StrapArray *arr);
-extern StrapArray *s_array_sort_str(StrapArray *arr, int ascending);

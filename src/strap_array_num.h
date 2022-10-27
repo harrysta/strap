@@ -130,6 +130,7 @@ do {                                             \
 	}                                              \
 } while (0)
 
+
 union num_array_t
 {
 	char        *i8;
@@ -142,3 +143,5 @@ union num_array_t
 };
 
 extern int num_resize_capacity(StrapArray *arr, size_t capacity);
+extern void num_sort(union num_array_t narr, StrapType type, size_t l, size_t r);
+extern void num_rsort(union num_array_t narr, StrapType type, size_t l, size_t r);

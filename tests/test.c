@@ -1362,11 +1362,17 @@ test_t test_array_sort_null()
 
 test_t test_array_sort_str_empty()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(s_array_sort(arr, 0));
+	TEST_ASSERT_FALSE(s_array_count(arr));
+	return 1;
 }
 
 test_t test_array_sort_str_ascending()
 {
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(s_array_sort(arr, 0));
+	TEST_ASSERT_FALSE(s_array_count(arr));
 	return 2;
 }
 
@@ -1378,7 +1384,6 @@ test_t test_array_sort_str_descending()
 test_t test_array_sort_char_empty()
 {
 	arr = s_array_alloc(STRAP_TYPE_CHAR);
-	TEST_ASSERT_TRUE(s_array_sort(arr, 1));
 	return 1;
 }
 
@@ -1393,8 +1398,8 @@ test_t test_array_sort_char_ascending()
 	s_array_memcpy(arr, original, 5);
 	s_array_memcpy(arr2, expected, 5);
 
-	TEST_ASSERT_TRUE(s_array_sort(arr, 1));
-	TEST_ASSERT_TRUE(!s_array_compare(arr, arr2));
+	TEST_ASSERT_TRUE(s_array_sort(arr, 0));
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
 	return 1;
 }
 
@@ -1409,15 +1414,15 @@ test_t test_array_sort_char_descending()
 	s_array_memcpy(arr, original, 5);
 	s_array_memcpy(arr2, expected, 5);
 
-	TEST_ASSERT_TRUE(s_array_sort(arr, 0));
-	TEST_ASSERT_TRUE(!s_array_compare(arr, arr2));
+	TEST_ASSERT_TRUE(s_array_sort(arr, 1));
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
 	return 1;
 }
 
 test_t test_array_sort_int_empty()
 {
 	arr = s_array_alloc(STRAP_TYPE_INT);
-	TEST_ASSERT_TRUE(s_array_sort(arr, 1));
+	TEST_ASSERT_TRUE(s_array_sort(arr, 0));
 	return 1;
 }
 
@@ -1432,7 +1437,7 @@ test_t test_array_sort_int_ascending()
 	s_array_memcpy(arr, original, 5);
 	s_array_memcpy(arr2, expected, 5);
 
-	TEST_ASSERT_TRUE(s_array_sort(arr, 1));
+	TEST_ASSERT_TRUE(s_array_sort(arr, 0));
 	TEST_ASSERT_TRUE(!s_array_compare(arr, arr2));
 	return 1;
 }
@@ -1448,7 +1453,7 @@ test_t test_array_sort_int_descending()
 	s_array_memcpy(arr, original, 5);
 	s_array_memcpy(arr2, expected, 5);
 
-	TEST_ASSERT_TRUE(s_array_sort(arr, 0));
+	TEST_ASSERT_TRUE(s_array_sort(arr, 1));
 	TEST_ASSERT_TRUE(!s_array_compare(arr, arr2));
 	return 1;
 }
