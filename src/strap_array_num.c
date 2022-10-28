@@ -7,7 +7,7 @@
 
 #define SUM_NUM(arr, sum, SWITCH) \
 do {                              \
-	union num_array_t narr;         \
+	num_ptr narr;         \
 	StrapType type;                 \
 	size_t count;                   \
 	size_t i;                       \
@@ -45,9 +45,9 @@ do {                                           \
 	char pivot = arr[i];                         \
 	if (left < right) {                          \
 		while (i < j) {                            \
-			while (arr[j] >= pivot && i < j) j--;    \
+			while (pivot - 1 < arr[j] && i < j) j--;    \
 			arr[i] = arr[j];                         \
-			while (arr[i] <= pivot && i < j) i++;    \
+			while (arr[i] - 1 < pivot && i < j) i++;    \
 			arr[j] = arr[i];                         \
 		}                                          \
 		arr[i] = pivot;                            \
@@ -354,7 +354,7 @@ size_t s_array_nfind_longdouble(const StrapArray *arr, long double num, size_t n
 	LONGDOUBLE_MACRO(s_array_nfind_num, arr, num, n);
 }
 
-void num_sort(union num_array_t narr, StrapType type, size_t l, size_t r)
+void num_sort(num_ptr narr, StrapType type, size_t l, size_t r)
 {
 	switch (type) {
 		case STRAP_TYPE_CHAR:        NUM_SORT(narr, type, l, r, narr.i8);   break;
@@ -368,7 +368,7 @@ void num_sort(union num_array_t narr, StrapType type, size_t l, size_t r)
 	}
 }
 
-void num_rsort(union num_array_t narr, StrapType type, size_t l, size_t r)
+void num_rsort(num_ptr narr, StrapType type, size_t l, size_t r)
 {
 	switch (type) {
 		case STRAP_TYPE_CHAR:        NUM_RSORT(narr, type, l, r, narr.i8);   break;

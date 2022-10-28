@@ -8,7 +8,7 @@
 #define s_array_sfprintf(arr, s, prtf, pf, is_sprintf)                       \
 do {                                                                             \
 	const char *prefix = "";                                                       \
-	union num_array_t numarr;                                                      \
+	num_ptr numarr;                                                      \
 	StrapType type;                                                                \
 	size_t count;                                                                  \
 	char *buf;                                                                     \
@@ -448,7 +448,7 @@ StrapArray *s_array_shrink(StrapArray *arr)
 
 StrapArray *s_array_sort(StrapArray *arr, int rev)
 {
-	union num_array_t narr;
+	num_ptr narr;
 	StrapType type;
 	size_t count;
 
@@ -482,7 +482,7 @@ StrapArray *s_array_sort(StrapArray *arr, int rev)
 
 int s_array_compare(const StrapArray *arr1, const StrapArray *arr2)
 {
-	union num_array_t narr1, narr2;
+	num_ptr narr1, narr2;
 	size_t count1, count2;
 	char *buf1, *buf2;
 	StrapType type;

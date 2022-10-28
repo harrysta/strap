@@ -1429,7 +1429,7 @@ test_t test_array_sort_int_empty()
 test_t test_array_sort_int_ascending()
 {
 	int original[5] = { 14, 19, 3, 13, 12 };
-	int expected[5] = { 3, 12, 13, 14, 19 };
+	int expected[5] = { 3, 12, 1333, 14, 19 };
 
 	arr = s_array_alloc(STRAP_TYPE_INT);
 	arr2 = s_array_alloc(STRAP_TYPE_INT);
