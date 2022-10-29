@@ -658,28 +658,52 @@ test_t test_array_clone_null()
 	return 1;
 }
 
-test_t test_array_clone_string_valid()
+
+test_t test_array_clone_empty()
 {
 	arr = s_array_alloc(STRAP_TYPE_STRING);
-	s_array_append_cstr(arr, "this");
-	s_array_append_cstr(arr, "is");
-	s_array_append_cstr(arr, "a");
-	s_array_append_cstr(arr, "s_array_clone");
-	s_array_append_cstr(arr, "function");
-	s_array_append_cstr(arr, "test");
+	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
+	TEST_ASSERT_FALSE(s_array_count(arr2));
+	return 1;
+}
+
+test_t test_array_clone_string()
+{
+	const char *buf[6] = { "this", "is", "a", "s_array_clone", "function", "test" };
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr, buf, 6);
 	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
 	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 0), "this"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 1), "is"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 2), "a"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 3), "s_array_clone"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 4), "function"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 5), "test"));
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
 	TEST_ASSERT_FALSE(arr == arr2);
 	return 1;
 }
 
-test_t test_array_clone_valid_int()
+test_t test_array_clone_char()
+{
+	char buf[6] = { 3, 1, 4, 1, 5, 9 };
+	arr = s_array_alloc(STRAP_TYPE_CHAR);
+	s_array_memcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	TEST_ASSERT_FALSE(arr == arr2);
+	return 1;
+}
+
+test_t test_array_clone_short()
+{
+	short buf[6] = { 3, 1, 4, 1, 5, 9 };
+	arr = s_array_alloc(STRAP_TYPE_SHORT);
+	s_array_memcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	TEST_ASSERT_FALSE(arr == arr2);
+	return 1;
+}
+
+test_t test_array_clone_int()
 {
 	int i;
 	arr = s_array_alloc(STRAP_TYPE_INT);
@@ -696,6 +720,55 @@ test_t test_array_clone_valid_int()
 	TEST_ASSERT_FALSE(arr == arr2);
 	return 1;
 }
+
+test_t test_array_clone_long()
+{
+	long buf[6] = { 3, 1, 4, 1, 5, 9 };
+	arr = s_array_alloc(STRAP_TYPE_LONG);
+	s_array_memcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	TEST_ASSERT_FALSE(arr == arr2);
+	return 1;
+}
+
+test_t test_array_clone_float()
+{
+	float buf[6] = { 3, 1, 4, 1, 5, 9 };
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	s_array_memcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	TEST_ASSERT_FALSE(arr == arr2);
+	return 1;
+}
+
+test_t test_array_clone_double()
+{
+	double buf[6] = { 3, 1, 4, 1, 5, 9 };
+	arr = s_array_alloc(STRAP_TYPE_DOUBLE);
+	s_array_memcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	TEST_ASSERT_FALSE(arr == arr2);
+	return 1;
+}
+
+test_t test_array_clone_longdouble()
+{
+	long double buf[6] = { 3, 1, 4, 1, 5, 9 };
+	arr = s_array_alloc(STRAP_TYPE_LONG_DOUBLE);
+	s_array_memcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	TEST_ASSERT_FALSE(arr == arr2);
+	return 1;
+}
+
 
 test_t test_array_create_string_null()
 {
@@ -2838,10 +2911,6 @@ int main ()
 	/* ARRAY cstr */
 	puts_h("\n-- TEST StrapArray (cstr) --");
 
-	TEST_RUN(test_array_clone_null);
-	TEST_RUN(test_array_clone_string_valid);
-	TEST_RUN(test_array_clone_valid_int);
-
 	TEST_RUN(test_array_create_string_null);
 	TEST_RUN(test_array_create_string_invalid);
 	TEST_RUN(test_array_create_string_valid);
@@ -3103,6 +3172,16 @@ int main ()
 	TEST_RUN(test_array_shrink_double_valid);
 	TEST_RUN(test_array_shrink_longdouble_valid);
 
+	TEST_RUN(test_array_clone_null);
+	TEST_RUN(test_array_clone_empty);
+	TEST_RUN(test_array_clone_string);
+	TEST_RUN(test_array_clone_char);
+	TEST_RUN(test_array_clone_short);
+	TEST_RUN(test_array_clone_int);
+	TEST_RUN(test_array_clone_long);
+	TEST_RUN(test_array_clone_float);
+	TEST_RUN(test_array_clone_double);
+	TEST_RUN(test_array_clone_longdouble);
 
 	// TEST_RUN(test_array_create_subarray_null);
 	// TEST_RUN(test_array_create_subarray_str_invalid);

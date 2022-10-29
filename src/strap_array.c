@@ -199,8 +199,7 @@ StrapArray *s_array_clone(const StrapArray *arr)
 	const int C = STRAP_INIT_CAPACITY;
 	StrapArray *newarr;
 	StrapType type;
-	size_t buflen;
-	size_t new_buflen;
+	size_t new_buflen = 0;
 	size_t new_capacity;
 	size_t count;
 
@@ -210,7 +209,6 @@ StrapArray *s_array_clone(const StrapArray *arr)
 		return s_array_alloc(arr->type);
 	type = arr->type;
 	count = arr->count;
-	buflen = str_sarr(arr)->buflen;
 	new_capacity = ((count + C) / C) * C;
 	if (type == STRAP_TYPE_STRING) {
 		new_buflen = count ? str_null(arr, count - 1) : 0;
@@ -218,12 +216,18 @@ StrapArray *s_array_clone(const StrapArray *arr)
 	}
 	newarr = s_array_nalloc_internal(type, new_capacity, new_buflen);
 	switch (type) {
+		case STRAP_TYPE_CHAR:
+		case STRAP_TYPE_SHORT:
+		case STRAP_TYPE_INT:
+		case STRAP_TYPE_LONG:
+		case STRAP_TYPE_FLOAT:
+		case STRAP_TYPE_DOUBLE:
+		case STRAP_TYPE_LONG_DOUBLE:
+			memcpy(newarr->data, arr->data, count*s_sizeof(type));
+			break;
 		case STRAP_TYPE_STRING:
 			memcpy(str_buf(newarr), str_buf(arr), str_null(arr, count - 1) + 1);
 			memcpy(str_sarr(newarr)->nulls, str_sarr(arr)->nulls, sizeof(ushort)*count);
-			break;
-		case STRAP_TYPE_INT:
-			memcpy(newarr->data, arr->data, count*s_sizeof(type));
 			break;
 		default:
 			return NULL;
