@@ -152,7 +152,7 @@ StrapArray *s_array_insert_cstr(StrapArray *arr, size_t idx, const char *str)
 
 StrapArray *s_array_insert_string(StrapArray *arr, size_t i, const StrapString *str)
 {
-	return s_array_insert_cstr(arr, i, str->data);
+	return s_array_insert_cstr(arr, i, str ? str->data : NULL);
 }
 
 StrapArray *s_array_replace_cstr(StrapArray *arr, size_t idx, const char *str)
@@ -192,12 +192,12 @@ StrapArray *s_array_replace_cstr(StrapArray *arr, size_t idx, const char *str)
 
 StrapArray *s_array_replace_string(StrapArray *arr, size_t i, const StrapString *str)
 {
-	return s_array_replace_cstr(arr, i, str->data);
+	return s_array_replace_cstr(arr, i, str ? str->data : NULL);
 }
 
 size_t s_array_find_string(const StrapArray *arr, StrapString *str)
 {
-	return s_array_find_cstr(arr, str->data);
+	return s_array_find_cstr(arr, str ? str->data : NULL);
 }
 
 size_t s_array_find_cstr(const StrapArray *arr, const char *cstr)
@@ -207,7 +207,7 @@ size_t s_array_find_cstr(const StrapArray *arr, const char *cstr)
 
 size_t s_array_nfind_string(const StrapArray *arr, StrapString *str, size_t n)
 {
-	return s_array_nfind_cstr(arr, str->data, n);
+	return s_array_nfind_cstr(arr, str ? str->data : NULL, n);
 }
 
 size_t s_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
@@ -220,10 +220,10 @@ size_t s_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 	char *buf;
 
 	if (!arr || !cstr || arr->type != STRAP_TYPE_STRING)
-		return -1;
+		return STRAP_NO_MATCH;
 	count = arr->count;
 	if (!count)
-		return -1;
+		return STRAP_NO_MATCH;
 	buf = str_buf(arr);
 	nulls = str_sarr(arr)->nulls;
 	offset = 0;
@@ -235,5 +235,5 @@ size_t s_array_nfind_cstr(const StrapArray *arr, const char *cstr, size_t n)
 		}
 		offset = nulls[i] + 1;
 	}
-	return -1;
+	return STRAP_NO_MATCH;
 }

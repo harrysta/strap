@@ -1061,7 +1061,16 @@ test_t test_array_append_string_null()
 
 test_t test_array_append_string_valid()
 {
-	return 2;
+	const char *expected[2] = { "first",  "second" };
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	string = s_string_alloc("first");
+	TEST_ASSERT_TRUE(s_array_append_string(arr, string));
+	s_string_copy_from(string, "second");
+	TEST_ASSERT_TRUE(s_array_append_string(arr, string));
+	arr2 = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr2, expected, 2);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
 }
 
 
@@ -1159,6 +1168,7 @@ extern void prt(StrapArray *arr);
 
 test_t test_array_insert_cstr_valid()
 {
+	const char *expected[5] = { "one", "a second long string", "second", "third", "last" };
 	arr = s_array_alloc(STRAP_TYPE_STRING);
 	TEST_ASSERT_TRUE(s_array_insert_cstr(arr, 0, "third"));
 	TEST_ASSERT_TRUE(s_array_insert_cstr(arr, 0, "one"));
@@ -1166,11 +1176,9 @@ test_t test_array_insert_cstr_valid()
 	TEST_ASSERT_TRUE(s_array_insert_cstr(arr, 1, "a second long string"));
 	TEST_ASSERT_TRUE(s_array_insert_cstr(arr, 10, "last"));
 	TEST_ASSERT_TRUE(s_array_count(arr) == 5);
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr, 0), "one"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr, 1), "a second long string"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr, 2), "second"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr, 3), "third"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr, 4), "last"));
+	arr2 = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr2, expected, 5);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
 	return 1;
 }
 
@@ -1191,12 +1199,30 @@ test_t test_array_insert_cstr_large()
 
 test_t test_array_insert_string_null()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	string = s_string_alloc("");
+
+	TEST_ASSERT_FALSE(s_array_insert_string(NULL, 0, NULL));
+	TEST_ASSERT_FALSE(s_array_insert_string(NULL, 0, string));
+	TEST_ASSERT_TRUE(s_array_insert_string(arr, 0, NULL));
+	return 1;
 }
 
 test_t test_array_insert_string_valid()
 {
-	return 2;
+	const char *expected[5] = { "one", "a second long string", "third"};
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	string = s_string_alloc("a second long string");
+	TEST_ASSERT_TRUE(s_array_insert_string(arr, 3, string));
+	string = s_string_alloc("one");
+	TEST_ASSERT_TRUE(s_array_insert_string(arr, 0, string));
+	string = s_string_alloc("third");
+	TEST_ASSERT_TRUE(s_array_insert_string(arr, 10, string));
+	TEST_ASSERT_TRUE(s_array_count(arr) == 3);
+	arr2 = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr2, expected, 3);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
 }
 
 test_t test_array_replace_cstr_null()
@@ -1259,12 +1285,25 @@ test_t test_array_replace_cstr_large()
 
 test_t test_array_replace_string_null()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_FALSE(s_array_replace_string(NULL, 0, NULL));
+	TEST_ASSERT_TRUE(s_array_replace_string(arr, 0, NULL));
+	TEST_ASSERT_FALSE(s_array_count(arr));
+	return 1;
 }
 
 test_t test_array_replace_string_valid()
 {
-	return 2;
+	const char *buf[3] = { "one", "two", "three" };
+	const char *expected[3] = { "one", "s_string", "three" };
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr, buf, 3);
+	string = s_string_alloc("s_string");
+	TEST_ASSERT_TRUE(s_array_replace_string(arr, 1, string));
+	arr2 = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr2, expected, 3);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
 }
 
 test_t test_array_find_cstr_null()
@@ -1296,17 +1335,26 @@ test_t test_array_find_cstr_valid()
 
 test_t test_array_find_string_null()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(s_array_find_string(NULL, NULL) == STRAP_NO_MATCH);
+	TEST_ASSERT_TRUE(s_array_find_string(arr, NULL) == STRAP_NO_MATCH);
+	return 1;
 }
 
 test_t test_array_find_string_empty()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	string = s_string_alloc("string");
+	TEST_ASSERT_TRUE(s_array_find_string(arr, string) == STRAP_NO_MATCH);
+	return 1;
 }
 
 test_t test_array_nfind_cstr_null()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(s_array_nfind_cstr(NULL, NULL, 0) == STRAP_NO_MATCH);
+	TEST_ASSERT_TRUE(s_array_nfind_cstr(arr, NULL, 0) == STRAP_NO_MATCH);
+	return 1;
 }
 
 test_t test_array_nfind_cstr_valid()
@@ -1342,12 +1390,22 @@ test_t test_array_nfind_cstr_no_match()
 
 int test_array_nfind_string_null()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(s_array_nfind_string(NULL, NULL, 0) == STRAP_NO_MATCH);
+	TEST_ASSERT_TRUE(s_array_nfind_string(arr, NULL, 0) == STRAP_NO_MATCH);
+	return 1;
 }
 
 int test_array_nfind_string_valid()
 {
-	return 2;
+	const char *buf[4] = { "first", "str", "third", "str" };
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_strcpy(arr, buf, 4);
+	string = s_string_alloc("str");
+	TEST_ASSERT_TRUE(s_array_nfind_string(arr, string, 0) == 1);
+	TEST_ASSERT_TRUE(s_array_nfind_string(arr, string, 1) == 3);
+	TEST_ASSERT_TRUE(s_array_nfind_string(arr, string, 2) == STRAP_NO_MATCH);
+	return 1;
 }
 
 
