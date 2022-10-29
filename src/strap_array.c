@@ -1,3 +1,4 @@
+#include "strap.h"
 #include "strap_array_str.h"
 #include "strap_array_num.h"
 
@@ -5,10 +6,10 @@
 #include <string.h>
 #include <stdarg.h>
 
-#define s_array_sfprintf(arr, s, prtf, pf, is_sprintf)                       \
+#define s_array_sfprintf(arr, s, prtf, pf, is_sprintf)                           \
 do {                                                                             \
 	const char *prefix = "";                                                       \
-	num_ptr numarr;                                                      \
+	num_ptr numarr;                                                                \
 	StrapType type;                                                                \
 	size_t count;                                                                  \
 	char *buf;                                                                     \
@@ -102,6 +103,7 @@ StrapArray *s_array_memcpy(StrapArray *arr, const void *src, size_t num)
 	const char *buf;
 	const char *s;
 	size_t ncapacity;
+	size_t null_count;
 	StrapType type;
 	ushort *nulls;
 	ushort len;
@@ -111,9 +113,6 @@ StrapArray *s_array_memcpy(StrapArray *arr, const void *src, size_t num)
 	if (!arr)
 		return NULL;
 	type = arr->type;
-	ncapacity = ((num + C) / C) * C;
-	if (ncapacity > arr->capacity && num_resize_capacity(arr, ncapacity))
-		return arr;
 	switch (type) {
 		case STRAP_TYPE_CHAR:
 		case STRAP_TYPE_SHORT:
@@ -122,9 +121,17 @@ StrapArray *s_array_memcpy(StrapArray *arr, const void *src, size_t num)
 		case STRAP_TYPE_FLOAT:
 		case STRAP_TYPE_DOUBLE:
 		case STRAP_TYPE_LONG_DOUBLE:
-			memcpy(arr->data, src, num*s_sizeof(type));
+			ncapacity = ((num/s_sizeof(type) + C) / C) * C;
+			if (ncapacity > arr->capacity && num_resize_capacity(arr, ncapacity))
+				return arr;
+			memcpy(arr->data, src, num);
+			arr->count = num/s_sizeof(type);
 			break;
 		case STRAP_TYPE_STRING:
+			null_count = s_charcount((const char*) src, 0, num + 1);
+			ncapacity = ((null_count + C) / C) * C;
+			if (ncapacity > arr->capacity && num_resize_capacity(arr, ncapacity))
+				return arr;
 			buf = s = (const char*) src;
 			nulls = malloc(num*sizeof *nulls);
 			for (i = 0; i < num; i++) {
@@ -140,12 +147,19 @@ StrapArray *s_array_memcpy(StrapArray *arr, const void *src, size_t num)
 			memcpy(&str_null(arr, 0), nulls, num*sizeof *nulls);
 			memcpy(str_buf(arr), s, buf - s + 1);
 			free(nulls);
+			arr->count = null_count;
 			break;
 		default:
 			return NULL;
 	}
-	arr->count = num;
 	return arr;
+}
+
+StrapArray *s_array_numcpy(StrapArray *arr, const void *src, size_t num)
+{
+	if (!arr || arr->type > STRAP_TYPE_LONG_DOUBLE)
+		return NULL;
+	return s_array_memcpy(arr, src, num*s_sizeof(arr->type));
 }
 
 StrapArray *s_array_strcpy(StrapArray *arr, const char **src, size_t num)
@@ -316,42 +330,41 @@ StrapArray *s_array_erase_range(StrapArray *arr, size_t idx, size_t n)
 
 StrapArray *s_array_create_subarray(const StrapArray *arr, size_t idx, size_t n)
 {
-	size_t i;
 	size_t count;
 	size_t pos;
 	size_t len;
 	char *buf;
-	char *newbuf;
-	ushort *nulls;
-	ushort *newnulls;
 	StrapArray *newarr;
+	StrapType type;
+	size_t size;
 
-	// WARNING buflen should be manually set to fit all buf; current impl will
-	// cause UB with large string elements
 	if (!arr || n == 0)
 		return NULL;
 	count = arr->count;
 	if (idx >= count)
 		return NULL;
 	n = idx + n > count ? count - idx : n;
-	newarr = s_array_nalloc(arr->type, n);
-	switch (arr->type) {
+	type = arr->type;
+	switch (type) {
+		case STRAP_TYPE_CHAR:
+		case STRAP_TYPE_SHORT:
+		case STRAP_TYPE_INT:
+		case STRAP_TYPE_LONG:
+		case STRAP_TYPE_FLOAT:
+		case STRAP_TYPE_DOUBLE:
+		case STRAP_TYPE_LONG_DOUBLE:
+			size = s_sizeof(type);
+			newarr = s_array_alloc(type);
+			return s_array_numcpy(newarr, (char*) arr->data + idx*size, n);
 		case STRAP_TYPE_STRING:
-			pos = str_pos(arr, idx);
-			nulls = str_sarr(arr)->nulls;
-			newnulls = str_sarr(newarr)->nulls;
-			for (i = 0; i < n; i++)
-				newnulls[i] = nulls[i + idx] - pos;
-			len = str_null(arr, n) - pos + 1;
+			newarr = s_array_alloc(STRAP_TYPE_STRING);
 			buf = str_buf(arr);
-			newbuf = str_buf(newarr);
-			break;
+			pos = str_pos(arr, idx);
+			len = str_null(arr, idx + n - 1) - (idx ? str_null(arr, idx - 1) : 0);
+			return s_array_memcpy(newarr, buf + pos, len);
 		default:
 			return NULL;
 	}
-	memcpy(newbuf, buf + pos, len);
-	newarr->count = n;
-	return newarr;
 }
 
 StrapArray *s_array_reverse(StrapArray *arr)

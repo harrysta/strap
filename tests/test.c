@@ -683,7 +683,7 @@ test_t test_array_clone_char()
 {
 	char buf[6] = { 3, 1, 4, 1, 5, 9 };
 	arr = s_array_alloc(STRAP_TYPE_CHAR);
-	s_array_memcpy(arr, buf, 6);
+	s_array_numcpy(arr, buf, 6);
 	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
 	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
 	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
@@ -695,7 +695,7 @@ test_t test_array_clone_short()
 {
 	short buf[6] = { 3, 1, 4, 1, 5, 9 };
 	arr = s_array_alloc(STRAP_TYPE_SHORT);
-	s_array_memcpy(arr, buf, 6);
+	s_array_numcpy(arr, buf, 6);
 	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
 	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
 	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
@@ -725,7 +725,7 @@ test_t test_array_clone_long()
 {
 	long buf[6] = { 3, 1, 4, 1, 5, 9 };
 	arr = s_array_alloc(STRAP_TYPE_LONG);
-	s_array_memcpy(arr, buf, 6);
+	s_array_numcpy(arr, buf, 6);
 	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
 	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
 	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
@@ -737,7 +737,7 @@ test_t test_array_clone_float()
 {
 	float buf[6] = { 3, 1, 4, 1, 5, 9 };
 	arr = s_array_alloc(STRAP_TYPE_FLOAT);
-	s_array_memcpy(arr, buf, 6);
+	s_array_numcpy(arr, buf, 6);
 	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
 	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
 	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
@@ -749,7 +749,7 @@ test_t test_array_clone_double()
 {
 	double buf[6] = { 3, 1, 4, 1, 5, 9 };
 	arr = s_array_alloc(STRAP_TYPE_DOUBLE);
-	s_array_memcpy(arr, buf, 6);
+	s_array_numcpy(arr, buf, 6);
 	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
 	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
 	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
@@ -761,13 +761,238 @@ test_t test_array_clone_longdouble()
 {
 	long double buf[6] = { 3, 1, 4, 1, 5, 9 };
 	arr = s_array_alloc(STRAP_TYPE_LONG_DOUBLE);
-	s_array_memcpy(arr, buf, 6);
+	s_array_numcpy(arr, buf, 6);
 	TEST_ASSERT_TRUE(arr2 = s_array_clone(arr));
 	TEST_ASSERT_TRUE(s_array_count(arr2) == 6);
 	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
 	TEST_ASSERT_FALSE(arr == arr2);
 	return 1;
 }
+
+
+test_t test_array_create_subarray_null()
+{
+	TEST_ASSERT_FALSE(s_array_create_subarray(NULL, 5, 12));
+	return 1;
+}
+
+test_t test_array_create_subarray_str_empty()
+{
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_FALSE(s_array_create_subarray(arr, 0, 0));
+	TEST_ASSERT_FALSE(s_array_create_subarray(arr, 0, 1));
+	return 1;
+}
+
+test_t test_array_create_subarray_str_invalid()
+{
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	s_array_append_cstr(arr, "one");
+	s_array_append_cstr(arr, "two");
+	s_array_append_cstr(arr, "three");
+	TEST_ASSERT_FALSE(arr2 = s_array_create_subarray(arr, 5, 1));
+	TEST_ASSERT_FALSE(arr2 = s_array_create_subarray(arr, 0, 0));
+	return 1;
+}
+
+test_t test_array_create_subarray_str_valid()
+{
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "first"));
+	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "second"));
+	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "third"));
+	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "fourth"));
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 1, 2));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 2);
+	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 0), "second"));
+	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 1), "third"));
+	return 1;
+}
+
+test_t test_array_create_subarray_str_first_element()
+{
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "number"));
+	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "one"));
+	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "three"));
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 0, 1));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 1);
+	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 0), "number"));
+	return 1;
+}
+
+test_t test_array_create_subarray_str_large_n()
+{
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "number"));
+	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "one"));
+	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "three"));
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 0, 100));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 3);
+	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 0), "number"));
+	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 1), "one"));
+	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 2), "three"));
+	return 1;
+}
+
+
+test_t test_array_create_subarray_char_valid()
+{
+	char buf[6] = { 1, 2, 3, 4, 5, 6 };
+	char expected[4] = { 2, 3, 4, 5 };
+	arr = s_array_alloc(STRAP_TYPE_CHAR);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 1, 4));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 4);
+	s_array_numcpy(arr, expected, 4);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_char_first_element()
+{
+	char buf[6] = { 1, 2, 3, 4, 5, 6};
+	char expected[4] = { 1, 2 };
+	arr = s_array_alloc(STRAP_TYPE_CHAR);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 0, 2));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 2);
+	s_array_numcpy(arr, expected, 2);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_char_large_n()
+{
+	char buf[6] = { 1, 2, 3, 4, 5, 6};
+	char expected[3] = { 4, 5, 6 };
+	arr = s_array_alloc(STRAP_TYPE_CHAR);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 3, 100));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 3);
+	s_array_numcpy(arr, expected, 3);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_int_valid()
+{
+	int buf[6] = { 1, 2, 3, 4, 5, 6};
+	int expected[4] = { 2, 3, 4, 5 };
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 1, 4));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 4);
+	s_array_numcpy(arr, expected, 4);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_int_first_element()
+{
+	int buf[6] = { 1, 2, 3, 4, 5, 6};
+	int expected[4] = { 1, 2 };
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 0, 2));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 2);
+	s_array_numcpy(arr, expected, 2);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_int_large_n()
+{
+	int buf[6] = { 1, 2, 3, 4, 5, 6};
+	int expected[3] = { 4, 5, 6 };
+	arr = s_array_alloc(STRAP_TYPE_INT);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 3, 100));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 3);
+	s_array_numcpy(arr, expected, 3);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_float_valid()
+{
+	float buf[6] = { 1, 2, 3, 4, 5, 6};
+	float expected[4] = { 2, 3, 4, 5 };
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 1, 4));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 4);
+	s_array_numcpy(arr, expected, 4);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_float_first_element()
+{
+	float buf[6] = { 1, 2, 3, 4, 5, 6};
+	float expected[4] = { 1, 2 };
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 0, 2));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 2);
+	s_array_numcpy(arr, expected, 2);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_float_large_n()
+{
+	float buf[6] = { 1, 2, 3, 4, 5, 6};
+	float expected[3] = { 4, 5, 6 };
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 3, 100));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 3);
+	s_array_numcpy(arr, expected, 3);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_double_valid()
+{
+	double buf[6] = { 1, 2, 3, 4, 5, 6};
+	double expected[4] = { 2, 3, 4, 5 };
+	arr = s_array_alloc(STRAP_TYPE_DOUBLE);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 1, 4));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 4);
+	s_array_numcpy(arr, expected, 4);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_double_first_element()
+{
+	double buf[6] = { 1, 2, 3, 4, 5, 6};
+	double expected[4] = { 1, 2 };
+	arr = s_array_alloc(STRAP_TYPE_DOUBLE);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 0, 2));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 2);
+	s_array_numcpy(arr, expected, 2);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+test_t test_array_create_subarray_double_large_n()
+{
+	double buf[6] = { 1, 2, 3, 4, 5, 6};
+	double expected[3] = { 4, 5, 6 };
+	arr = s_array_alloc(STRAP_TYPE_DOUBLE);
+	s_array_numcpy(arr, buf, 6);
+	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 3, 100));
+	TEST_ASSERT_TRUE(s_array_count(arr2) == 3);
+	s_array_numcpy(arr, expected, 3);
+	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
+	return 1;
+}
+
+
 
 
 test_t test_array_create_string_null()
@@ -1231,71 +1456,6 @@ test_t test_array_erase_range_float_valid()
 
 
 
-
-test_t test_array_create_subarray_null()
-{
-	TEST_ASSERT_FALSE(s_array_create_subarray(NULL, 5, 12));
-	return 1;
-}
-
-test_t test_array_create_subarray_str_empty()
-{
-	arr = s_array_alloc(STRAP_TYPE_STRING);
-	TEST_ASSERT_FALSE(s_array_create_subarray(arr, 0, 0));
-	TEST_ASSERT_FALSE(s_array_create_subarray(arr, 0, 1));
-	return 1;
-}
-
-test_t test_array_create_subarray_str_invalid()
-{
-	arr = s_array_alloc(STRAP_TYPE_STRING);
-	s_array_append_cstr(arr, "one");
-	s_array_append_cstr(arr, "two");
-	s_array_append_cstr(arr, "three");
-	TEST_ASSERT_FALSE(arr2 = s_array_create_subarray(arr, 5, 1));
-	TEST_ASSERT_FALSE(arr2 = s_array_create_subarray(arr, 0, 0));
-	return 1;
-}
-
-test_t test_array_create_subarray_str_valid()
-{
-	arr = s_array_alloc(STRAP_TYPE_STRING);
-	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "first"));
-	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "second"));
-	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "third"));
-	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "fourth"));
-	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 1, 2));
-	TEST_ASSERT_TRUE(s_array_count(arr2) == 2);
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 0), "second"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 1), "third"));
-	return 1;
-}
-
-test_t test_array_create_subarray_str_first_element()
-{
-	arr = s_array_alloc(STRAP_TYPE_STRING);
-	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "number"));
-	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "one"));
-	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "three"));
-	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 0, 1));
-	TEST_ASSERT_TRUE(s_array_count(arr2) == 1);
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 0), "number"));
-	return 1;
-}
-
-test_t test_array_create_subarray_str_large_n()
-{
-	arr = s_array_alloc(STRAP_TYPE_STRING);
-	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "number"));
-	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "one"));
-	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "three"));
-	TEST_ASSERT_TRUE(arr2 = s_array_create_subarray(arr, 0, 100));
-	TEST_ASSERT_TRUE(s_array_count(arr2) == 3);
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 0), "number"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 1), "one"));
-	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr2, 2), "three"));
-	return 1;
-}
 
 // ----------------------------------------------------------------------------
 
@@ -1979,8 +2139,8 @@ test_t test_array_compare_int_more_elements()
 
 	arr = s_array_alloc(STRAP_TYPE_INT);
 	arr2 = s_array_alloc(STRAP_TYPE_INT);
-	s_array_memcpy(arr, d1, 3);
-	s_array_memcpy(arr2, d2, 2);
+	s_array_numcpy(arr, d1, 3);
+	s_array_numcpy(arr2, d2, 2);
 	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) > 0);
 	return 1;
 }
@@ -1992,8 +2152,8 @@ test_t test_array_compare_int_less_elements()
 
 	arr = s_array_alloc(STRAP_TYPE_INT);
 	arr2 = s_array_alloc(STRAP_TYPE_INT);
-	s_array_memcpy(arr, d1, 2);
-	s_array_memcpy(arr2, d2, 3);
+	s_array_numcpy(arr, d1, 2);
+	s_array_numcpy(arr2, d2, 3);
 	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) < 0);
 	return 1;
 }
@@ -2005,8 +2165,8 @@ test_t test_array_compare_int_larger_element()
 
 	arr = s_array_alloc(STRAP_TYPE_INT);
 	arr2 = s_array_alloc(STRAP_TYPE_INT);
-	s_array_memcpy(arr, d1, 3);
-	s_array_memcpy(arr2, d2, 3);
+	s_array_numcpy(arr, d1, 3);
+	s_array_numcpy(arr2, d2, 3);
 	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) > 0);
 	return 1;
 }
@@ -2018,8 +2178,8 @@ test_t test_array_compare_int_smaller_element()
 
 	arr = s_array_alloc(STRAP_TYPE_INT);
 	arr2 = s_array_alloc(STRAP_TYPE_INT);
-	s_array_memcpy(arr, d1, 3);
-	s_array_memcpy(arr2, d2, 3);
+	s_array_numcpy(arr, d1, 3);
+	s_array_numcpy(arr2, d2, 3);
 	TEST_ASSERT_TRUE(s_array_compare(arr, arr2) < 0);
 	return 1;
 }
@@ -2030,8 +2190,8 @@ test_t test_array_compare_int_equal()
 
 	arr = s_array_alloc(STRAP_TYPE_INT);
 	arr2 = s_array_alloc(STRAP_TYPE_INT);
-	s_array_memcpy(arr, d, 5);
-	s_array_memcpy(arr2, d, 5);
+	s_array_numcpy(arr, d, 5);
+	s_array_numcpy(arr2, d, 5);
 	TEST_ASSERT_FALSE(s_array_compare(arr, arr2));
 	return 1;
 }
@@ -2405,7 +2565,7 @@ test_t test_array_sprintf_longdouble()
 	long double l[3] = { 0.005, 1.3, 137 };
 
 	arr = s_array_alloc(STRAP_TYPE_LONG_DOUBLE);
-	s_array_memcpy(arr, l, 3);
+	s_array_numcpy(arr, l, 3);
 	TEST_ASSERT_TRUE(s_array_sprintf(arr, buf) == (int) strlen(expected_str));
 	TEST_ASSERT_TRUE(!strcmp(buf, expected_str));
 	return 1;
@@ -2613,7 +2773,7 @@ test_t test_array_clear_char()
 {
 	const char buf[3] = { 35, 19, 29};
 	arr = s_array_alloc(STRAP_TYPE_CHAR);
-	s_array_memcpy(arr, buf, 3);
+	s_array_numcpy(arr, buf, 3);
 	TEST_ASSERT_TRUE(s_array_clear(arr));
 	TEST_ASSERT_FALSE(s_array_count(arr));
 	return 1;
@@ -2623,7 +2783,7 @@ test_t test_array_clear_short()
 {
 	const short buf[3] = { 354, 19, 29};
 	arr = s_array_alloc(STRAP_TYPE_SHORT);
-	s_array_memcpy(arr, buf, 3);
+	s_array_numcpy(arr, buf, 3);
 	TEST_ASSERT_TRUE(s_array_clear(arr));
 	TEST_ASSERT_FALSE(s_array_count(arr));
 	return 1;
@@ -2633,7 +2793,7 @@ test_t test_array_clear_int()
 {
 	const int buf[3] = { 395, 19, 29};
 	arr = s_array_alloc(STRAP_TYPE_INT);
-	s_array_memcpy(arr, buf, 3);
+	s_array_numcpy(arr, buf, 3);
 	TEST_ASSERT_TRUE(s_array_clear(arr));
 	TEST_ASSERT_FALSE(s_array_count(arr));
 	return 1;
@@ -2643,7 +2803,7 @@ test_t test_array_clear_long()
 {
 	const long buf[3] = { 35, 19, 29};
 	arr = s_array_alloc(STRAP_TYPE_LONG);
-	s_array_memcpy(arr, buf, 3);
+	s_array_numcpy(arr, buf, 3);
 	TEST_ASSERT_TRUE(s_array_clear(arr));
 	TEST_ASSERT_FALSE(s_array_count(arr));
 	return 1;
@@ -2653,7 +2813,7 @@ test_t test_array_clear_float()
 {
 	const float buf[3] = { 35, 19, 29};
 	arr = s_array_alloc(STRAP_TYPE_FLOAT);
-	s_array_memcpy(arr, buf, 3);
+	s_array_numcpy(arr, buf, 3);
 	TEST_ASSERT_TRUE(s_array_clear(arr));
 	TEST_ASSERT_FALSE(s_array_count(arr));
 	return 1;
@@ -2663,7 +2823,7 @@ test_t test_array_clear_double()
 {
 	const double buf[3] = { 35, 19, 29};
 	arr = s_array_alloc(STRAP_TYPE_DOUBLE);
-	s_array_memcpy(arr, buf, 3);
+	s_array_numcpy(arr, buf, 3);
 	TEST_ASSERT_TRUE(s_array_clear(arr));
 	TEST_ASSERT_FALSE(s_array_count(arr));
 	return 1;
@@ -2673,7 +2833,7 @@ test_t test_array_clear_longdouble()
 {
 	const long double buf[3] = { 35, 19, 29};
 	arr = s_array_alloc(STRAP_TYPE_LONG_DOUBLE);
-	s_array_memcpy(arr, buf, 3);
+	s_array_numcpy(arr, buf, 3);
 	TEST_ASSERT_TRUE(s_array_clear(arr));
 	TEST_ASSERT_FALSE(s_array_count(arr));
 	return 1;
@@ -3183,12 +3343,34 @@ int main ()
 	TEST_RUN(test_array_clone_double);
 	TEST_RUN(test_array_clone_longdouble);
 
-	// TEST_RUN(test_array_create_subarray_null);
-	// TEST_RUN(test_array_create_subarray_str_invalid);
-	// TEST_RUN(test_array_create_subarray_str_valid);
-	// TEST_RUN(test_array_create_subarray_str_first_element);
-	// TEST_RUN(test_array_create_subarray_str_large_n);
-	//
+	TEST_RUN(test_array_create_subarray_null);
+	TEST_RUN(test_array_create_subarray_str_invalid);
+	TEST_RUN(test_array_create_subarray_str_valid);
+	TEST_RUN(test_array_create_subarray_str_first_element);
+	TEST_RUN(test_array_create_subarray_str_large_n);
+
+	TEST_RUN(test_array_create_subarray_char_valid);
+	TEST_RUN(test_array_create_subarray_char_first_element);
+	TEST_RUN(test_array_create_subarray_char_large_n);
+
+	TEST_RUN(test_array_create_subarray_int_valid);
+	TEST_RUN(test_array_create_subarray_int_first_element);
+	TEST_RUN(test_array_create_subarray_int_large_n);
+
+	TEST_RUN(test_array_create_subarray_float_valid);
+	TEST_RUN(test_array_create_subarray_float_first_element);
+	TEST_RUN(test_array_create_subarray_float_large_n);
+
+	TEST_RUN(test_array_create_subarray_double_valid);
+	TEST_RUN(test_array_create_subarray_double_first_element);
+	TEST_RUN(test_array_create_subarray_double_large_n);
+
+
+
+
+
+
+
 
 
 	TEST_RUN(test_array_sprintf_null);
