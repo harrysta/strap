@@ -445,7 +445,8 @@ test_t test_string_nstrcat_string()
 
 test_t test_string_substring_null()
 {
-	return 2;
+	TEST_ASSERT_FALSE(s_string_create_substring(NULL, 0, 0));
+	return 1;
 }
 
 test_t test_string_substring_invalid()
@@ -470,7 +471,8 @@ test_t test_string_substring_valid()
 
 test_t test_string_erase_null()
 {
-	return 2;
+	TEST_ASSERT_FALSE(s_string_erase(NULL, 0, 5));
+	return 1;
 }
 
 test_t test_string_erase_invalid()
@@ -496,7 +498,8 @@ test_t test_string_erase_valid()
 
 test_t test_string_trim_null()
 {
-	return 2;
+	TEST_ASSERT_FALSE(s_string_trim(NULL));
+	return 1;
 }
 
 test_t test_string_trim_valid()
@@ -568,12 +571,20 @@ test_t test_string_find_match()
 
 test_t test_string_nfind_match()
 {
-	return 2;
+	string = s_string_alloc("strsomething str str");
+	string2 = s_string_alloc("str");
+	TEST_ASSERT_TRUE(s_string_nfind(string, string2, 0) == 0);
+	TEST_ASSERT_TRUE(s_string_nfind(string, string2, 1) == 13);
+	TEST_ASSERT_TRUE(s_string_nfind(string, string2, 2) == 17);
+	return 1;
 }
 
 test_t test_string_nfind_no_match()
 {
-	return 2;
+	string = s_string_alloc("strsomething str str");
+	string2 = s_string_alloc("str");
+	TEST_ASSERT_TRUE(s_string_nfind(string, string2, 3) == STRAP_NO_MATCH);
+	return 1;
 }
 
 test_t test_string_split_null()
@@ -623,7 +634,8 @@ test_t test_string_split_word()
 
 test_t test_string_reverse_null()
 {
-	return 2;
+	TEST_ASSERT_FALSE(s_string_reverse(NULL));
+	return 1;
 }
 
 test_t test_string_reverse_valid()
@@ -637,17 +649,35 @@ test_t test_string_reverse_valid()
 
 test_t test_string_shrink_null()
 {
-	return 2;
+	TEST_ASSERT_FALSE(s_string_shrink(NULL));
+	return 1;
 }
 
 test_t test_string_shrink_empty()
 {
-	return 2;
+	string = s_string_alloc("");
+	TEST_ASSERT_TRUE(s_string_size(string) == STRAP_INIT_STR_SIZE);
+	TEST_ASSERT_TRUE(s_string_shrink(string));
+	TEST_ASSERT_TRUE(s_string_size(string) == STRAP_INIT_STR_SIZE);
+	return 1;
 }
 
 test_t test_string_shrink_valid()
 {
-	return 2;
+	const char *buf = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+		"Vivamus porta orci orci. Donec convallis felis faucibus quam tempor "
+		"lobortis. Suspendisse vitae velit ornare, pulvinar mauris ut, tempor nibh. "
+		"Cras vitae lacus quis tortor viverra molestie. Etiam aliquam neque risus, "
+		"vel mollis est dignissim at. Donec iaculis blandit finibus. Maecenas nec "
+		"laoreet lorem, sed pellentesque erat. Nullam lacus dui, ultrices eget "
+		"egestas vel, laoreet ut arcu. Aliquam eget ipsum egestas, convallis "
+		"leo eu integer. ";
+	string = s_string_alloc(buf);
+	TEST_ASSERT_FALSE(s_string_size(string) == STRAP_INIT_STR_SIZE);
+	s_string_erase(string, 5, 999);
+	TEST_ASSERT_TRUE(s_string_shrink(string));
+	TEST_ASSERT_TRUE(s_string_size(string) == STRAP_INIT_STR_SIZE);
+	return 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -1022,7 +1052,11 @@ test_t test_array_create_string_valid()
 
 test_t test_array_append_string_null()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_STRING);
+	TEST_ASSERT_FALSE(s_array_append_string(NULL, NULL));
+	TEST_ASSERT_TRUE(s_array_append_string(arr, NULL));
+	TEST_ASSERT_FALSE(s_array_count(arr));
+	return 1;
 }
 
 test_t test_array_append_string_valid()

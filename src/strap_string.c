@@ -226,9 +226,9 @@ int s_string_compare(const StrapString *str1, const StrapString *str2)
 	return strcmp(str1->data, str2->data);
 }
 
-size_t s_string_find(const StrapString *str1, const StrapString *str2)
+size_t s_string_nfind(const StrapString *str1, const StrapString *str2, size_t n)
 {
-	size_t i, j;
+	size_t i, j, found;
 	size_t len1, len2;
 	char *buf1, *buf2;
 
@@ -239,16 +239,25 @@ size_t s_string_find(const StrapString *str1, const StrapString *str2)
 	len2 = str2->length;
 	buf1 = str1->data;
 	buf2 = str2->data;
+	found = -1;
 	while (i < len1) {
 		j = 0;
 		if (buf1[i++] == buf2[j++]) {
 			while (j < len2 && buf1[i++] == buf2[j++]);
 			if (j == len2) {
-				return i - j;
+				found++;
+				if (found == n) {
+					return i - j;
+				}
 			}
 		}
 	}
-	return -1;
+	return STRAP_NO_MATCH;
+}
+
+size_t s_string_find(const StrapString *str1, const StrapString *str2)
+{
+	return s_string_nfind(str1, str2, 0);
 }
 
 StrapArray *s_string_split(StrapString *str, StrapArray *arr, const char *sep)

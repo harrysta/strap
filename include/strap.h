@@ -26,6 +26,7 @@ typedef enum StrapType
 
 #define logs(a) printf("%s: %s\n", #a, a)
 #define logd(a) printf("%s: %d\n", #a, a)
+#define loglu(a) printf("%s: %lu\n", #a, a)
 #define logc(a) printf("%s: %c\n", #a, a)
 #define logf(a) printf("%s: %f\n", #a, a)
 #define logp(a) printf("%s: %p\n", #a, a)

@@ -112,7 +112,7 @@ StrapArray *s_array_append_cstr(StrapArray *arr, const char *str)
 
 StrapArray *s_array_append_string(StrapArray *arr, const StrapString *str)
 {
-	return s_array_append_cstr(arr, str->data);
+	return s_array_append_cstr(arr, str ? str->data : NULL);
 }
 
 StrapArray *s_array_insert_cstr(StrapArray *arr, size_t idx, const char *str)
