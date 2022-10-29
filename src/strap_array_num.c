@@ -248,6 +248,11 @@ StrapArray *s_array_append_float(StrapArray *arr, float num)
 	FLOAT_MACRO(s_array_append_num, arr, num);
 }
 
+StrapArray *s_array_insert_float(StrapArray *arr, size_t idx, float num)
+{
+	FLOAT_MACRO(s_array_insert_num, arr, idx, num);
+}
+
 StrapArray *s_array_replace_float(StrapArray *arr, size_t idx, float num)
 {
 	FLOAT_MACRO(s_array_replace_num, arr, idx, num);
@@ -275,6 +280,11 @@ StrapArray *s_array_append_double(StrapArray *arr, double num)
 	DOUBLE_MACRO(s_array_append_num, arr, num);
 }
 
+StrapArray *s_array_insert_double(StrapArray *arr, size_t idx, double num)
+{
+	DOUBLE_MACRO(s_array_insert_num, arr, idx, num);
+}
+
 StrapArray *s_array_replace_double(StrapArray *arr, size_t idx, double num)
 {
 	DOUBLE_MACRO(s_array_replace_num, arr, idx, num);
@@ -300,6 +310,11 @@ long double s_array_get_longdouble(const StrapArray *arr, size_t idx)
 StrapArray *s_array_append_longdouble(StrapArray *arr, long double num)
 {
 	LONGDOUBLE_MACRO(s_array_append_num, arr, num);
+}
+
+StrapArray *s_array_insert_longdouble(StrapArray *arr, size_t idx, long double num)
+{
+	LONGDOUBLE_MACRO(s_array_insert_num, arr, idx, num);
 }
 
 StrapArray *s_array_replace_longdouble(StrapArray *arr, size_t idx, long double num)

@@ -1410,9 +1410,6 @@ int test_array_nfind_string_valid()
 
 
 
-
-
-
 test_t test_array_erase_range_str_first_element()
 {
 	arr = s_array_alloc(STRAP_TYPE_STRING);
@@ -2078,73 +2075,127 @@ test_t test_array_nfind_long_no_match()
 
 test_t test_array_append_float_null()
 {
-	TEST_ASSERT_TRUE(!s_array_append_float(NULL, 0));
+	TEST_ASSERT_FALSE(s_array_append_float(NULL, 0));
 	return 1;
 }
 
 test_t test_array_append_float_valid()
 {
 	int i;
-	float buf[5] = { 1.5, 3.3, 0.01, 5., 13.};
+	float buf[5] = { 1, 3, 0, 5, 13};
 	arr = s_array_alloc(STRAP_TYPE_FLOAT);
 	for (i = 0; i < 5; i++)
 		TEST_ASSERT_TRUE(s_array_append_float(arr, buf[i]));
 	TEST_ASSERT_TRUE(s_array_count(arr) == 5);
 	for (i = 0; i < 5; i++)
-		TEST_ASSERT_TRUE(FLOAT_EQUALS(s_array_get_float(arr, i), buf[i]));
+		TEST_ASSERT_TRUE(s_array_get_float(arr, i) == buf[i]);
 	return 1;
 }
 
 test_t test_array_insert_float_null()
 {
-	return 2;
+	TEST_ASSERT_FALSE(s_array_insert_float(NULL, 0, 0));
+	return 1;
 }
 
 test_t test_array_insert_float_valid()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(s_array_insert_float(arr, 0, 1));
+	TEST_ASSERT_TRUE(s_array_insert_float(arr, 0, 2));
+	TEST_ASSERT_TRUE(s_array_insert_float(arr, 0, 3));
+	TEST_ASSERT_TRUE(s_array_insert_float(arr, 1, 4));
+	TEST_ASSERT_TRUE(s_array_insert_float(arr, 0, 5));
+	TEST_ASSERT_TRUE(s_array_count(arr) == 5);
+	TEST_ASSERT_TRUE(s_array_get_float(arr, 0) == 5);
+	TEST_ASSERT_TRUE(s_array_get_float(arr, 1) == 3);
+	TEST_ASSERT_TRUE(s_array_get_float(arr, 2) == 4);
+	TEST_ASSERT_TRUE(s_array_get_float(arr, 3) == 2);
+	TEST_ASSERT_TRUE(s_array_get_float(arr, 4) == 1);
+	return 1;
 }
 
 test_t test_array_replace_float_null()
 {
-	return 2;
+	TEST_ASSERT_FALSE(s_array_replace_float(NULL, 0, 23));
+	return 1;
 }
 
 test_t test_array_replace_float_invalid_index()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(s_array_replace_float(arr, 0, 23));
+	TEST_ASSERT_TRUE(s_array_replace_float(arr, 1, 35));
+	TEST_ASSERT_TRUE(s_array_count(arr) == 0);
+	return 1;
 }
 
 test_t test_array_replace_float_valid()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 5));
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 5));
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 5));
+	TEST_ASSERT_TRUE(s_array_replace_float(arr, 0, 1));
+	TEST_ASSERT_TRUE(s_array_replace_float(arr, 1, 13));
+	TEST_ASSERT_TRUE(s_array_replace_float(arr, 2, 25));
+	TEST_ASSERT_TRUE(s_array_count(arr) == 3);
+	TEST_ASSERT_TRUE(s_array_get_float(arr, 0) == 1);
+	TEST_ASSERT_TRUE(s_array_get_float(arr, 1) == 13);
+	TEST_ASSERT_TRUE(s_array_get_float(arr, 2) == 25);
+	return 1;
 }
 
 test_t test_array_find_float_null()
 {
-	return 2;
+	TEST_ASSERT_TRUE(s_array_find_float(NULL, 55) == STRAP_NO_MATCH);
+	return 1;
 }
 
 test_t test_array_find_float_empty()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(s_array_find_float(arr, 5) == STRAP_NO_MATCH);
+	return 1;
 }
 
 test_t test_array_find_float_valid()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 5));
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 23));
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 15));
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 99));
+	TEST_ASSERT_TRUE(s_array_find_float(arr, 5) == 0);
+	TEST_ASSERT_TRUE(s_array_find_float(arr, 15) == 2);
+	return 1;
 }
 
 test_t test_array_nfind_float_valid()
 {
-	return 2;
+	float buf[7] = { 1, 13, 3, 4, 13, 13, 99 };
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	s_array_numcpy(arr, buf, 7);
+	TEST_ASSERT_TRUE(s_array_nfind_float(arr, 13, 0) == 1);
+	TEST_ASSERT_TRUE(s_array_nfind_float(arr, 13, 1) == 4);
+	TEST_ASSERT_TRUE(s_array_nfind_float(arr, 13, 2) == 5);
+	TEST_ASSERT_TRUE(s_array_nfind_float(arr, 13, 3) == STRAP_NO_MATCH);
+	return 1;
 }
 
 test_t test_array_nfind_float_no_match()
 {
-	return 2;
+	arr = s_array_alloc(STRAP_TYPE_FLOAT);
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 1));
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 2));
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 3));
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 4));
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 5));
+	TEST_ASSERT_TRUE(s_array_append_float(arr, 6));
+	TEST_ASSERT_TRUE(s_array_nfind_float(arr, 13, 0) == STRAP_NO_MATCH);
+	TEST_ASSERT_TRUE(s_array_nfind_float(arr, 13, 1) == STRAP_NO_MATCH);
+	return 1;
 }
-
 
 // --------------------------------------------------------------
 
@@ -3458,13 +3509,6 @@ int main ()
 	TEST_RUN(test_array_create_subarray_double_large_n);
 
 
-
-
-
-
-
-
-
 	TEST_RUN(test_array_sprintf_null);
 	TEST_RUN(test_array_sprintf_empty);
 
@@ -3476,7 +3520,6 @@ int main ()
 	TEST_RUN(test_array_sprintf_float);
 	TEST_RUN(test_array_sprintf_double);
 	TEST_RUN(test_array_sprintf_longdouble);
-
 
 
 	puts("---------------------------------");
