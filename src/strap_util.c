@@ -1,4 +1,5 @@
 #include "strap_internal.h"
+#include <string.h>
 
 size_t s_next_pow2(size_t n, size_t min)
 {
@@ -12,6 +13,18 @@ size_t s_next_pow2(size_t n, size_t min)
 	while (p < n)
 		p <<= 1;
 	return p;
+}
+
+size_t s_charcount(const char *str, char c, size_t bytes)
+{
+	ptrdiff_t b = bytes;
+	size_t count = 0;
+	const char *pch = strchr(str, c);
+	while (pch && pch - str < b) {
+		count++;
+		pch = strchr(pch + 1, c);
+	}
+	return count;
 }
 
 size_t s_sizeof(StrapType type)
