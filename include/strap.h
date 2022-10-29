@@ -180,7 +180,6 @@ extern long double   s_array_sum_longdouble(const StrapArray *arr);
 extern StrapArray *s_array_erase(StrapArray *arr, size_t i);
 extern StrapArray *s_array_erase_range(StrapArray *arr, size_t i, size_t n);
 extern StrapArray *s_array_reverse(StrapArray *arr);
-extern StrapArray *s_array_sort(StrapArray *arr, int reverse);
 extern StrapArray *s_array_clear(StrapArray *arr);
 extern StrapArray *s_array_shrink(StrapArray *arr);
 extern StrapArray *s_array_clone(const StrapArray *arr);

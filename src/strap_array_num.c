@@ -38,43 +38,6 @@ switch (type) {                                            \
 	default: break;                                          \
 }
 
-#define NUM_SORT(narr, type, left, right, arr) \
-do {                                           \
-	size_t i = left;                             \
-	size_t j = right;                            \
-	char pivot = arr[i];                         \
-	if (left < right) {                          \
-		while (i < j) {                            \
-			while (pivot - 1 < arr[j] && i < j) j--;    \
-			arr[i] = arr[j];                         \
-			while (arr[i] - 1 < pivot && i < j) i++;    \
-			arr[j] = arr[i];                         \
-		}                                          \
-		arr[i] = pivot;                            \
-		num_sort(narr, type, left, i - 1);         \
-		num_sort(narr, type, j + 1, right);        \
-	}                                            \
-} while (0)
-
-#define NUM_RSORT(narr, type, left, right, arr) \
-do {                                            \
-	size_t i = left;                              \
-	size_t j = right;                             \
-	char pivot = arr[i];                          \
-	if (left < right) {                           \
-		while (i < j) {                             \
-			while (arr[j] <= pivot && i < j) j--;     \
-			arr[i] = arr[j];                          \
-			while (arr[i] >= pivot && i < j) i++;     \
-			arr[j] = arr[i];                          \
-		}                                           \
-		arr[i] = pivot;                             \
-		if (i)                                      \
-			num_rsort(narr, type, left, i - 1);       \
-		num_rsort(narr, type, j + 1, right);        \
-	}                                             \
-} while (0)
-
 int num_resize_capacity(StrapArray *arr, size_t capacity)
 {
 	void *ndata = realloc(arr->data, capacity*s_sizeof(arr->type));
@@ -353,32 +316,3 @@ size_t s_array_nfind_longdouble(const StrapArray *arr, long double num, size_t n
 {
 	LONGDOUBLE_MACRO(s_array_nfind_num, arr, num, n);
 }
-
-void num_sort(num_ptr narr, StrapType type, size_t l, size_t r)
-{
-	switch (type) {
-		case STRAP_TYPE_CHAR:        NUM_SORT(narr, type, l, r, narr.i8);   break;
-		case STRAP_TYPE_SHORT:       NUM_SORT(narr, type, l, r, narr.i16);  break;
-		case STRAP_TYPE_INT:         NUM_SORT(narr, type, l, r, narr.i32);  break;
-		case STRAP_TYPE_LONG:        NUM_SORT(narr, type, l, r, narr.i64);  break;
-		case STRAP_TYPE_FLOAT:       NUM_SORT(narr, type, l, r, narr.f32);  break;
-		case STRAP_TYPE_DOUBLE:      NUM_SORT(narr, type, l, r, narr.f64);  break;
-		case STRAP_TYPE_LONG_DOUBLE: NUM_SORT(narr, type, l, r, narr.f128); break;
-		default: return;
-	}
-}
-
-void num_rsort(num_ptr narr, StrapType type, size_t l, size_t r)
-{
-	switch (type) {
-		case STRAP_TYPE_CHAR:        NUM_RSORT(narr, type, l, r, narr.i8);   break;
-		case STRAP_TYPE_SHORT:       NUM_RSORT(narr, type, l, r, narr.i16);  break;
-		case STRAP_TYPE_INT:         NUM_RSORT(narr, type, l, r, narr.i32);  break;
-		case STRAP_TYPE_LONG:        NUM_RSORT(narr, type, l, r, narr.i64);  break;
-		case STRAP_TYPE_FLOAT:       NUM_RSORT(narr, type, l, r, narr.f32);  break;
-		case STRAP_TYPE_DOUBLE:      NUM_RSORT(narr, type, l, r, narr.f64);  break;
-		case STRAP_TYPE_LONG_DOUBLE: NUM_RSORT(narr, type, l, r, narr.f128); break;
-		default: return;
-	}
-}
-

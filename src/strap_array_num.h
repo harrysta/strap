@@ -142,5 +142,3 @@ typedef union {
 } num_ptr;
 
 extern int num_resize_capacity(StrapArray *arr, size_t capacity);
-extern void num_sort(num_ptr narr, StrapType type, size_t l, size_t r);
-extern void num_rsort(num_ptr narr, StrapType type, size_t l, size_t r);

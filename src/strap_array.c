@@ -446,40 +446,6 @@ StrapArray *s_array_shrink(StrapArray *arr)
 	return arr;
 }
 
-StrapArray *s_array_sort(StrapArray *arr, int rev)
-{
-	num_ptr narr;
-	StrapType type;
-	size_t count;
-
-	if (!arr)
-		return NULL;
-	count = arr->count;
-	if (!count)
-		return arr;
-	narr.i8 = arr->data;
-	type = arr->type;
-	switch (type) {
-		case STRAP_TYPE_CHAR:
-		case STRAP_TYPE_SHORT:
-		case STRAP_TYPE_INT:
-		case STRAP_TYPE_LONG:
-		case STRAP_TYPE_FLOAT:
-		case STRAP_TYPE_DOUBLE:
-		case STRAP_TYPE_LONG_DOUBLE:
-			if (rev)
-				num_rsort(narr, type, 0, count - 1);
-			else
-				num_sort(narr, type, 0, count - 1);
-			break;
-		case STRAP_TYPE_STRING:
-			break;
-		default:
-			return NULL;
-	}
-	return arr;
-}
-
 int s_array_compare(const StrapArray *arr1, const StrapArray *arr2)
 {
 	num_ptr narr1, narr2;
