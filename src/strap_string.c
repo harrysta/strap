@@ -111,12 +111,16 @@ StrapString *s_string_strcat(StrapString *str, const char *cstr)
 
 StrapString *s_string_ncopy(StrapString *str1, const StrapString *str2, size_t n)
 {
-	return s_string_ncopy_from(str1, s_string_get_cstr(str2), n);
+	size_t len2 = s_string_length(str2);
+	len2 = len2 < n ? len2 : n;
+	return s_string_ncopy_from(str1, s_string_get_cstr(str2), len2);
 }
 
 StrapString *s_string_nconcat(StrapString *str1, const StrapString *str2, size_t n)
 {
-	return s_string_nstrcat(str1, s_string_get_cstr(str2), n);
+	size_t len2 = s_string_length(str2);
+	len2 = len2 < n ? len2 : n;
+	return s_string_nstrcat(str1, s_string_get_cstr(str2), len2);
 }
 
 StrapString *s_string_ncopy_from(StrapString *str, const char *cstr, size_t n)

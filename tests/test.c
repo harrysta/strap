@@ -232,6 +232,17 @@ test_t test_string_ncopy_string()
 	return 1;
 }
 
+test_t test_string_ncopy_large_n()
+{
+	const char *expected = "second";
+	string = s_string_alloc("first");
+	string2 = s_string_alloc("second");
+	TEST_ASSERT_TRUE(s_string_ncopy(string, string2, 9999));
+	TEST_ASSERT_FALSE(strcmp(s_string_get_cstr(string), expected));
+	TEST_ASSERT_TRUE(s_string_length(string) == strlen(expected));
+	return 1;
+}
+
 test_t test_string_concat_null()
 {
 	char str[] = "str";
@@ -292,6 +303,18 @@ test_t test_string_nconcat_string()
 	TEST_ASSERT_TRUE(s_string_length(string) == strlen(catstr));
 	return 1;
 }
+
+test_t test_string_nconcat_large_n()
+{
+	const char *expected = "firstsecond";
+	string = s_string_alloc("first");
+	string2 = s_string_alloc("second");
+	TEST_ASSERT_TRUE(s_string_nconcat(string, string2, 9999));
+	TEST_ASSERT_FALSE(strcmp(s_string_get_cstr(string), expected));
+	TEST_ASSERT_TRUE(s_string_length(string) == strlen(expected));
+	return 1;
+}
+
 
 test_t test_string_copy_from_null()
 {
@@ -680,7 +703,7 @@ test_t test_string_shrink_valid()
 	return 1;
 }
 
-// ----------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
 
 test_t test_array_clone_null()
 {
@@ -1027,7 +1050,7 @@ test_t test_array_create_subarray_double_large_n()
 
 test_t test_array_create_string_null()
 {
-	TEST_ASSERT_TRUE(!s_array_create_string(NULL, 1));
+	TEST_ASSERT_TRUE(!s_array_create_string_from_element(NULL, 1));
 	return 1;
 }
 
@@ -1035,7 +1058,7 @@ test_t test_array_create_string_invalid()
 {
 	arr = s_array_alloc(STRAP_TYPE_STRING);
 	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "one"));
-	TEST_ASSERT_TRUE(!s_array_create_string(arr, 4));
+	TEST_ASSERT_TRUE(!s_array_create_string_from_element(arr, 4));
 	return 1;
 }
 
@@ -1045,7 +1068,7 @@ test_t test_array_create_string_valid()
 	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "one"));
 	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "two"));
 	TEST_ASSERT_TRUE(s_array_append_cstr(arr, "three"));
-	TEST_ASSERT_TRUE(string = s_array_create_string(arr, 1));
+	TEST_ASSERT_TRUE(string = s_array_create_string_from_element(arr, 1));
 	TEST_ASSERT_TRUE(!strcmp(s_string_get_cstr(string), "two"));
 	return 1;
 }
@@ -1162,9 +1185,6 @@ test_t test_array_insert_cstr_empty()
 	TEST_ASSERT_TRUE(!strcmp(s_array_get_cstr(arr, 2), "third"));
 	return 1;
 }
-
-// TEMP REMOVEME
-extern void prt(StrapArray *arr);
 
 test_t test_array_insert_cstr_valid()
 {
@@ -1542,11 +1562,7 @@ test_t test_array_erase_range_float_valid()
 }
 
 
-
-
-
-
-// ----------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
 
 test_t test_array_append_char_null()
 {
@@ -1677,7 +1693,7 @@ test_t test_array_nfind_char_no_match()
 	return 1;
 }
 
-// ----------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
 
 test_t test_array_append_int_null()
 {
@@ -1808,7 +1824,7 @@ test_t test_array_nfind_int_no_match()
 	return 1;
 }
 
-// ----------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
 
 test_t test_array_append_short_null()
 {
@@ -1940,7 +1956,7 @@ test_t test_array_nfind_short_no_match()
 }
 
 
-// ----------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
 
 test_t test_array_append_long_null()
 {
@@ -2071,7 +2087,7 @@ test_t test_array_nfind_long_no_match()
 	return 1;
 }
 
-// ----------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
 
 test_t test_array_append_float_null()
 {
@@ -2197,7 +2213,7 @@ test_t test_array_nfind_float_no_match()
 	return 1;
 }
 
-// --------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
 
 
 test_t test_array_compare_null()
@@ -3101,11 +3117,6 @@ test_t test_array_shrink_longdouble_valid()
 }
 
 
-
-
-
-
-
 void test_prep()
 {
 }
@@ -3153,12 +3164,14 @@ int main ()
 	TEST_RUN(test_string_copy_string);
 	TEST_RUN(test_string_copy_large);
 	TEST_RUN(test_string_ncopy_string);
+	TEST_RUN(test_string_ncopy_large_n);
 
 	TEST_RUN(test_string_concat_null);
 	TEST_RUN(test_string_concat_empty);
 	TEST_RUN(test_string_concat_string);
 	TEST_RUN(test_string_concat_large);
 	TEST_RUN(test_string_nconcat_string);
+	TEST_RUN(test_string_nconcat_large_n);
 
 	TEST_RUN(test_string_copy_from_null);
 	TEST_RUN(test_string_copy_from_empty);

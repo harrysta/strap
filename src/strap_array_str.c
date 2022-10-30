@@ -1,5 +1,6 @@
 #include "strap_internal.h"
 #include "strap_array_str.h"
+#include "strap_array_num.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -76,12 +77,28 @@ StrapString *s_array_create_string(const StrapArray *arr, size_t idx)
 {
 	size_t pos;
 	char *buf;
+	char numbuf[32];
+	num_ptr numarr;
 
-	if (!arr || arr->type != STRAP_TYPE_STRING || idx >= arr->count)
+	if (!arr || idx >= arr->count)
 		return NULL;
-	pos = str_pos(arr, idx);
-	buf = str_buf(arr);
-	return s_string_alloc(buf + pos);
+	numarr.i8 = arr->data;
+	switch (arr->type) {
+		case STRAP_TYPE_CHAR:        sprintf(numbuf, "%d",  numarr.i8[idx]);   break;
+		case STRAP_TYPE_SHORT:       sprintf(numbuf, "%d",  numarr.i16[idx]);  break;
+		case STRAP_TYPE_INT:         sprintf(numbuf, "%d",  numarr.i32[idx]);  break;
+		case STRAP_TYPE_LONG:        sprintf(numbuf, "%ld", numarr.i64[idx]);  break;
+		case STRAP_TYPE_FLOAT:       sprintf(numbuf, "%g",  numarr.f32[idx]);  break;
+		case STRAP_TYPE_DOUBLE:      sprintf(numbuf, "%g",  numarr.f64[idx]);  break;
+		case STRAP_TYPE_LONG_DOUBLE: sprintf(numbuf, "%Lg", numarr.f128[idx]); break;
+		case STRAP_TYPE_STRING:
+			pos = str_pos(arr, idx);
+			buf = str_buf(arr);
+			return s_string_alloc(buf + pos);
+		default:
+			return NULL;
+	}
+	return s_string_alloc(numbuf);
 }
 
 const char* s_array_get_cstr(const StrapArray *arr, size_t index)
