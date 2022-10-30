@@ -1,51 +1,7 @@
 #include "strap_internal.h"
 #include "strap_array_str.h"
 #include "strap_array_num.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-
-void prt(StrapArray *arr)
-{
-	size_t idx;
-	char c;
-	struct str_array *sarr = (struct str_array*) arr->data;
-	char *string = sarr->buf;
-	size_t s = 40;
-
-
-	puts("");
-	for (idx = 0; idx <= s; idx++) {
-		printf("%-4lu", idx);
-	}
-	puts("");
-	puts("---------------------------------------------------------------------------------------------------------");
-	for (idx = 0; idx <= s; idx++) {
-		c = string[idx];
-		printf("%c   ",  c ? c : '-');
-	}
-	puts("");
-	for (idx = 0 ; idx < arr->count; idx++) {
-		printf("%d, ", sarr->nulls[idx]);
-	}
-	puts("");
-	s_array_printf(arr);
-	puts("");
-}
-
-void prts(const char *str, int len)
-{
-	char s[512];
-	int i;
-
-	memcpy(s, str, len);
-	for (i = 0; i < len; i++) {
-		if (s[i] == 0) {
-			s[i] = '-';
-		}
-	}
-	printf("\"%.*s\" - %d", len, s, len);
-}
 
 int str_resize_capacity(StrapArray *arr, size_t capacity)
 {
