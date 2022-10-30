@@ -73,7 +73,7 @@ int str_resize_buf(StrapArray *arr, size_t buflen)
 	return 0;
 }
 
-StrapString *s_array_create_string(const StrapArray *arr, size_t idx)
+StrapString *s_array_create_string_from_element(const StrapArray *arr, size_t idx)
 {
 	size_t pos;
 	char *buf;
