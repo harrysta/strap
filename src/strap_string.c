@@ -91,7 +91,7 @@ StrapString *s_string_copy(StrapString *str1, const StrapString *str2)
 
 StrapString *s_string_concat(StrapString *str1, const StrapString *str2)
 {
-	return s_string_nconcat(str1, str2, s_string_length(str2));
+	return s_string_nstrcat(str1, s_string_get_cstr(str2), s_string_length(str2));
 }
 
 StrapString *s_string_copy_from(StrapString *str, const char *cstr)
@@ -168,6 +168,7 @@ StrapString *s_string_nstrcat(StrapString *str, const char *cstr, size_t n)
 	size = s_next_pow2(newlen, STRAP_INIT_STR_SIZE);
 	str_check_size(str, size, str);
 	memcpy(str->data + str->length, cstr, n);
+	str->data[newlen] = '\0';
 	str->length = newlen;
 	return str;
 }
