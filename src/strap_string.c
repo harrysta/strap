@@ -7,10 +7,10 @@
 
 #define STRLEN(a) (a) ? strlen((a)) : 0
 
-#define str_check_size(s, len, ret)        \
-do {                                       \
-	if (len > s->size && str_resize(s, len)) \
-		return ret;                            \
+#define str_check_size(s, len, ret)			\
+do {							\
+	if (len > s->size && str_resize(s, len))	\
+		return ret;				\
 } while (0)
 
 static int str_resize(StrapString *str, size_t size)

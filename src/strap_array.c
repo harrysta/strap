@@ -6,41 +6,41 @@
 #include <string.h>
 #include <stdarg.h>
 
-#define s_array_sfprintf(arr, s, prtf, pf, is_sprintf)                           \
-do {                                                                             \
-	const char *prefix = "";                                                       \
-	num_ptr numarr;                                                                \
-	StrapType type;                                                                \
-	size_t count;                                                                  \
-	char *buf;                                                                     \
-	size_t i;                                                                      \
-	int pos;                                                                       \
-                                                                                 \
-	if (!arr || !s)                                                                \
-		return -1;                                                                   \
-	count = arr->count;                                                            \
-	type = arr->type;                                                              \
-	buf = str_buf(arr);                                                            \
-	numarr.i8 = arr->data;                                                         \
-	if (!count)                                                                    \
-		return prtf(s, "[]");                                                        \
-	pos = prtf(s, "[");                                                            \
-	for (i = 0; i < count; i++) {                                                  \
-		switch (type) {                                                              \
-			case STRAP_TYPE_CHAR:        pf("%s%d", numarr.i8[i]);   break;            \
-			case STRAP_TYPE_SHORT:       pf("%s%d", numarr.i16[i]);  break;            \
-			case STRAP_TYPE_INT:         pf("%s%d", numarr.i32[i]);  break;            \
-			case STRAP_TYPE_LONG:        pf("%s%ld",numarr.i64[i]);  break;            \
-			case STRAP_TYPE_FLOAT:       pf("%s%g", numarr.f32[i]);  break;            \
-			case STRAP_TYPE_DOUBLE:      pf("%s%g", numarr.f64[i]);  break;            \
-			case STRAP_TYPE_LONG_DOUBLE: pf("%s%Lg",numarr.f128[i]); break;            \
-			case STRAP_TYPE_STRING:      pf("%s\"%s\"", buf + str_pos(arr, i)); break; \
-			default: return -1;                                                        \
-		}                                                                            \
-		prefix = ", ";                                                               \
-	}                                                                              \
-	pos += prtf(s + (is_sprintf ? pos : 0) , "]");                                 \
-	return pos;                                                                    \
+#define s_array_sfprintf(arr, s, prtf, pf, is_sprintf)						\
+do {												\
+	const char *prefix = "";								\
+	num_ptr numarr;										\
+	StrapType type;										\
+	size_t count;										\
+	char *buf;										\
+	size_t i;										\
+	int pos;										\
+												\
+	if (!arr || !s)										\
+		return -1;									\
+	count = arr->count;									\
+	type = arr->type;									\
+	buf = str_buf(arr);									\
+	numarr.i8 = arr->data;									\
+	if (!count)										\
+		return prtf(s, "[]");								\
+	pos = prtf(s, "[");									\
+	for (i = 0; i < count; i++) {								\
+		switch (type) {									\
+			case STRAP_TYPE_CHAR:        pf("%s%d", numarr.i8[i]);   break;		\
+			case STRAP_TYPE_SHORT:       pf("%s%d", numarr.i16[i]);  break;		\
+			case STRAP_TYPE_INT:         pf("%s%d", numarr.i32[i]);  break;		\
+			case STRAP_TYPE_LONG:        pf("%s%ld",numarr.i64[i]);  break;		\
+			case STRAP_TYPE_FLOAT:       pf("%s%g", numarr.f32[i]);  break;		\
+			case STRAP_TYPE_DOUBLE:      pf("%s%g", numarr.f64[i]);  break;		\
+			case STRAP_TYPE_LONG_DOUBLE: pf("%s%Lg",numarr.f128[i]); break;		\
+			case STRAP_TYPE_STRING: pf("%s\"%s\"", buf + str_pos(arr, i)); break;	\
+			default: return -1;							\
+		}										\
+		prefix = ", ";									\
+	}											\
+	pos += prtf(s + (is_sprintf ? pos : 0) , "]");						\
+	return pos;										\
 } while (0)
 
 #define SPRINTF(fmt, arg) pos += sprintf(s + pos, fmt, prefix, arg)
